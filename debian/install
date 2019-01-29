@@ -1,0 +1,2 @@
+debian/flectra.conf /etc/flectra
+README.md /usr/share/doc/flectra
