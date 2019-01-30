@@ -1,9 +1,11 @@
 from flectra import http
 import flectra
 from flectra.http import request
+from . rest_api import authentication
 
 class RegisterAPIBentar(http.Controller):
     @http.route('/simontir/register', type='json', auth='none', methods=['GET'], csrf=False, cors="*")
+    @authentication
     def onLoad(self):
         try:
             #cek SO dengan state quotation
@@ -18,6 +20,7 @@ class RegisterAPIBentar(http.Controller):
                 "id": data.id,
                 "name": data.name
             }for data in cek]
+
             return data
         except Exception as e:
             print(str(e))
