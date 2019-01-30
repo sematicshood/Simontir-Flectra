@@ -1,0 +1,47 @@
+<flectra>
+  <data>
+    <!-- explicit list view definition -->
+    
+    <record model="ir.ui.view" id="management_api.list">
+      <field name="name">management_api list</field>
+      <field name="model">management_api.management_api</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="client_api"/>
+          <field name="client_secret"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="management_api.form">
+      <field name="name">management_api form</field>
+      <field name="model">management_api.management_api</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <field name="name"/>
+          </sheet>
+        </form>
+      </field>
+    </record>
+   
+
+    <!-- actions opening views on models -->
+    
+    <record model="ir.actions.act_window" id="management_api.action_window">
+      <field name="name">management_api window</field>
+      <field name="res_model">management_api.management_api</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+   
+
+    <!-- Top menu item -->
+    
+    <menuitem name="management_api" id="management_api.menu_root"/>
+    <!-- menu categories -->
+    
+    <menuitem name="Menu 1" id="management_api.menu_1" parent="management_api.menu_root" action="management_api.action_window"/>
+   
+  </data>
+</flectra>
