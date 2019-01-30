@@ -29,7 +29,11 @@ class RegisterAPIBentar(http.Controller):
                 
             data = [{
                 "id": data.id,
-                "name": data.name
+                "name": data.name,
+                "tipe_motor":[{
+                    "id":d.id,
+                    "name": d.display_name
+                }for d in request.env['fleet.vehicle.model'].sudo().search([])]
             }for data in cek]
 
             return valid_response(status=200, data={
@@ -120,15 +124,31 @@ class RegisterAPIBentar(http.Controller):
 
     @http.route('/simontir/saran-part', type='http', auth='none', methods=['GET'], csrf=False, cors="*")
     @authentication
-    def saranPart(self):
+    def saranPart(self, id_type):
         try:
-            part = request.env['product.product'].sudo().search([])
+            print(id_type)
+            xxx = request.env['product.product'].sudo().search([('id', '=', 3)])
+            print(xxx)
+            xxx.sudo().write({
+                "x_type_motor": 1
+            })
+            part = request.env['product.product'].sudo().search([('x_type_motor.id', '=', id_type)])
             data = [{
                 "id_product": d.id,
                 "name": d.name,
-                "type_motor": d.x_type_motor.name
+                "type_motor": d.x_type_motor.id
             } for d in part]
-            print(data)
-            return "hahaha"
+
+            return valid_response(status=200, data={
+                'count': len(data),
+                'results': data
+                })
         except Exception as e:
             print(str(e))
+
+    @http.route('/simontir/save', type='http', auth='none', methods=['POST'], csrf=False, cors="*")
+    @authentication
+    def saveRegister(self, aaa):
+        # a = request.httprequest.POST['aaa']
+        print(aaa)
+        return "AAAA"
