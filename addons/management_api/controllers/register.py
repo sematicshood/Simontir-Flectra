@@ -5,7 +5,6 @@ from . rest_api import authentication
 from . rest_exception import *
 
 class RegisterAPIBentar(http.Controller):
-<<<<<<< HEAD
     #RESPONSE
     # {
     #     "count": 1,
@@ -17,15 +16,6 @@ class RegisterAPIBentar(http.Controller):
     #     ]
     # }
     @http.route('/simontir/cekso', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
-=======
-    # RESPONSE
-    # {"jsonrpc": "2.0", "id": null, 
-    # "result": [{
-    #     "id": 28, 
-    #     "name": "SO026"
-    #     }]}
-    @http.route('/simontir/register', type='json', auth='none', methods=['GET'], csrf=False, cors="*")
->>>>>>> master
     @authentication
     def onLoad(self):
         try:
@@ -64,6 +54,39 @@ class RegisterAPIBentar(http.Controller):
     def createRegister(self):
         print(request.jsonrequest)
         print('-'*100)
+        
+        createPemilik = request.env['res.partner'].sudo().create({
+            "name":'',
+            "mobile":'',
+            "email":'',
+            "website":''
+        })
+
+        createPembawa = request.env['res.partner'].sudo().create({
+            "name":'',
+            "street":'',
+            "type":"other"
+        })
+
+        createDataMotor = request.env['fleet.vehicle'].sudo().create({
+            "license_plate":'',
+            "vin_sn":'',
+            "location":'',
+            "model_id":'',
+            "model_year":'',
+            "driver_id": createPemilik.id
+        })
+
+        createSaleOrder = request.env['sale.order'].sudo().search([('id', '=', '')])
+        createSaleOrder.sudo().write({
+            "date_order":''
+        })
+
+        #dalam perulangan
+        createKeluhan = request.env['temporary.keluhan'].sudo().create({
+            "x_ref_so":createSaleOrder.id,
+            "x_keluhan":''
+        })
         pass
 
     @http.route('/simontir/ceknopol', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
@@ -163,9 +186,9 @@ class RegisterAPIBentar(http.Controller):
         except Exception as e:
             print(str(e))
 
-    @http.route('/simontir/save', type='http', auth='none', methods=['POST'], csrf=False, cors="*")
-    @authentication
-    def saveRegister(self, aaa):
-        # a = request.httprequest.POST['aaa']
-        print(aaa)
-        return "AAAA"
+    # @http.route('/simontir/save', type='http', auth='none', methods=['POST'], csrf=False, cors="*")
+    # @authentication
+    # def saveRegister(self, aaa):
+    #     # a = request.httprequest.POST['aaa']
+    #     print(aaa)
+    #     return "AAAA"
