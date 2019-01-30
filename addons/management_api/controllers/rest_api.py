@@ -21,7 +21,7 @@ def authentication(func):
     def wrap(self, *args, **kwargs):
         try:
             client_api    = request.httprequest.environ['HTTP_CLIENT_API']
-            client_secret = request.httprequest.environ['HTTP_CLIENT_SECRET']     
+            client_secret = request.httprequest.environ['HTTP_CLIENT_SECRET']
             
             #check authentication        
             cek = request.env['management_api.management_api'].sudo().search_count([
@@ -38,7 +38,6 @@ def authentication(func):
                 return invalid_response(400, error, info)
 
         except Exception as error:
-            print(error)
             if str(error) == "'HTTP_CLIENT_API'":
                 info = "Missing client api in request header!"
                 error = 'client_api_not_found'
@@ -54,9 +53,21 @@ def authentication(func):
     return wrap
 
 class ControllerAPIBentar(http.Controller):
-    @http.route('/rest_tes', type='json', auth="none", methods=['GET', 'OPTIONS'],
+    @http.route('/simontir/login', type='json', auth="none", methods=['POST', 'OPTIONS'],
         csrf=False, cors="*")
     @authentication
     def index(self, **get):
-        print('*'*100)
-        pass
+        data = request.jsonrequest
+
+        uid  = request.session.authenticate(flectra.tools.config['db_name'], data['login'], data['password'])
+        user = request.env['res.users'].search_read([
+            ('id','=',uid)
+        ], fields=['image', 'name', 'role'])
+
+        if uid is not False:
+            return valid_response(status=200, data=user).response
+        else:
+            info = "Username or Password is incorrect!!"
+            error = 'username_or_password_name_incorrect'
+            _logger.error(info)
+            return invalid_response(400, error, info)

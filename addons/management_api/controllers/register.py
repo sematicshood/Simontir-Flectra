@@ -15,7 +15,7 @@ class RegisterAPIBentar(http.Controller):
     #         }
     #     ]
     # }
-    @http.route('/simontir/register', type='http', auth='none', methods=['GET'], csrf=False, cors="*")
+    @http.route('/simontir/cekso', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     @authentication
     def onLoad(self):
         try:
@@ -49,7 +49,14 @@ class RegisterAPIBentar(http.Controller):
             ])
         return cek
 
-    @http.route('/simontir/nopol', type='http', auth='none', methods=['GET'], csrf=False, cors="*")
+    @http.route('/simontir/createRegister', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")
+    @authentication
+    def createRegister(self):
+        print(request.jsonrequest)
+        print('-'*100)
+        pass
+
+    @http.route('/simontir/ceknopol', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     #RESPONSE
     # {
     #     "count": 1,
