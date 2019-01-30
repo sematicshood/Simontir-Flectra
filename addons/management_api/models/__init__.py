@@ -3,3 +3,5 @@
 from . import models
 from . import roles
 from . import sale
+from . import fleet
+from . import product
