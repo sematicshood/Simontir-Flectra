@@ -2,10 +2,21 @@ from flectra import http
 import flectra
 from flectra.http import request
 from . rest_api import authentication
+from . rest_exception import *
 
 class RegisterAPIBentar(http.Controller):
-    @http.route('/simontir/register', type='json', auth='none', methods=['GET'], csrf=False, cors="*")
-    @authentication
+    #RESPONSE
+    # {
+    #     "count": 1,
+    #     "results": [
+    #         {
+    #             "id": 28,
+    #             "name": "SO026"
+    #         }
+    #     ]
+    # }
+    @http.route('/simontir/register', type='http', auth='none', methods=['GET'], csrf=False, cors="*")
+    # @authentication
     def onLoad(self):
         try:
             #cek SO dengan state quotation
@@ -21,7 +32,10 @@ class RegisterAPIBentar(http.Controller):
                 "name": data.name
             }for data in cek]
 
-            return data
+            return valid_response(status=200, data={
+                'count': len(data),
+                'results': data
+                })
         except Exception as e:
             print(str(e))
 
@@ -31,4 +45,52 @@ class RegisterAPIBentar(http.Controller):
             ])
         return cek
 
-            
+    @http.route('/simontir/nopol', type='http', auth='none', methods=['GET'], csrf=False, cors="*")
+    #RESPONSE
+    # {
+    #     "count": 1,
+    #     "results": [
+    #         {
+    #             "data": "Nopol Sudah Terdaftar",
+    #             "id_fleet_vehicle": 256,
+    #             "nopol": "AA 6015 VW",
+    #             "no_mesin": "ISO 3841",
+    #             "no_rangka": false,
+    #             "tahun": false,
+    #             "nama_pemilik": "ADIFA",
+    #             "telp_pemilik": false,
+    #             "email_pemilik": false,
+    #             "sosmed": false,
+    #             "history": ""
+    #         }
+    #     ]
+    # }
+    # @authentication
+    def cekNopol(self, nopol):
+        try:
+            cek = request.env['fleet.vehicle'].sudo().search([('license_plate', '=', nopol)])
+            # print(cekNopol[0].driver_id.name)
+            if len(cek) == 0:
+                data = [{
+                    "data": "Nopol Belum Terdaftar"
+                }]
+            else:
+                data = [{
+                    "data": "Nopol Sudah Terdaftar",
+                    "id_fleet_vehicle":d.id,
+                    "nopol":d.license_plate,
+                    "no_mesin": d.vin_sn,
+                    "no_rangka": d.location,
+                    "tahun": d.model_year,
+                    "nama_pemilik": d.driver_id.name,
+                    "telp_pemilik": d.driver_id.mobile,
+                    "email_pemilik":d.driver_id.email,
+                    "sosmed": d.driver_id.website,
+                    "history": ""
+                } for d in cek]
+            return valid_response(status=200, data={
+                'count': len(data),
+                'results': data
+                })
+        except Exception as e:
+            print(str(e))
