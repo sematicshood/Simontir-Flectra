@@ -5,6 +5,7 @@ from . rest_api import authentication
 from . rest_exception import *
 
 class RegisterAPIBentar(http.Controller):
+<<<<<<< HEAD
     #RESPONSE
     # {
     #     "count": 1,
@@ -16,6 +17,15 @@ class RegisterAPIBentar(http.Controller):
     #     ]
     # }
     @http.route('/simontir/cekso', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
+=======
+    # RESPONSE
+    # {"jsonrpc": "2.0", "id": null, 
+    # "result": [{
+    #     "id": 28, 
+    #     "name": "SO026"
+    #     }]}
+    @http.route('/simontir/register', type='json', auth='none', methods=['GET'], csrf=False, cors="*")
+>>>>>>> master
     @authentication
     def onLoad(self):
         try:
