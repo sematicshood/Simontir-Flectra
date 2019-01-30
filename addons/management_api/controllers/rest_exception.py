@@ -22,8 +22,8 @@ def valid_response(status, data):
     return werkzeug.wrappers.Response(
         status=status,
         content_type='application/json; charset=utf-8',
-        response=data,
-    ).__dict__
+        response=json.dumps(data, cls=JSONEncoder),
+    )
 
 
 def invalid_response(status, error, info):

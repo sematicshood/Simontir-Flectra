@@ -65,7 +65,7 @@ class ControllerAPIBentar(http.Controller):
         ], fields=['image', 'name', 'role'])
 
         if uid is not False:
-            return valid_response(status=200, data=user)
+            return valid_response(status=200, data=user).response
         else:
             info = "Username or Password is incorrect!!"
             error = 'username_or_password_name_incorrect'
