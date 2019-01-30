@@ -16,7 +16,7 @@ class RegisterAPIBentar(http.Controller):
     #     ]
     # }
     @http.route('/simontir/register', type='http', auth='none', methods=['GET'], csrf=False, cors="*")
-    # @authentication
+    @authentication
     def onLoad(self):
         try:
             #cek SO dengan state quotation
@@ -61,15 +61,26 @@ class RegisterAPIBentar(http.Controller):
     #             "telp_pemilik": false,
     #             "email_pemilik": false,
     #             "sosmed": false,
-    #             "history": ""
+    #             "history": [
+    #                 {
+    #                     "id": 13,
+    #                     "tanggal": "2019-01-04",
+    #                     "biaya": 30000,
+    #                     "km": 0,
+    #                     "frontdesk": "Administrator",
+    #                     "mekanik": false,
+    #                     "jasa": [],
+    #                     "part": false
+    #                 }
+    #             ]
     #         }
     #     ]
     # }
-    # @authentication
+    @authentication
     def cekNopol(self, nopol):
         try:
             cek = request.env['fleet.vehicle'].sudo().search([('license_plate', '=', nopol)])
-            # print(cekNopol[0].driver_id.name)
+            print(cek[0].log_services.cost_ids)
             if len(cek) == 0:
                 data = [{
                     "data": "Nopol Belum Terdaftar"
@@ -86,11 +97,38 @@ class RegisterAPIBentar(http.Controller):
                     "telp_pemilik": d.driver_id.mobile,
                     "email_pemilik":d.driver_id.email,
                     "sosmed": d.driver_id.website,
-                    "history": ""
+                    "history": [{
+                        "id": h.id,
+                        "tanggal": h.date,
+                        "biaya":h.amount,
+                        "km": h.odometer,
+                        "frontdesk": h.write_uid.name, 
+                        "mekanik": h.x_mekanik.name,
+                        "jasa": [{
+                            "id":c.id,
+                            "name": c.name
+                        }for c in h.cost_ids],
+                        "part": h.description
+                    }for h in d.log_services]
                 } for d in cek]
             return valid_response(status=200, data={
                 'count': len(data),
                 'results': data
                 })
+        except Exception as e:
+            print(str(e))
+
+    @http.route('/simontir/saran-part', type='http', auth='none', methods=['GET'], csrf=False, cors="*")
+    @authentication
+    def saranPart(self):
+        try:
+            part = request.env['product.product'].sudo().search([])
+            data = [{
+                "id_product": d.id,
+                "name": d.name,
+                "type_motor": d.x_type_motor.name
+            } for d in part]
+            print(data)
+            return "hahaha"
         except Exception as e:
             print(str(e))
