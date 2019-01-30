@@ -35,8 +35,7 @@ class BoardsAPIBentar(http.Controller):
     @authentication
     def getso_mekanik(self):
         so = request.env['sale.order'].sudo().search([
-            ('state','=','sale'),
-            ('invoice_status','=','no')
+            ('state','=','sent'),
         ], order="id asc")
 
         data = [{
@@ -57,3 +56,17 @@ class BoardsAPIBentar(http.Controller):
                 'count': len(data),
                 'results': data
             })
+
+    @http.route('/simontir/pick_so', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")        
+    @authentication
+    def pick_so(self):
+        try:
+            rq  =   request.jsonrequest
+            data = request.env['sale.order'].sudo().search([('name','=',rq['invoice'])]).action_confirm()
+
+        except Exception as identifier:
+            print(identifier)
+            
+        print(data)
+        print('-'*100)
+        pass
