@@ -21,7 +21,7 @@ def authentication(func):
     def wrap(self, *args, **kwargs):
         try:
             client_api    = request.httprequest.environ['HTTP_CLIENT_API']
-            client_secret = request.httprequest.environ['HTTP_CLIENT_SECRET']     
+            client_secret = request.httprequest.environ['HTTP_CLIENT_SECRET']
             
             #check authentication        
             cek = request.env['management_api.management_api'].sudo().search_count([

@@ -4,7 +4,7 @@ from flectra.http import request
 from . rest_api import authentication
 
 class RegisterAPIBentar(http.Controller):
-    @http.route('/simontir/register', type='json', auth='none', methods=['GET'], csrf=False, cors="*")
+    @http.route('/simontir/cekso', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     @authentication
     def onLoad(self):
         try:
