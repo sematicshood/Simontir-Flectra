@@ -61,12 +61,20 @@ class BoardsAPIBentar(http.Controller):
     @authentication
     def pick_so(self):
         try:
-            rq  =   request.jsonrequest
-            data = request.env['sale.order'].sudo().search([('name','=',rq['invoice'])]).action_confirm()
+            rq    =  request.jsonrequest
+            data  =  request.env['sale.order'].sudo().search([('name','=',rq['invoice'])]).action_confirm()
+            so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',rq['invoice'])], fields=['project_ids'])
+
+            tasks =  request.env['project.task'].sudo().search([('project_id', '=', so[0]['project_ids'][0])])
+
+            for task in tasks:
+                task.write({
+                    'user_id': rq['user_id']
+                })
 
         except Exception as identifier:
             print(identifier)
             
-        print(data)
+        # print(tasks)
         print('-'*100)
         pass
