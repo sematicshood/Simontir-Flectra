@@ -38,7 +38,32 @@ class BoardsAPIBentar(http.Controller):
         so = request.env['sale.order'].sudo().search([
             ('state','=','sent'), '|', ('x_is_reject', '=', True)
         ], order="id asc")
-        print(so)
+
+        data = [{
+            "no_polisi": s.x_nomer_polisi,
+            "customer": s.partner_id[0].name,
+            "tipe_kenadaraan": s.x_tipe_kendaraan,
+            "status": s.state,
+            "invoice": s.invoice_status,
+            "antrian_service": s.x_antrian_service,
+            "name": s.name,
+            "order_line": [{
+                "name": o.name,
+                "type": o.product_id[0].product_tmpl_id[0].type
+            } for o in s.order_line]
+        } for s in so]
+        
+        return valid_response(status=200, data={
+                'count': len(data),
+                'results': data
+            })
+
+    @http.route('/simontir/getso_finalcheck', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
+    @authentication
+    def getso_finalcheck(self):
+        so = request.env['sale.order'].sudo().search([
+            ('state','=','done'), ('x_is_reject', '=', False)
+        ], order="id asc")
 
         data = [{
             "no_polisi": s.x_nomer_polisi,
@@ -97,9 +122,9 @@ class BoardsAPIBentar(http.Controller):
             
         pass
 
-    @http.route('/simontir/get_task/<no_ref>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
+    @http.route('/simontir/get_final_detail/<no_ref>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     @authentication
-    def get_task(self, no_ref):
+    def get_final_detail(self, no_ref):
         try:
             sale  =  request.env['sale.order'].sudo().search_read([('name','=',no_ref)], fields=['x_nomer_polisi', 'x_waktu_mulai'])
 
@@ -119,6 +144,59 @@ class BoardsAPIBentar(http.Controller):
             print(identifier)
 
         pass
+
+    @http.route('/simontir/get_task/<no_ref>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
+    @authentication
+    def get_task (self, no_ref):
+        try:
+            sale  =  request.env['sale.order'].sudo().search_read([('name','=',no_ref)], fields=['x_nomer_polisi', 'x_waktu_mulai'])
+
+            so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',no_ref)], fields=['project_ids'])
+
+            tasks =  request.env['project.task'].sudo().search_read([('project_id', '=', so[0]['project_ids'][0])], fields=['name', 'x_status'])
+
+            return valid_response(status=200, data={
+                'count': len(tasks),
+                'results': {
+                    'waktu_mulai': sale[0]['x_waktu_mulai'],
+                    'nopol': sale[0]['x_nomer_polisi'],
+                    'tasks': tasks
+                }
+            })
+        except Exception as identifier:
+            print(identifier)
+
+        pass
+
+    @http.route('/simontir/accept', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")        
+    @authentication
+    def accept(self):
+        try:
+            rq    =  request.jsonrequest
+            task  =  request.env['project.task'].sudo().search([('id','=',rq['id'])])
+
+            task.write({
+                "status": "accept"
+            })
+
+            hr    =  request.env['hr.employee'].sudo().search([('user_id','=',rq['user_id'])])
+
+            time  =  request.env['account.analytic.line'].sudo().create({
+                "name": task[0].name.split(':')[1],
+                "unit_amount": 1,
+                "user_id": rq['user_id'],
+                "partner_id": rq['user_id'],
+                "task_id": rq['id'],
+                "employee_id": hr[0].id,
+                "account_id": task.project_id[0].analytic_account_id[0].id
+            })
+
+            return valid_response(status=200, data={
+                'data': time
+            })
+
+        except Exception as identifier:
+            print(identifier)
 
     @http.route('/simontir/lock_so', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")        
     @authentication

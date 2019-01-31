@@ -11,3 +11,4 @@ class roles_users(models.Model):
     x_antrian_service   =   fields.Char()
     x_waktu_mulai       =   fields.Datetime()
     x_is_reject         =   fields.Boolean(default=False)
+    x_is_wash           =   fields.Boolean(default=False)
