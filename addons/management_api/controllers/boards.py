@@ -89,7 +89,9 @@ class BoardsAPIBentar(http.Controller):
     def pick_so(self):
         try:
             rq    =  request.jsonrequest
-            data  =  request.env['sale.order'].sudo().search([('name','=',rq['invoice'])]).action_confirm()
+            data  =  request.env['sale.order'].sudo().search([('name','=',rq['invoice'])])
+            
+            data.action_confirm()
             
             so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',rq['invoice'])], fields=['project_ids'])
 
@@ -98,6 +100,20 @@ class BoardsAPIBentar(http.Controller):
             })
 
             tasks =  request.env['project.task'].sudo().search([('project_id', '=', so[0]['project_ids'][0])])
+
+            for order in data[0]['order_line']:
+                print(order.product_id[0].product_tmpl_id[0].type)
+                if order.product_id[0].product_tmpl_id[0].type != 'service':
+                    request.env['project.task'].sudo().create({
+                        'name': rq['invoice'] + ' sparepart:' + 'Ganti ' + order.product_id[0].product_tmpl_id[0].name,
+                        'user_id': rq['user_id'],
+                        'company_id': tasks[0].company_id[0].id,
+                        'email_from': tasks[0].email_from,
+                        'priority': 'l',
+                        'planned_hours': 1,
+                        'project_id': so[0]['project_ids'][0]
+                    })
+
 
             for task in tasks:
                 task.write({
@@ -130,7 +146,7 @@ class BoardsAPIBentar(http.Controller):
 
             so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',no_ref)], fields=['project_ids'])
 
-            tasks =  request.env['project.task'].sudo().search_read([('project_id', '=', so[0]['project_ids'][0])], fields=['name'])
+            tasks =  request.env['project.task'].sudo().search_read([('project_id', '=', so[0]['project_ids'][0])], fields=['name', 'x_status'])
 
             return valid_response(status=200, data={
                 'count': len(tasks),
@@ -176,24 +192,51 @@ class BoardsAPIBentar(http.Controller):
             task  =  request.env['project.task'].sudo().search([('id','=',rq['id'])])
 
             task.write({
-                "status": "accept"
+                "x_status": "accept"
             })
 
             hr    =  request.env['hr.employee'].sudo().search([('user_id','=',rq['user_id'])])
 
-            time  =  request.env['account.analytic.line'].sudo().create({
-                "name": task[0].name.split(':')[1],
-                "unit_amount": 1,
-                "user_id": rq['user_id'],
-                "partner_id": rq['user_id'],
-                "task_id": rq['id'],
-                "employee_id": hr[0].id,
-                "account_id": task.project_id[0].analytic_account_id[0].id
+            cek   =  request.env['account.analytic.line'].sudo().search([
+                ('name','=',task[0].name.split(':')[1]),
+                ('task_id','=',rq['id'])
+            ])
+
+            if len(cek) == 0:
+                request.env['account.analytic.line'].sudo().create({
+                    "name": task[0].name.split(':')[1],
+                    "unit_amount": 1,
+                    "user_id": rq['user_id'],
+                    "partner_id": rq['user_id'],
+                    "task_id": rq['id'],
+                    "employee_id": hr[0].id,
+                    "account_id": task.project_id[0].analytic_account_id[0].id
+                })
+
+        except Exception as identifier:
+            print(identifier)
+
+    @http.route('/simontir/reject', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")        
+    @authentication
+    def reject(self):
+        try:
+            rq    =  request.jsonrequest
+            task  =  request.env['project.task'].sudo().search([('id','=',rq['id'])])
+
+            task.write({
+                "x_status": "reject"
             })
 
-            return valid_response(status=200, data={
-                'data': time
-            })
+            hr    =  request.env['hr.employee'].sudo().search([('user_id','=',rq['user_id'])])
+
+            cek   =  request.env['account.analytic.line'].sudo().search([
+                ('name','=',task[0].name.split(':')[1]),
+                ('task_id','=',rq['id'])
+            ])
+
+            if len(cek) > 0:
+                for c in cek:
+                    c.unlink()
 
         except Exception as identifier:
             print(identifier)
