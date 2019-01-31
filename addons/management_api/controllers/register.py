@@ -54,6 +54,55 @@ class RegisterAPIBentar(http.Controller):
     def createRegister(self):
         print(request.jsonrequest)
         print('-'*100)
+        
+        createPemilik = request.env['res.partner'].sudo().create({
+            "name":'',
+            "mobile":'',
+            "email":'',
+            "website":''
+        })
+
+        createPembawa = request.env['res.partner'].sudo().create({
+            "name":'',
+            "street":'',
+            "type":"other"
+        })
+
+        createDataMotor = request.env['fleet.vehicle'].sudo().create({
+            "license_plate":'',
+            "vin_sn":'',
+            "location":'',
+            "model_id":'',
+            "model_year":'',
+            "driver_id": createPemilik.id
+        })
+
+        createSaleOrder = request.env['sale.order'].sudo().search([('id', '=', '')])
+        createSaleOrder.sudo().write({
+            "date_order":''
+        })
+
+        #dalam perulangan
+        createKeluhan = request.env['temporary.keluhan'].sudo().create({
+            "x_ref_so":createSaleOrder.id,
+            "x_keluhan":''
+        })
+<<<<<<< HEAD
+=======
+
+        createKM = request.env['fleet.vehicle.odometer'].sudo().create({
+            "value":'',
+            "vehicle_id": createDataMotor.id
+        })
+        
+        createSOLine = request.env['sale.order.line'].sudo().create({
+            "order_id": createSaleOrder.id,
+            "product_id":'',
+            "product_uom":'',
+            "price_unit":'',
+            'price_subtotal':''
+        })
+>>>>>>> master
         pass
 
     @http.route('/simontir/ceknopol', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
@@ -88,10 +137,10 @@ class RegisterAPIBentar(http.Controller):
     #     ]
     # }
     @authentication
-    def cekNopol(self, nopol):
+    def cekNopol(self, *args, **kwargs):
         try:
-            cek = request.env['fleet.vehicle'].sudo().search([('license_plate', '=', nopol)])
-            print(cek[0].log_services.cost_ids)
+            cek = request.env['fleet.vehicle'].sudo().search([('license_plate', '=', request.params.get('nopol'))])
+            # print(cek[0].log_services.cost_ids)
             if len(cek) == 0:
                 data = [{
                     "data": "Nopol Belum Terdaftar"
@@ -153,9 +202,9 @@ class RegisterAPIBentar(http.Controller):
         except Exception as e:
             print(str(e))
 
-    @http.route('/simontir/save', type='http', auth='none', methods=['POST'], csrf=False, cors="*")
-    @authentication
-    def saveRegister(self, aaa):
-        # a = request.httprequest.POST['aaa']
-        print(aaa)
-        return "AAAA"
+    # @http.route('/simontir/save', type='http', auth='none', methods=['POST'], csrf=False, cors="*")
+    # @authentication
+    # def saveRegister(self, aaa):
+    #     # a = request.httprequest.POST['aaa']
+    #     print(aaa)
+    #     return "AAAA"

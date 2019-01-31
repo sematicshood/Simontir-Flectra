@@ -5,3 +5,4 @@ from . import roles
 from . import sale
 from . import fleet
 from . import product
+from . import temporaryKeluhan
