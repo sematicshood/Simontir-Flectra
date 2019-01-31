@@ -33,7 +33,14 @@ class RegisterAPIBentar(http.Controller):
                 "tipe_motor":[{
                     "id":d.id,
                     "name": d.display_name
-                }for d in request.env['fleet.vehicle.model'].sudo().search([])]
+                }for d in request.env['fleet.vehicle.model'].sudo().search([])],
+                "product": [{
+                    "id":p.id,
+                    "name": p.name,
+                    "product_type": p.type,
+                    "harga": p.list_price,
+                    "stok": p.qty_available
+                }for p in request.env['product.product'].sudo().search([])]
             }for data in cek]
 
             return valid_response(status=200, data={
@@ -55,54 +62,51 @@ class RegisterAPIBentar(http.Controller):
         print(request.jsonrequest)
         print('-'*100)
         
-        createPemilik = request.env['res.partner'].sudo().create({
-            "name":'',
-            "mobile":'',
-            "email":'',
-            "website":''
-        })
+        # createPemilik = request.env['res.partner'].sudo().create({
+        #     "name":'',
+        #     "mobile":'',
+        #     "email":'',
+        #     "website":''
+        # })
 
-        createPembawa = request.env['res.partner'].sudo().create({
-            "name":'',
-            "street":'',
-            "type":"other"
-        })
+        # createPembawa = request.env['res.partner'].sudo().create({
+        #     "name":'',
+        #     "street":'',
+        #     "type":"other"
+        # })
 
-        createDataMotor = request.env['fleet.vehicle'].sudo().create({
-            "license_plate":'',
-            "vin_sn":'',
-            "location":'',
-            "model_id":'',
-            "model_year":'',
-            "driver_id": createPemilik.id
-        })
+        # createDataMotor = request.env['fleet.vehicle'].sudo().create({
+        #     "license_plate":'',
+        #     "vin_sn":'',
+        #     "location":'',
+        #     "model_id":'',
+        #     "model_year":'',
+        #     "driver_id": createPemilik.id
+        # })
 
-        createSaleOrder = request.env['sale.order'].sudo().search([('id', '=', '')])
-        createSaleOrder.sudo().write({
-            "date_order":''
-        })
+        # createSaleOrder = request.env['sale.order'].sudo().search([('id', '=', '')])
+        # createSaleOrder.sudo().write({
+        #     "date_order":''
+        # })
 
-        #dalam perulangan
-        createKeluhan = request.env['temporary.keluhan'].sudo().create({
-            "x_ref_so":createSaleOrder.id,
-            "x_keluhan":''
-        })
-<<<<<<< HEAD
-=======
+        # #dalam perulangan
+        # createKeluhan = request.env['temporary.keluhan'].sudo().create({
+        #     "x_ref_so":createSaleOrder.id,
+        #     "x_keluhan":''
+        # })
 
-        createKM = request.env['fleet.vehicle.odometer'].sudo().create({
-            "value":'',
-            "vehicle_id": createDataMotor.id
-        })
+        # createKM = request.env['fleet.vehicle.odometer'].sudo().create({
+        #     "value":'',
+        #     "vehicle_id": createDataMotor.id
+        # })
         
-        createSOLine = request.env['sale.order.line'].sudo().create({
-            "order_id": createSaleOrder.id,
-            "product_id":'',
-            "product_uom":'',
-            "price_unit":'',
-            'price_subtotal':''
-        })
->>>>>>> master
+        # createSOLine = request.env['sale.order.line'].sudo().create({
+        #     "order_id": createSaleOrder.id,
+        #     "product_id":'',
+        #     "product_uom":'',
+        #     "price_unit":'',
+        #     'price_subtotal':''
+        # })
         pass
 
     @http.route('/simontir/ceknopol', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
