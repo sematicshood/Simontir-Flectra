@@ -72,6 +72,9 @@ class BoardsAPIBentar(http.Controller):
                     'user_id': rq['user_id']
                 })
 
+            print(tasks[0].task_seq)
+            print('-'*100)
+
         except Exception as identifier:
             print(identifier)
             
