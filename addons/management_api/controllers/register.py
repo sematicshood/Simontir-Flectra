@@ -87,8 +87,6 @@ class RegisterAPIBentar(http.Controller):
             "x_ref_so":createSaleOrder.id,
             "x_keluhan":''
         })
-<<<<<<< HEAD
-=======
 
         createKM = request.env['fleet.vehicle.odometer'].sudo().create({
             "value":'',
@@ -102,7 +100,6 @@ class RegisterAPIBentar(http.Controller):
             "price_unit":'',
             'price_subtotal':''
         })
->>>>>>> master
         pass
 
     @http.route('/simontir/ceknopol', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
