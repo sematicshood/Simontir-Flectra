@@ -101,7 +101,8 @@ class RegisterAPIBentar(http.Controller):
                 "x_is_wash": True if request.jsonrequest['cuci'] == "true" else False,
                 "x_nomer_polisi": request.jsonrequest['no_polisi'],
                 "x_tipe_kendaraan": request.jsonrequest['type']['name'],
-                "date_order":tgll
+                "date_order":tgll,
+                "gross_amount": request.jsonrequest['total']
             })
 
             createKM = request.env['fleet.vehicle.odometer'].sudo().create({
@@ -316,9 +317,55 @@ class RegisterAPIBentar(http.Controller):
         except Exception as e:
             print(str(e))
 
-    # @http.route('/simontir/save', type='http', auth='none', methods=['POST'], csrf=False, cors="*")
-    # @authentication
-    # def saveRegister(self, aaa):
-    #     # a = request.httprequest.POST['aaa']
-    #     print(aaa)
-    #     return "AAAA"
+    @http.route('/simontir/print-so/<so>', type='http', auth='none', methods=['GET'], csrf=False, cors="*")
+    @authentication
+    def printSO(self, so):
+        try:
+            data = [{
+                "id":d.id,
+                "no_urut": d.name,
+                "antrian_service": d.x_antrian_service,
+                "tgl_service": d.date_order,
+                "estimasi_waktu": d.x_estimasi_waktu,
+                "is_wash": d.x_is_wash,
+                "partner_id": d.partner_id.id,
+                "nama_pemilik":d.partner_id.name,
+                "no_telp": d.partner_id.mobile,
+                "email": d.partner_id.email,
+                "sosmed": d.partner_id.website,
+                "pembawa":[{
+                    "id":p.id,
+                    "nama":p.name,
+                    "alamat": p.street,
+                    "type": p.type
+                }for p in request.env['res.partner'].sudo().search([('parent_id', '=', d.partner_id.id)], order="id desc", limit=1)],
+                "motor": [{
+                    "id":m.id,
+                    "no_polisi": m.license_plate,
+                    "no_mesin":m.vin_sn,
+                    "no_rangka":m.location,
+                    "type":m.model_id.name,
+                    "tahun": m.model_year,
+                    "km": request.env['fleet.vehicle.odometer'].sudo().search([('vehicle_id', '=', m.id)], order="id desc", limit=1).value 
+                }for m in request.env['fleet.vehicle'].sudo().search([('driver_id', '=', d.partner_id.id)])],
+                "keluhan_konsumen": [{
+                    "nama": k.x_keluhan
+                }for k in request.env['temporary.keluhan'].sudo().search([('x_ref_so', '=', d.id)])],
+                "analisa_service":request.env['temporary.analisa'].sudo().search([('x_ref_so', '=', d.id)]).x_analisa,
+                "saran_mekanik":request.env['temporary.analisa'].sudo().search([('x_ref_so', '=', d.id)]).x_saran,
+                "sale_order_line":[{
+                    "id":s.id,
+                    "nama":s.product_id.name,
+                    "type":s.product_id.type,
+                    "qty":s.product_uom_qty,
+                    "harga":s.price_unit,
+                    "subtotal":s.price_subtotal
+                }for s in request.env['sale.order.line'].sudo().search([('order_id', '=', d.id)])],
+                "total": d.gross_amount
+            }for d in request.env['sale.order'].sudo().search([('name', '=', so)])]
+            return valid_response(status=200, data={
+                'count': len(data),
+                'results': data
+                })
+        except Exception as e:
+            print(str(e))
