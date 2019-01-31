@@ -42,3 +42,4 @@ setup/win32/static/postgresql*.exe
 #flectra conf
 flectra.conf
 flectra-bin
+flectra.conf
