@@ -87,6 +87,22 @@ class RegisterAPIBentar(http.Controller):
             "x_ref_so":createSaleOrder.id,
             "x_keluhan":''
         })
+<<<<<<< HEAD
+=======
+
+        createKM = request.env['fleet.vehicle.odometer'].sudo().create({
+            "value":'',
+            "vehicle_id": createDataMotor.id
+        })
+        
+        createSOLine = request.env['sale.order.line'].sudo().create({
+            "order_id": createSaleOrder.id,
+            "product_id":'',
+            "product_uom":'',
+            "price_unit":'',
+            'price_subtotal':''
+        })
+>>>>>>> master
         pass
 
     @http.route('/simontir/ceknopol', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
@@ -121,10 +137,10 @@ class RegisterAPIBentar(http.Controller):
     #     ]
     # }
     @authentication
-    def cekNopol(self, nopol):
+    def cekNopol(self, *args, **kwargs):
         try:
-            cek = request.env['fleet.vehicle'].sudo().search([('license_plate', '=', nopol)])
-            print(cek[0].log_services.cost_ids)
+            cek = request.env['fleet.vehicle'].sudo().search([('license_plate', '=', request.params.get('nopol'))])
+            # print(cek[0].log_services.cost_ids)
             if len(cek) == 0:
                 data = [{
                     "data": "Nopol Belum Terdaftar"
