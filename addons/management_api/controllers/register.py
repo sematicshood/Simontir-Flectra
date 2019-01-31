@@ -237,9 +237,3 @@ class RegisterAPIBentar(http.Controller):
         except Exception as e:
             print(str(e))
 
-    # @http.route('/simontir/save', type='http', auth='none', methods=['POST'], csrf=False, cors="*")
-    # @authentication
-    # def saveRegister(self, aaa):
-    #     # a = request.httprequest.POST['aaa']
-    #     print(aaa)
-    #     return "AAAA"

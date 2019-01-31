@@ -9,3 +9,4 @@ class roles_users(models.Model):
     x_nomer_polisi      =   fields.Char()
     x_tipe_kendaraan    =   fields.Char()
     x_antrian_service   =   fields.Char()
+    x_waktu_mulai       =   fields.Datetime()
