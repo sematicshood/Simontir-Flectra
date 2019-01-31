@@ -62,6 +62,7 @@ class RegisterAPIBentar(http.Controller):
     def createRegister(self):
         tgl = ((request.jsonrequest['tgl_service']).split("T")[0]+" 00:00:00")
         tgll = datetime.datetime.strptime(tgl, '%Y-%m-%d %H:%M:%S')
+        print(request.jsonrequest)
         print('-'*100)
         
         #cek no polisi
@@ -87,7 +88,7 @@ class RegisterAPIBentar(http.Controller):
                 "license_plate":request.jsonrequest['no_polisi'],
                 "vin_sn":request.jsonrequest['no_mesin'],
                 "location":request.jsonrequest['no_rangka'],
-                "model_id":request.jsonrequest['type_id'],
+                "model_id":request.jsonrequest['type']['id'],
                 "model_year":request.jsonrequest['tahun'],
                 "driver_id": createPemilik.id
             })
@@ -97,6 +98,9 @@ class RegisterAPIBentar(http.Controller):
                 "state":"sent",
                 "partner_id": createPemilik.id,
                 "x_antrian_service": request.jsonrequest['jenis_service'],
+                "x_is_wash": True if request.jsonrequest['cuci'] == "true" else False,
+                "x_nomer_polisi": request.jsonrequest['no_polisi'],
+                "x_tipe_kendaraan": request.jsonrequest['type']['name'],
                 "date_order":tgll
             })
 
@@ -111,6 +115,12 @@ class RegisterAPIBentar(http.Controller):
                     "x_ref_so":createSaleOrder.id,
                     "x_keluhan": data['nama']
                 })
+
+            createAnalisa = request.env['temporary.analisa'].sudo().create({
+                "x_ref_so":createSaleOrder.id,
+                "x_analisa": request.jsonrequest['analisa_service'],
+                "x_saran": request.jsonrequest['saran_mekanik']
+            })
             
             for data in request.jsonrequest['spareparts_selected']:
                 createSOLine = request.env['sale.order.line'].sudo().create({
@@ -132,7 +142,7 @@ class RegisterAPIBentar(http.Controller):
 
             print(request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).list_price)
 
-            if request.jsonrequest['cuci'] == "True":
+            if request.jsonrequest['cuci'] == "true":
                 createSOLine = request.env['sale.order.line'].sudo().create({
                     "order_id": createSaleOrder.id,
                     "product_id":request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).id,
@@ -152,9 +162,12 @@ class RegisterAPIBentar(http.Controller):
 
             createSaleOrder = request.env['sale.order'].sudo().search([('name', '=', request.jsonrequest['no_urut'])])
             createSaleOrder.sudo().write({
-                "state": "sent",
+                "state":"sent",
                 "partner_id": cekNopol.driver_id.id,
                 "x_antrian_service": request.jsonrequest['jenis_service'],
+                "x_is_wash": True if request.jsonrequest['cuci'] == "true" else False,
+                "x_nomer_polisi": request.jsonrequest['no_polisi'],
+                "x_tipe_kendaraan": request.jsonrequest['type']['name'],
                 "date_order":tgll
             })
 
@@ -170,6 +183,12 @@ class RegisterAPIBentar(http.Controller):
                     "x_keluhan": data['nama']
                 })
             
+            createAnalisa = request.env['temporary.analisa'].sudo().create({
+                "x_ref_so":createSaleOrder.id,
+                "x_analisa": request.jsonrequest['analisa_service'],
+                "x_saran": request.jsonrequest['saran_mekanik']
+            })
+
             for data in request.jsonrequest['spareparts_selected']:
                 createSOLine = request.env['sale.order.line'].sudo().create({
                     "order_id": createSaleOrder.id,
@@ -190,7 +209,7 @@ class RegisterAPIBentar(http.Controller):
 
             print(request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).list_price)
 
-            if request.jsonrequest['cuci'] == "True":
+            if request.jsonrequest['cuci'] == "true":
                 createSOLine = request.env['sale.order.line'].sudo().create({
                     "order_id": createSaleOrder.id,
                     "product_id":request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).id,
