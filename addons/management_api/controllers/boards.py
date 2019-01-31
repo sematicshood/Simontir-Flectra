@@ -36,7 +36,7 @@ class BoardsAPIBentar(http.Controller):
     @authentication
     def getso_mekanik(self):
         so = request.env['sale.order'].sudo().search([
-            ('state','=','sent'),
+            ('state','=','sent'), '|', ('x_is_reject', '=', True)
         ], order="id asc")
         print(so)
 
@@ -99,7 +99,7 @@ class BoardsAPIBentar(http.Controller):
 
     @http.route('/simontir/get_task/<no_ref>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     @authentication
-    def getso(self, no_ref):
+    def get_task(self, no_ref):
         try:
             sale  =  request.env['sale.order'].sudo().search_read([('name','=',no_ref)], fields=['x_nomer_polisi', 'x_waktu_mulai'])
 
