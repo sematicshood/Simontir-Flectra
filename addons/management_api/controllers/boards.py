@@ -41,7 +41,7 @@ class BoardsAPIBentar(http.Controller):
     def getso_mekanik(self):
         try:
             so = request.env['sale.order'].sudo().search([
-                ('state','=','sent'), '|', ('x_is_reject', '=', True)
+                ('state','=','sent')
             ], order="id asc")
 
             data = [{
