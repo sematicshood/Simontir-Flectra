@@ -62,12 +62,13 @@ class RegisterAPIBentar(http.Controller):
     def createRegister(self):
         tgl = ((request.jsonrequest['tgl_service']).split("T")[0]+" 00:00:00")
         tgll = datetime.datetime.strptime(tgl, '%Y-%m-%d %H:%M:%S')
+        print(request.jsonrequest)
         print('-'*100)
         
         #cek no polisi
         cekNopol = request.env['fleet.vehicle'].sudo().search([("license_plate", "=", request.jsonrequest['no_polisi'])])
         if len(cekNopol) == 0:
-            print(cekNopol)
+            print("kosong")
 
             createPemilik = request.env['res.partner'].sudo().create({
                 "name":request.jsonrequest['nama_pemilik'],
@@ -87,14 +88,21 @@ class RegisterAPIBentar(http.Controller):
                 "license_plate":request.jsonrequest['no_polisi'],
                 "vin_sn":request.jsonrequest['no_mesin'],
                 "location":request.jsonrequest['no_rangka'],
-                "model_id":request.jsonrequest['type_id'],
+                "model_id":request.jsonrequest['type']['id'],
                 "model_year":request.jsonrequest['tahun'],
                 "driver_id": createPemilik.id
             })
 
             createSaleOrder = request.env['sale.order'].sudo().search([('name', '=', request.jsonrequest['no_urut'])])
             createSaleOrder.sudo().write({
-                "date_order":tgll
+                "state":"sent",
+                "partner_id": createPemilik.id,
+                "x_antrian_service": request.jsonrequest['jenis_service'],
+                "x_is_wash": True if request.jsonrequest['cuci'] == "true" else False,
+                "x_nomer_polisi": request.jsonrequest['no_polisi'],
+                "x_tipe_kendaraan": request.jsonrequest['type']['name'],
+                "date_order":tgll,
+                "gross_amount": request.jsonrequest['total']
             })
 
             createKM = request.env['fleet.vehicle.odometer'].sudo().create({
@@ -102,42 +110,114 @@ class RegisterAPIBentar(http.Controller):
                 "vehicle_id": createDataMotor.id
             })
 
-            #dalam perulangan
-            # for data in request.jsonrequest['keluhan_konsumen']:
-            #     createKeluhan = request.env['temporary.keluhan'].sudo().create({
-            #         "x_ref_so":createSaleOrder.id,
-            #         "x_keluhan": data['nama']
-            #     })
+            # dalam perulangan
+            for data in request.jsonrequest['keluhan_konsumen']:
+                createKeluhan = request.env['temporary.keluhan'].sudo().create({
+                    "x_ref_so":createSaleOrder.id,
+                    "x_keluhan": data['nama']
+                })
+
+            createAnalisa = request.env['temporary.analisa'].sudo().create({
+                "x_ref_so":createSaleOrder.id,
+                "x_analisa": request.jsonrequest['analisa_service'],
+                "x_saran": request.jsonrequest['saran_mekanik']
+            })
             
-            # for data in request.jsonrequest['multiple_sparepart']:
-            #     createSOLine = request.env['sale.order.line'].sudo().create({
-            #         "order_id": createSaleOrder.id,
-            #         "product_id":data['id'],
-            #         "product_uom_qty":1,
-            #         "price_unit":data['harga'],
-            #         'price_subtotal':data['harga']
-            #     })
+            for data in request.jsonrequest['spareparts_selected']:
+                createSOLine = request.env['sale.order.line'].sudo().create({
+                    "order_id": createSaleOrder.id,
+                    "product_id":data['id'],
+                    "product_uom_qty":data['qty'],
+                    "price_unit":data['harga'],
+                    'price_subtotal':data['harga']
+                })
 
-            # for data in request.jsonrequest['multiple_service']:
-            #     createSOLine = request.env['sale.order.line'].sudo().create({
-            #         "order_id": createSaleOrder.id,
-            #         "product_id":data['id'],
-            #         "product_uom_qty":1,
-            #         "price_unit":data['harga'],
-            #         'price_subtotal':data['harga']
-            #     })
+            for data in request.jsonrequest['services_selected']:
+                createSOLine = request.env['sale.order.line'].sudo().create({
+                    "order_id": createSaleOrder.id,
+                    "product_id":data['id'],
+                    "product_uom_qty":1,
+                    "price_unit":data['harga'],
+                    'price_subtotal':data['harga']
+                })
 
-            # if request.jsonrequest['cuci'] == "True":
-            #     createSOLine = request.env['sale.order.line'].sudo().create({
-            #         "order_id": createSaleOrder.id,
-            #         "product_id":request.env['sale.order.line'].sudo().search([('name', '=', 'Cuci Motor')]).id,
-            #         "product_uom_qty":1,
-            #         "price_unit":data['harga'],
-            #         'price_subtotal':data['harga']
-            #     })
+            print(request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).list_price)
+
+            if request.jsonrequest['cuci'] == "true":
+                createSOLine = request.env['sale.order.line'].sudo().create({
+                    "order_id": createSaleOrder.id,
+                    "product_id":request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).id,
+                    "product_uom_qty":1,
+                    "price_unit":request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).list_price,
+                    'price_subtotal':request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).list_price
+                })
             
         else:
-            print(cekNopol)
+            print("ada")
+            createPembawa = request.env['res.partner'].sudo().create({
+                "parent_id": cekNopol.driver_id.id,
+                "name":request.jsonrequest['nama_pembawa'],
+                "street":request.jsonrequest['alamat'],
+                "type":"other"
+            })
+
+            createSaleOrder = request.env['sale.order'].sudo().search([('name', '=', request.jsonrequest['no_urut'])])
+            createSaleOrder.sudo().write({
+                "state":"sent",
+                "partner_id": cekNopol.driver_id.id,
+                "x_antrian_service": request.jsonrequest['jenis_service'],
+                "x_is_wash": True if request.jsonrequest['cuci'] == "true" else False,
+                "x_nomer_polisi": request.jsonrequest['no_polisi'],
+                "x_tipe_kendaraan": request.jsonrequest['type']['name'],
+                "date_order":tgll
+            })
+
+            createKM = request.env['fleet.vehicle.odometer'].sudo().create({
+                "value":request.jsonrequest['km'],
+                "vehicle_id": cekNopol.id
+            })
+
+            # dalam perulangan
+            for data in request.jsonrequest['keluhan_konsumen']:
+                createKeluhan = request.env['temporary.keluhan'].sudo().create({
+                    "x_ref_so":createSaleOrder.id,
+                    "x_keluhan": data['nama']
+                })
+            
+            createAnalisa = request.env['temporary.analisa'].sudo().create({
+                "x_ref_so":createSaleOrder.id,
+                "x_analisa": request.jsonrequest['analisa_service'],
+                "x_saran": request.jsonrequest['saran_mekanik']
+            })
+
+            for data in request.jsonrequest['spareparts_selected']:
+                createSOLine = request.env['sale.order.line'].sudo().create({
+                    "order_id": createSaleOrder.id,
+                    "product_id":data['id'],
+                    "product_uom_qty":data['qty'],
+                    "price_unit":data['harga'],
+                    'price_subtotal':data['harga']
+                })
+
+            for data in request.jsonrequest['services_selected']:
+                createSOLine = request.env['sale.order.line'].sudo().create({
+                    "order_id": createSaleOrder.id,
+                    "product_id":data['id'],
+                    "product_uom_qty":1,
+                    "price_unit":data['harga'],
+                    'price_subtotal':data['harga']
+                })
+
+            print(request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).list_price)
+
+            if request.jsonrequest['cuci'] == "true":
+                createSOLine = request.env['sale.order.line'].sudo().create({
+                    "order_id": createSaleOrder.id,
+                    "product_id":request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).id,
+                    "product_uom_qty":1,
+                    "price_unit":request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).list_price,
+                    'price_subtotal':request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).list_price
+                })
         pass
 
     @http.route('/simontir/ceknopol', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
@@ -237,9 +317,55 @@ class RegisterAPIBentar(http.Controller):
         except Exception as e:
             print(str(e))
 
-    # @http.route('/simontir/save', type='http', auth='none', methods=['POST'], csrf=False, cors="*")
-    # @authentication
-    # def saveRegister(self, aaa):
-    #     # a = request.httprequest.POST['aaa']
-    #     print(aaa)
-    #     return "AAAA"
+    @http.route('/simontir/print-so/<so>', type='http', auth='none', methods=['GET'], csrf=False, cors="*")
+    @authentication
+    def printSO(self, so):
+        try:
+            data = [{
+                "id":d.id,
+                "no_urut": d.name,
+                "antrian_service": d.x_antrian_service,
+                "tgl_service": d.date_order,
+                "estimasi_waktu": d.x_estimasi_waktu,
+                "is_wash": d.x_is_wash,
+                "partner_id": d.partner_id.id,
+                "nama_pemilik":d.partner_id.name,
+                "no_telp": d.partner_id.mobile,
+                "email": d.partner_id.email,
+                "sosmed": d.partner_id.website,
+                "pembawa":[{
+                    "id":p.id,
+                    "nama":p.name,
+                    "alamat": p.street,
+                    "type": p.type
+                }for p in request.env['res.partner'].sudo().search([('parent_id', '=', d.partner_id.id)], order="id desc", limit=1)],
+                "motor": [{
+                    "id":m.id,
+                    "no_polisi": m.license_plate,
+                    "no_mesin":m.vin_sn,
+                    "no_rangka":m.location,
+                    "type":m.model_id.name,
+                    "tahun": m.model_year,
+                    "km": request.env['fleet.vehicle.odometer'].sudo().search([('vehicle_id', '=', m.id)], order="id desc", limit=1).value 
+                }for m in request.env['fleet.vehicle'].sudo().search([('driver_id', '=', d.partner_id.id)])],
+                "keluhan_konsumen": [{
+                    "nama": k.x_keluhan
+                }for k in request.env['temporary.keluhan'].sudo().search([('x_ref_so', '=', d.id)])],
+                "analisa_service":request.env['temporary.analisa'].sudo().search([('x_ref_so', '=', d.id)]).x_analisa,
+                "saran_mekanik":request.env['temporary.analisa'].sudo().search([('x_ref_so', '=', d.id)]).x_saran,
+                "sale_order_line":[{
+                    "id":s.id,
+                    "nama":s.product_id.name,
+                    "type":s.product_id.type,
+                    "qty":s.product_uom_qty,
+                    "harga":s.price_unit,
+                    "subtotal":s.price_subtotal
+                }for s in request.env['sale.order.line'].sudo().search([('order_id', '=', d.id)])],
+                "total": d.gross_amount
+            }for d in request.env['sale.order'].sudo().search([('name', '=', so)])]
+            return valid_response(status=200, data={
+                'count': len(data),
+                'results': data
+                })
+        except Exception as e:
+            print(str(e))
