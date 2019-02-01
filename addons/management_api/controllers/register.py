@@ -60,46 +60,46 @@ class RegisterAPIBentar(http.Controller):
     @http.route('/simontir/createRegister', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")
     @authentication
     def createRegister(self):
-        tgl = ((request.jsonrequest['tgl_service']).split("T")[0]+" 00:00:00")
+        tgl = ((request.jsonrequest['tglService']).split("T")[0]+" 00:00:00")
         tgll = datetime.datetime.strptime(tgl, '%Y-%m-%d %H:%M:%S')
         print(request.jsonrequest)
         print('-'*100)
         
         #cek no polisi
-        cekNopol = request.env['fleet.vehicle'].sudo().search([("license_plate", "=", request.jsonrequest['no_polisi'])])
+        cekNopol = request.env['fleet.vehicle'].sudo().search([("license_plate", "=", request.jsonrequest['noPolisi'])])
         if len(cekNopol) == 0:
             print("kosong")
 
             createPemilik = request.env['res.partner'].sudo().create({
-                "name":request.jsonrequest['nama_pemilik'],
-                "mobile":request.jsonrequest['no_telp'],
+                "name":request.jsonrequest['namaPemilik'],
+                "mobile":request.jsonrequest['noTelp'],
                 "email":request.jsonrequest['email'],
                 "website":request.jsonrequest['sosmed']
             })
 
             createPembawa = request.env['res.partner'].sudo().create({
                 "parent_id": createPemilik.id,
-                "name":request.jsonrequest['nama_pembawa'],
+                "name":request.jsonrequest['namaPembawa'],
                 "street":request.jsonrequest['alamat'],
                 "type":"other"
             })
 
             createDataMotor = request.env['fleet.vehicle'].sudo().create({
-                "license_plate":request.jsonrequest['no_polisi'],
-                "vin_sn":request.jsonrequest['no_mesin'],
-                "location":request.jsonrequest['no_rangka'],
+                "license_plate":request.jsonrequest['noPolisi'],
+                "vin_sn":request.jsonrequest['noMesin'],
+                "location":request.jsonrequest['noRangka'],
                 "model_id":request.jsonrequest['type']['id'],
                 "model_year":request.jsonrequest['tahun'],
                 "driver_id": createPemilik.id
             })
 
-            createSaleOrder = request.env['sale.order'].sudo().search([('name', '=', request.jsonrequest['no_urut'])])
+            createSaleOrder = request.env['sale.order'].sudo().search([('name', '=', request.jsonrequest['noUrut'])])
             createSaleOrder.sudo().write({
                 "state":"sent",
                 "partner_id": createPemilik.id,
-                "x_antrian_service": request.jsonrequest['jenis_service'],
+                "x_antrian_service": request.jsonrequest['jenisService'],
                 "x_is_wash": True if request.jsonrequest['cuci'] == "true" else False,
-                "x_nomer_polisi": request.jsonrequest['no_polisi'],
+                "x_nomer_polisi": request.jsonrequest['noPolisi'],
                 "x_tipe_kendaraan": request.jsonrequest['type']['name'],
                 "date_order":tgll,
                 "gross_amount": request.jsonrequest['total']
@@ -111,7 +111,7 @@ class RegisterAPIBentar(http.Controller):
             })
 
             # dalam perulangan
-            for data in request.jsonrequest['keluhan_konsumen']:
+            for data in request.jsonrequest['keluhanKonsumen']:
                 createKeluhan = request.env['temporary.keluhan'].sudo().create({
                     "x_ref_so":createSaleOrder.id,
                     "x_keluhan": data['nama']
@@ -119,11 +119,11 @@ class RegisterAPIBentar(http.Controller):
 
             createAnalisa = request.env['temporary.analisa'].sudo().create({
                 "x_ref_so":createSaleOrder.id,
-                "x_analisa": request.jsonrequest['analisa_service'],
-                "x_saran": request.jsonrequest['saran_mekanik']
+                "x_analisa": request.jsonrequest['analisaService'],
+                "x_saran": request.jsonrequest['saranMekanik']
             })
             
-            for data in request.jsonrequest['spareparts_selected']:
+            for data in request.jsonrequest['sparepartsSelected']:
                 createSOLine = request.env['sale.order.line'].sudo().create({
                     "order_id": createSaleOrder.id,
                     "product_id":data['id'],
@@ -132,7 +132,7 @@ class RegisterAPIBentar(http.Controller):
                     'price_subtotal':data['harga']
                 })
 
-            for data in request.jsonrequest['services_selected']:
+            for data in request.jsonrequest['servicesSelected']:
                 createSOLine = request.env['sale.order.line'].sudo().create({
                     "order_id": createSaleOrder.id,
                     "product_id":data['id'],
@@ -156,18 +156,18 @@ class RegisterAPIBentar(http.Controller):
             print("ada")
             createPembawa = request.env['res.partner'].sudo().create({
                 "parent_id": cekNopol.driver_id.id,
-                "name":request.jsonrequest['nama_pembawa'],
+                "name":request.jsonrequest['namaPembawa'],
                 "street":request.jsonrequest['alamat'],
                 "type":"other"
             })
 
-            createSaleOrder = request.env['sale.order'].sudo().search([('name', '=', request.jsonrequest['no_urut'])])
+            createSaleOrder = request.env['sale.order'].sudo().search([('name', '=', request.jsonrequest['noUrut'])])
             createSaleOrder.sudo().write({
                 "state":"sent",
                 "partner_id": cekNopol.driver_id.id,
-                "x_antrian_service": request.jsonrequest['jenis_service'],
+                "x_antrian_service": request.jsonrequest['jenisService'],
                 "x_is_wash": True if request.jsonrequest['cuci'] == "true" else False,
-                "x_nomer_polisi": request.jsonrequest['no_polisi'],
+                "x_nomer_polisi": request.jsonrequest['noPolisi'],
                 "x_tipe_kendaraan": request.jsonrequest['type']['name'],
                 "date_order":tgll
             })
@@ -178,7 +178,7 @@ class RegisterAPIBentar(http.Controller):
             })
 
             # dalam perulangan
-            for data in request.jsonrequest['keluhan_konsumen']:
+            for data in request.jsonrequest['keluhanKonsumen']:
                 createKeluhan = request.env['temporary.keluhan'].sudo().create({
                     "x_ref_so":createSaleOrder.id,
                     "x_keluhan": data['nama']
@@ -186,11 +186,11 @@ class RegisterAPIBentar(http.Controller):
             
             createAnalisa = request.env['temporary.analisa'].sudo().create({
                 "x_ref_so":createSaleOrder.id,
-                "x_analisa": request.jsonrequest['analisa_service'],
-                "x_saran": request.jsonrequest['saran_mekanik']
+                "x_analisa": request.jsonrequest['analisaService'],
+                "x_saran": request.jsonrequest['saranMekanik']
             })
 
-            for data in request.jsonrequest['spareparts_selected']:
+            for data in request.jsonrequest['sparepartsSelected']:
                 createSOLine = request.env['sale.order.line'].sudo().create({
                     "order_id": createSaleOrder.id,
                     "product_id":data['id'],
@@ -199,7 +199,7 @@ class RegisterAPIBentar(http.Controller):
                     'price_subtotal':data['harga']
                 })
 
-            for data in request.jsonrequest['services_selected']:
+            for data in request.jsonrequest['servicesSelected']:
                 createSOLine = request.env['sale.order.line'].sudo().create({
                     "order_id": createSaleOrder.id,
                     "product_id":data['id'],
