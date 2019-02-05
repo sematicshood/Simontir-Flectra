@@ -7,7 +7,7 @@ import datetime
 
 class BoardsAPIBentar(http.Controller):
     @http.route('/simontir/getso', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
-    @authentication
+    # @authentication
     def getso(self):
         try:
             so = request.env['sale.order'].sudo().search([
@@ -37,7 +37,7 @@ class BoardsAPIBentar(http.Controller):
             print('-'*100)
 
     @http.route('/simontir/getso_mekanik', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
-    @authentication
+    # @authentication
     def getso_mekanik(self):
         try:
             so = request.env['sale.order'].sudo().search([
@@ -67,7 +67,7 @@ class BoardsAPIBentar(http.Controller):
             print('-'*100)
 
     @http.route('/simontir/getso_finalcheck', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
-    @authentication
+    # @authentication
     def getso_finalcheck(self):
         so = request.env['sale.order'].sudo().search([
             ('state','=','done'), ('x_is_reject', '=', False)
@@ -93,7 +93,7 @@ class BoardsAPIBentar(http.Controller):
             })
 
     @http.route('/simontir/pick_so', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")        
-    @authentication
+    # @authentication
     def pick_so(self):
         try:
             rq    =  request.jsonrequest
@@ -147,7 +147,7 @@ class BoardsAPIBentar(http.Controller):
         pass
 
     @http.route('/simontir/get_final_detail/<no_ref>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
-    @authentication
+    # @authentication
     def get_final_detail(self, no_ref):
         try:
             sale  =  request.env['sale.order'].sudo().search_read([('name','=',no_ref)], fields=['x_nomer_polisi', 'x_waktu_mulai'])
@@ -170,7 +170,7 @@ class BoardsAPIBentar(http.Controller):
         pass
 
     @http.route('/simontir/get_task/<no_ref>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
-    @authentication
+    # @authentication
     def get_task (self, no_ref):
         try:
             sale  =  request.env['sale.order'].sudo().search_read([('name','=',no_ref)], fields=['x_nomer_polisi', 'x_waktu_mulai'])
@@ -193,7 +193,7 @@ class BoardsAPIBentar(http.Controller):
         pass
 
     @http.route('/simontir/accept', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")        
-    @authentication
+    # @authentication
     def accept(self):
         try:
             rq    =  request.jsonrequest
@@ -225,7 +225,7 @@ class BoardsAPIBentar(http.Controller):
             print(identifier)
 
     @http.route('/simontir/reject', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")        
-    @authentication
+    # @authentication
     def reject(self):
         try:
             rq    =  request.jsonrequest
@@ -250,7 +250,7 @@ class BoardsAPIBentar(http.Controller):
             print(identifier)
 
     @http.route('/simontir/lock_so', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")        
-    @authentication
+    # @authentication
     def lock_so(self):
         try:
             rq    =  request.jsonrequest
@@ -264,7 +264,7 @@ class BoardsAPIBentar(http.Controller):
             print(identifier)
 
     @http.route('/simontir/unlock_so', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")        
-    @authentication
+    # @authentication
     def unlock_so(self):
         try:
             rq    =  request.jsonrequest

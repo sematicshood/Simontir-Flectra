@@ -55,7 +55,7 @@ def authentication(func):
 class ControllerAPIBentar(http.Controller):
     @http.route('/simontir/login', type='json', auth="none", methods=['POST', 'OPTIONS'],
         csrf=False, cors="*")
-    @authentication
+    # @authentication
     def index(self, **get):
         data = request.jsonrequest
 
