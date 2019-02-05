@@ -17,7 +17,7 @@ class RegisterAPIBentar(http.Controller):
     #     ]
     # }
     @http.route('/simontir/cekso', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
-    @authentication
+    # @authentication
     def onLoad(self):
         try:
             #cek SO dengan state quotation
@@ -58,8 +58,14 @@ class RegisterAPIBentar(http.Controller):
         return cek
 
     @http.route('/simontir/createRegister', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")
-    @authentication
+    # @authentication
     def createRegister(self):
+        # cekSo = request.env['sale.order'].sudo().search()[('name', '=', request.jsonrequest['noUrut'])]
+        # if cekSo.state == "sent":
+        #     print(cekSo.state)
+        #     print("sudah save")
+        #     pass
+
         tgl = ((request.jsonrequest['tglService']).split("T")[0]+" 00:00:00")
         tgll = datetime.datetime.strptime(tgl, '%Y-%m-%d %H:%M:%S')
         print(request.jsonrequest)
@@ -251,7 +257,7 @@ class RegisterAPIBentar(http.Controller):
     #         }
     #     ]
     # }
-    @authentication
+    # @authentication
     def cekNopol(self, *args, **kwargs):
         try:
             cek = request.env['fleet.vehicle'].sudo().search([('license_plate', '=', request.params.get('nopol'))])
@@ -294,7 +300,7 @@ class RegisterAPIBentar(http.Controller):
             print(str(e))
 
     @http.route('/simontir/saran-part', type='http', auth='none', methods=['GET'], csrf=False, cors="*")
-    @authentication
+    # @authentication
     def saranPart(self, id_type):
         try:
             print(id_type)
@@ -318,7 +324,7 @@ class RegisterAPIBentar(http.Controller):
             print(str(e))
 
     @http.route('/simontir/print-so/<so>', type='http', auth='none', methods=['GET'], csrf=False, cors="*")
-    @authentication
+    # @authentication
     def printSO(self, so):
         try:
             data = [{
