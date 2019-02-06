@@ -13,7 +13,7 @@ class BoardsAPIBentar(http.Controller):
             so = request.env['sale.order'].sudo().search([
                 ('state','!=','done'),
                 ('state','!=','cancel'),
-            ], order="id asc")
+            ], order="id desc")
 
             data = [{
                 "no_polisi": s.x_nomer_polisi,
