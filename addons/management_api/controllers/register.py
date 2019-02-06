@@ -145,7 +145,7 @@ class RegisterAPIBentar(http.Controller):
                 createSOLine = request.env['sale.order.line'].sudo().create({
                     "order_id": createSaleOrder.id,
                     "product_id":data['id'],
-                    "name": 'Cuci Motor',
+                    "name": data['name'],
                     "product_uom_qty":1,
                     "price_unit":data['harga'],
                     'price_subtotal':data['harga']
@@ -157,7 +157,7 @@ class RegisterAPIBentar(http.Controller):
                 createSOLine = request.env['sale.order.line'].sudo().create({
                     "order_id": createSaleOrder.id,
                     "product_id":request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).id,
-                    "name": data['name'],
+                    "name": 'Cuci Motor',
                     "product_uom_qty":1,
                     "price_unit":request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).list_price,
                     'price_subtotal':request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).list_price
