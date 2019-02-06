@@ -103,6 +103,8 @@ class RegisterAPIBentar(http.Controller):
             createSaleOrder.sudo().write({
                 "state":"sent",
                 "partner_id": createPemilik.id,
+                "partner_invoice_id":createPemilik.id,
+                "partner_shipping_id": createPemilik.id,
                 "x_antrian_service": request.jsonrequest['jenisService'],
                 "x_is_wash": True if request.jsonrequest['cuci'] == "true" else False,
                 "x_nomer_polisi": request.jsonrequest['noPolisi'],
@@ -174,6 +176,8 @@ class RegisterAPIBentar(http.Controller):
             createSaleOrder.sudo().write({
                 "state":"sent",
                 "partner_id": cekNopol.driver_id.id,
+                "partner_invoice_id":cekNopol.driver_id.id,
+                "partner_shipping_id": cekNopol.driver_id.id,
                 "x_antrian_service": request.jsonrequest['jenisService'],
                 "x_is_wash": True if request.jsonrequest['cuci'] == "true" else False,
                 "x_nomer_polisi": request.jsonrequest['noPolisi'],
