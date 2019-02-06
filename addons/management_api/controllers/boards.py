@@ -22,6 +22,8 @@ class BoardsAPIBentar(http.Controller):
                 "status": s.state,
                 "invoice": s.invoice_status,
                 "antrian_service": s.x_antrian_service,
+                "date": s.date_order,
+                "name": s.name,
                 "order_line": [{
                     "name": o.name,
                     "type": o.product_id[0].product_tmpl_id[0].type
