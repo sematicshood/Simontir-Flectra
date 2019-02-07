@@ -72,7 +72,7 @@ class BoardsAPIBentar(http.Controller):
     # @authentication
     def getso_finalcheck(self):
         so = request.env['sale.order'].sudo().search([
-            ('state','=','done'), ('x_is_reject', '=', False)
+            ('state','=','done'), ('x_is_reject', '=', False), ('invoice_status', '=', 'no')
         ], order="id asc")
 
         data = [{
@@ -251,12 +251,34 @@ class BoardsAPIBentar(http.Controller):
         except Exception as identifier:
             print(identifier)
 
+    @http.route('/simontir/finish_final', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")        
+    # @authentication
+    def lock_so(self):
+        try:
+            rq    =  request.jsonrequest
+            data  =  request.env['sale.order'].sudo().search([('name','=',rq['invoice'])]).write({
+                'invoice_status': 'to invoice'
+            })
+
+            return valid_response(status=200, data={
+                'data': data
+            })
+
+        except Exception as identifier:
+            print(identifier)
+
     @http.route('/simontir/lock_so', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")        
     # @authentication
     def lock_so(self):
         try:
             rq    =  request.jsonrequest
-            data  =  request.env['sale.order'].sudo().search([('name','=',rq['invoice'])]).action_done()
+            data  =  request.env['sale.order'].sudo().search([('name','=',rq['invoice'])])
+
+            data.action_done()
+
+            data.write({
+                'x_is_reject': False
+            })
 
             return valid_response(status=200, data={
                 'data': data
@@ -270,7 +292,13 @@ class BoardsAPIBentar(http.Controller):
     def unlock_so(self):
         try:
             rq    =  request.jsonrequest
-            data  =  request.env['sale.order'].sudo().search([('name','=',rq['invoice'])]).action_unlock()
+            data  =  request.env['sale.order'].sudo().search([('name','=',rq['invoice'])])
+            
+            data.action_unlock()
+
+            data.write({
+                'x_is_reject': True
+            })
 
             return valid_response(status=200, data={
                 'data': data
