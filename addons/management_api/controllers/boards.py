@@ -166,7 +166,8 @@ class BoardsAPIBentar(http.Controller):
                 'results': {
                     'waktu_mulai': sale[0]['x_waktu_mulai'],
                     'nopol': sale[0]['x_nopol'],
-                    'tasks': tasks
+                    'cuci': sale[0]['x_is_wash'],
+                    'tasks': tasks,
                 }
             })
         except Exception as identifier:
@@ -189,6 +190,7 @@ class BoardsAPIBentar(http.Controller):
                 'results': {
                     'waktu_mulai': sale[0]['x_waktu_mulai'],
                     'nopol': sale[0]['x_nopol'],
+                    'cuci': sale[0]['x_is_wash'],
                     'tasks': tasks
                 }
             })
