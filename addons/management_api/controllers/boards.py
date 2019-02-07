@@ -277,11 +277,13 @@ class BoardsAPIBentar(http.Controller):
             rq    =  request.jsonrequest
             data  =  request.env['sale.order'].sudo().search([('name','=',rq['invoice'])])
 
-            data.action_done()
+            if len(data) > 0:
+                data.action_done()
 
-            data.write({
-                'x_is_reject': False
-            })
+                data.write({
+                    'x_is_reject': False,
+                    'invoice_status': 'no'
+                })
 
             return valid_response(status=200, data={
                 'data': data
@@ -297,11 +299,12 @@ class BoardsAPIBentar(http.Controller):
             rq    =  request.jsonrequest
             data  =  request.env['sale.order'].sudo().search([('name','=',rq['invoice'])])
             
-            data.action_unlock()
+            if len(data) > 0:
+                data.action_unlock()
 
-            data.write({
-                'x_is_reject': True
-            })
+                data.write({
+                    'x_is_reject': True
+                })
 
             return valid_response(status=200, data={
                 'data': data
