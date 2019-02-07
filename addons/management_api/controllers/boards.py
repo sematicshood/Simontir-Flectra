@@ -256,9 +256,12 @@ class BoardsAPIBentar(http.Controller):
     def lock_so(self):
         try:
             rq    =  request.jsonrequest
-            data  =  request.env['sale.order'].sudo().search([('name','=',rq['invoice'])]).write({
-                'invoice_status': 'to invoice'
-            })
+            data  =  request.env['sale.order'].sudo().search([('name','=',rq['invoice'])])
+
+            if len(data) > 0:
+                data.write({
+                    'invoice_status': 'to invoice'
+                })
 
             return valid_response(status=200, data={
                 'data': data
