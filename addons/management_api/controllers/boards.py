@@ -253,7 +253,7 @@ class BoardsAPIBentar(http.Controller):
 
     @http.route('/simontir/finish_final', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")        
     # @authentication
-    def lock_so(self):
+    def finish_final(self):
         try:
             rq    =  request.jsonrequest
             data  =  request.env['sale.order'].sudo().search([('name','=',rq['invoice'])])
