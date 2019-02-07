@@ -72,7 +72,7 @@ class BoardsAPIBentar(http.Controller):
     # @authentication
     def getso_finalcheck(self):
         so = request.env['sale.order'].sudo().search([
-            ('state','=','done'), ('x_is_reject', '=', False), ('invoice_status', '=', 'no')
+            ('state','=','done'), ('invoice_status', '=', 'no')
         ], order="id asc")
 
         data = [{
