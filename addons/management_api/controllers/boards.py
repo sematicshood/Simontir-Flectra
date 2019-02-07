@@ -76,9 +76,9 @@ class BoardsAPIBentar(http.Controller):
         ], order="id asc")
 
         data = [{
-            "no_polisi": s.x_nomer_polisi,
+            "no_polisi": s.x_nopol,
             "customer": s.partner_id[0].name,
-            "tipe_kenadaraan": s.x_tipe_kendaraan,
+            "tipe_kenadaraan": s.x_type_motor,
             "status": s.state,
             "invoice": s.invoice_status,
             "antrian_service": s.x_antrian_service,
