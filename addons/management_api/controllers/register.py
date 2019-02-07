@@ -288,6 +288,7 @@ class RegisterAPIBentar(http.Controller):
                     "telp_pemilik": d.driver_id.mobile,
                     "email_pemilik":d.driver_id.email,
                     "sosmed": d.driver_id.website,
+                    "model_id": d.model_id.id,
                     "history": [{
                         "id": h.id,
                         "tanggal": h.date,
