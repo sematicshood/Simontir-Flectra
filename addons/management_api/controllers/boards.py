@@ -16,9 +16,9 @@ class BoardsAPIBentar(http.Controller):
             ], order="id desc")
 
             data = [{
-                "no_polisi": s.x_nomer_polisi,
+                "no_polisi": s.x_nopol,
                 "customer": s.partner_id[0].name,
-                "tipe_kenadaraan": s.x_tipe_kendaraan,
+                "tipe_kenadaraan": s.x_type_motor,
                 "status": s.state,
                 "invoice": s.invoice_status,
                 "antrian_service": s.x_antrian_service,
@@ -47,9 +47,9 @@ class BoardsAPIBentar(http.Controller):
             ], order="id asc")
 
             data = [{
-                "no_polisi": s.x_nomer_polisi,
+                "no_polisi": s.x_nopol,
                 "customer": s.partner_id[0].name,
-                "tipe_kenadaraan": s.x_tipe_kendaraan,
+                "tipe_kenadaraan": s.x_type_motor,
                 "status": s.state,
                 "invoice": s.invoice_status,
                 "antrian_service": s.x_antrian_service,
@@ -152,7 +152,7 @@ class BoardsAPIBentar(http.Controller):
     # @authentication
     def get_final_detail(self, no_ref):
         try:
-            sale  =  request.env['sale.order'].sudo().search_read([('name','=',no_ref)], fields=['x_nomer_polisi', 'x_waktu_mulai'])
+            sale  =  request.env['sale.order'].sudo().search_read([('name','=',no_ref)], fields=['x_nopol', 'x_waktu_mulai'])
 
             so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',no_ref)], fields=['project_ids'])
 
@@ -162,7 +162,7 @@ class BoardsAPIBentar(http.Controller):
                 'count': len(tasks),
                 'results': {
                     'waktu_mulai': sale[0]['x_waktu_mulai'],
-                    'nopol': sale[0]['x_nomer_polisi'],
+                    'nopol': sale[0]['x_nopol'],
                     'tasks': tasks
                 }
             })
@@ -175,7 +175,7 @@ class BoardsAPIBentar(http.Controller):
     # @authentication
     def get_task (self, no_ref):
         try:
-            sale  =  request.env['sale.order'].sudo().search_read([('name','=',no_ref)], fields=['x_nomer_polisi', 'x_waktu_mulai'])
+            sale  =  request.env['sale.order'].sudo().search_read([('name','=',no_ref)], fields=['x_nopol', 'x_waktu_mulai'])
 
             so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',no_ref)], fields=['project_ids'])
 
@@ -185,7 +185,7 @@ class BoardsAPIBentar(http.Controller):
                 'count': len(tasks),
                 'results': {
                     'waktu_mulai': sale[0]['x_waktu_mulai'],
-                    'nopol': sale[0]['x_nomer_polisi'],
+                    'nopol': sale[0]['x_nopol'],
                     'tasks': tasks
                 }
             })
