@@ -297,8 +297,8 @@ class RegisterAPIBentar(http.Controller):
                         "mekanik": h.x_mekanik.name,
                         "jasa": [{
                             "id":c.id,
-                            "name": c.name
-                        }for c in h.cost_ids],
+                            "name": c.cost_subtype_id.name
+                        }for c in h.cost_id],
                         "part": h.description
                     }for h in d.log_services]
                 } for d in cek]
