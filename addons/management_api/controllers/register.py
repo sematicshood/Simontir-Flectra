@@ -70,32 +70,31 @@ class RegisterAPIBentar(http.Controller):
         tgll = datetime.datetime.strptime(tgl, '%Y-%m-%d %H:%M:%S')
         print(request.jsonrequest)
         print('-'*100)
-        
-        #cek no polisi
+
         cekNopol = request.env['fleet.vehicle'].sudo().search([("license_plate", "=", request.jsonrequest['noPolisi'])])
         if len(cekNopol) == 0:
             print("kosong")
 
             createPemilik = request.env['res.partner'].sudo().create({
-                "name":request.jsonrequest['namaPemilik'],
-                "mobile":request.jsonrequest['noTelp'],
-                "email":request.jsonrequest['email'],
-                "website":request.jsonrequest['sosmed']
+                "name":"" if 'namaPemilik' not in request.jsonrequest else request.jsonrequest['namaPemilik'],
+                "mobile":"" if 'noTelp' not in request.jsonrequest else request.jsonrequest['noTelp'],
+                "email":"" if 'email' not in request.jsonrequest else request.jsonrequest['email'],
+                "website":"" if 'sosmed' not in request.jsonrequest else request.jsonrequest['sosmed']
             })
 
             createPembawa = request.env['res.partner'].sudo().create({
                 "parent_id": createPemilik.id,
-                "name":request.jsonrequest['namaPembawa'],
-                "street":request.jsonrequest['alamat'],
+                "name":"" if 'namaPembawa' not in request.jsonrequest else request.jsonrequest['namaPembawa'],
+                "street":"" if 'alamat' not in request.jsonrequest else request.jsonrequest['alamat'],
                 "type":"other"
             })
 
             createDataMotor = request.env['fleet.vehicle'].sudo().create({
-                "license_plate":request.jsonrequest['noPolisi'],
-                "vin_sn":request.jsonrequest['noMesin'],
-                "location":request.jsonrequest['noRangka'],
-                "model_id":request.jsonrequest['type']['id'],
-                "model_year":request.jsonrequest['tahun'],
+                "license_plate":"" if 'noPolisi' not in request.jsonrequest else request.jsonrequest['noPolisi'],
+                "vin_sn":"" if 'noMesin' not in request.jsonrequest else request.jsonrequest['noMesin'],
+                "location":"" if 'noRangka' not in request.jsonrequest else request.jsonrequest['noRangka'],
+                "model_id":"" if 'type' not in request.jsonrequest else request.jsonrequest['type']['id'],
+                "model_year":"" if 'tahun' not in request.jsonrequest else request.jsonrequest['tahun'],
                 "driver_id": createPemilik.id
             })
 
@@ -105,16 +104,16 @@ class RegisterAPIBentar(http.Controller):
                 "partner_id": createPemilik.id,
                 "partner_invoice_id":createPemilik.id,
                 "partner_shipping_id": createPemilik.id,
-                "x_antrian_service": request.jsonrequest['jenisService'],
+                "x_antrian_service": "" if 'tajenisServicehun' not in request.jsonrequest else request.jsonrequest['jenisService'],
                 "x_is_wash": True if request.jsonrequest['cuci'] == "true" else False,
-                "x_nomer_polisi": request.jsonrequest['noPolisi'],
-                "x_tipe_kendaraan": request.jsonrequest['type']['name'],
+                "x_nopol": "" if 'noPolisi' not in request.jsonrequest else request.jsonrequest['noPolisi'],
+                "x_type_motor": "" if 'type' not in request.jsonrequest else request.jsonrequest['type']['name'],
                 "date_order":tgll,
-                "gross_amount": request.jsonrequest['total']
+                "gross_amount": "" if 'total' not in request.jsonrequest else request.jsonrequest['total']
             })
 
             createKM = request.env['fleet.vehicle.odometer'].sudo().create({
-                "value":request.jsonrequest['km'],
+                "value":"" if 'km' not in request.jsonrequest else request.jsonrequest['km'],
                 "vehicle_id": createDataMotor.id
             })
 
@@ -122,33 +121,33 @@ class RegisterAPIBentar(http.Controller):
             for data in request.jsonrequest['keluhanKonsumen']:
                 createKeluhan = request.env['temporary.keluhan'].sudo().create({
                     "x_ref_so":createSaleOrder.id,
-                    "x_keluhan": data['nama']
+                    "x_keluhan": "" if 'nama' not in data else data['nama']
                 })
 
             createAnalisa = request.env['temporary.analisa'].sudo().create({
                 "x_ref_so":createSaleOrder.id,
-                "x_analisa": request.jsonrequest['analisaService'],
-                "x_saran": request.jsonrequest['saranMekanik']
+                "x_analisa": "" if 'analisaService' not in request.jsonrequest else request.jsonrequest['analisaService'],
+                "x_saran": "" if 'analisaService' not in request.jsonrequest else request.jsonrequest['saranMekanik']
             })
             
             for data in request.jsonrequest['sparepartsSelected']:
                 createSOLine = request.env['sale.order.line'].sudo().create({
                     "order_id": createSaleOrder.id,
-                    "product_id":data['id'],
-                    "name": data['name'],
-                    "product_uom_qty":data['qty'],
-                    "price_unit":data['harga'],
-                    'price_subtotal':data['harga']
+                    "product_id":"" if 'id' not in data else data['id'],
+                    "name": "" if 'name' not in data else data['name'],
+                    "product_uom_qty":"" if 'qty' not in data else data['qty'],
+                    "price_unit":"" if 'harga' not in data else data['harga'],
+                    'price_subtotal':"" if 'harga' not in data else data['harga']
                 })
 
             for data in request.jsonrequest['servicesSelected']:
                 createSOLine = request.env['sale.order.line'].sudo().create({
                     "order_id": createSaleOrder.id,
-                    "product_id":data['id'],
-                    "name": data['name'],
-                    "product_uom_qty":1,
-                    "price_unit":data['harga'],
-                    'price_subtotal':data['harga']
+                    "product_id":"" if 'id' not in data else data['id'],
+                    "name": "" if 'name' not in data else data['name'],
+                    "product_uom_qty":"" if 'qty' not in data else data['qty'],
+                    "price_unit":"" if 'harga' not in data else data['harga'],
+                    'price_subtotal':"" if 'harga' not in data else data['harga']
                 })
 
             print(request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).list_price)
@@ -167,8 +166,8 @@ class RegisterAPIBentar(http.Controller):
             print("ada")
             createPembawa = request.env['res.partner'].sudo().create({
                 "parent_id": cekNopol.driver_id.id,
-                "name":request.jsonrequest['namaPembawa'],
-                "street":request.jsonrequest['alamat'],
+                "name":"" if 'namaPembawa' not in request.jsonrequest else request.jsonrequest['namaPembawa'],
+                "street":"" if 'alamat' not in request.jsonrequest else request.jsonrequest['alamat'],
                 "type":"other"
             })
 
@@ -178,15 +177,16 @@ class RegisterAPIBentar(http.Controller):
                 "partner_id": cekNopol.driver_id.id,
                 "partner_invoice_id":cekNopol.driver_id.id,
                 "partner_shipping_id": cekNopol.driver_id.id,
-                "x_antrian_service": request.jsonrequest['jenisService'],
+                "x_antrian_service": "" if 'tajenisServicehun' not in request.jsonrequest else request.jsonrequest['jenisService'],
                 "x_is_wash": True if request.jsonrequest['cuci'] == "true" else False,
-                "x_nomer_polisi": request.jsonrequest['noPolisi'],
-                "x_tipe_kendaraan": request.jsonrequest['type']['name'],
-                "date_order":tgll
+                "x_nopol": "" if 'noPolisi' not in request.jsonrequest else request.jsonrequest['noPolisi'],
+                "x_type_motor": "" if 'type' not in request.jsonrequest else request.jsonrequest['type']['name'],
+                "date_order":tgll,
+                "gross_amount": "" if 'total' not in request.jsonrequest else request.jsonrequest['total']
             })
 
             createKM = request.env['fleet.vehicle.odometer'].sudo().create({
-                "value":request.jsonrequest['km'],
+                "value":"" if 'km' not in request.jsonrequest else request.jsonrequest['km'],
                 "vehicle_id": cekNopol.id
             })
 
@@ -194,33 +194,33 @@ class RegisterAPIBentar(http.Controller):
             for data in request.jsonrequest['keluhanKonsumen']:
                 createKeluhan = request.env['temporary.keluhan'].sudo().create({
                     "x_ref_so":createSaleOrder.id,
-                    "x_keluhan": data['nama']
+                    "x_keluhan": "" if 'nama' not in data else data['nama']
                 })
             
             createAnalisa = request.env['temporary.analisa'].sudo().create({
                 "x_ref_so":createSaleOrder.id,
-                "x_analisa": request.jsonrequest['analisaService'],
-                "x_saran": request.jsonrequest['saranMekanik']
+                "x_analisa": "" if 'analisaService' not in request.jsonrequest else request.jsonrequest['analisaService'],
+                "x_saran": "" if 'analisaService' not in request.jsonrequest else request.jsonrequest['saranMekanik']
             })
 
             for data in request.jsonrequest['sparepartsSelected']:
                 createSOLine = request.env['sale.order.line'].sudo().create({
                     "order_id": createSaleOrder.id,
-                    "product_id":data['id'],
-                    "name": data['name'],
-                    "product_uom_qty":data['qty'],
-                    "price_unit":data['harga'],
-                    'price_subtotal':data['harga']
+                    "product_id":"" if 'id' not in data else data['id'],
+                    "name": "" if 'name' not in data else data['name'],
+                    "product_uom_qty":"" if 'qty' not in data else data['qty'],
+                    "price_unit":"" if 'harga' not in data else data['harga'],
+                    'price_subtotal':"" if 'harga' not in data else data['harga']
                 })
 
             for data in request.jsonrequest['servicesSelected']:
                 createSOLine = request.env['sale.order.line'].sudo().create({
                     "order_id": createSaleOrder.id,
-                    "product_id":data['id'],
-                    "name": data['name'],
-                    "product_uom_qty":1,
-                    "price_unit":data['harga'],
-                    'price_subtotal':data['harga']
+                    "product_id":"" if 'id' not in data else data['id'],
+                    "name": "" if 'name' not in data else data['name'],
+                    "product_uom_qty":"" if 'qty' not in data else data['qty'],
+                    "price_unit":"" if 'harga' not in data else data['harga'],
+                    'price_subtotal':"" if 'harga' not in data else data['harga']
                 })
 
             print(request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).list_price)
