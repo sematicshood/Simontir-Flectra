@@ -24,6 +24,7 @@ class BoardsAPIBentar(http.Controller):
                 "antrian_service": s.x_antrian_service,
                 "date": s.date_order,
                 "name": s.name,
+                "cuci": s.x_is_wash,
                 "order_line": [{
                     "name": o.name,
                     "type": o.product_id[0].product_tmpl_id[0].type
@@ -54,6 +55,7 @@ class BoardsAPIBentar(http.Controller):
                 "invoice": s.invoice_status,
                 "antrian_service": s.x_antrian_service,
                 "name": s.name,
+                "cuci": s.x_is_wash,
                 "order_line": [{
                     "name": o.name,
                     "type": o.product_id[0].product_tmpl_id[0].type
@@ -83,6 +85,7 @@ class BoardsAPIBentar(http.Controller):
             "invoice": s.invoice_status,
             "antrian_service": s.x_antrian_service,
             "name": s.name,
+            "cuci": s.x_is_wash,
             "order_line": [{
                 "name": o.name,
                 "type": o.product_id[0].product_tmpl_id[0].type
