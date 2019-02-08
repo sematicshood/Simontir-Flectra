@@ -229,6 +229,8 @@ class BoardsAPIBentar(http.Controller):
             print(task[0].name.split(':')[1])
             print(task)
             print(cek)
+            print(task.project_id[0].analytic_account_id[0])
+            print(hr)
             print('-'*100)
 
             if len(cek) == 0:
