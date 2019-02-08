@@ -226,6 +226,8 @@ class BoardsAPIBentar(http.Controller):
             ])
 
             print('-'*100)
+            print(task[0].name.split(':')[1])
+            print(task)
             print(cek)
             print('-'*100)
 
