@@ -146,7 +146,7 @@ class RegisterAPIBentar(http.Controller):
                         "order_id": createSaleOrder.id,
                         "product_id":"" if 'id' not in data else data['id'],
                         "name": "" if 'name' not in data else data['name'],
-                        "product_uom_qty":"" if 'qty' not in data else data['qty'],
+                        "product_uom_qty":1,
                         "price_unit":"" if 'harga' not in data else data['harga'],
                         'price_subtotal':"" if 'harga' not in data else data['harga']
                     })
@@ -219,7 +219,7 @@ class RegisterAPIBentar(http.Controller):
                         "order_id": createSaleOrder.id,
                         "product_id":"" if 'id' not in data else data['id'],
                         "name": "" if 'name' not in data else data['name'],
-                        "product_uom_qty":"" if 'qty' not in data else data['qty'],
+                        "product_uom_qty":1,
                         "price_unit":"" if 'harga' not in data else data['harga'],
                         'price_subtotal':"" if 'harga' not in data else data['harga']
                     })
