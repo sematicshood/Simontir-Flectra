@@ -233,8 +233,8 @@ class BoardsAPIBentar(http.Controller):
                 request.env['account.analytic.line'].sudo().create({
                     "name": task[0].name.split(':')[1],
                     "unit_amount": 1,
-                    "user_id": task[0]['user_id'],
-                    "partner_id": task[0]['user_id'],
+                    "user_id": task[0]['user_id'][0]['id'],
+                    "partner_id": task[0]['user_id'][0]['id'],
                     "task_id": rq['id'],
                     "employee_id": hr[0].id,
                     "account_id": task.project_id[0].analytic_account_id[0].id
