@@ -105,6 +105,10 @@ class BoardsAPIBentar(http.Controller):
             data  =  request.env['sale.order'].sudo().search([('name','=',rq['invoice'])])
             
             data.action_confirm()
+
+            data.write({
+                'invoice_status': 'no'
+            })
             
             so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',rq['invoice'])], fields=['project_ids'])
 
@@ -133,7 +137,7 @@ class BoardsAPIBentar(http.Controller):
                     'user_id': rq['user_id']
                 })
 
-            keluhan = request.env['temporary.keluhan'].sudo().search([('x_ref_so','=',rq['invoice'])])
+            keluhan = request.env['temporary.keluhan'].sudo().search([('x_ref_so','=',data[0]['id'])])
 
             for kel in keluhan:
                 request.env['project.task'].sudo().create({
