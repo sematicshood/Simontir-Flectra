@@ -155,7 +155,7 @@ class BoardsAPIBentar(http.Controller):
     # @authentication
     def get_final_detail(self, no_ref):
         try:
-            sale  =  request.env['sale.order'].sudo().search_read([('name','=',no_ref)], fields=['x_nopol', 'x_waktu_mulai'])
+            sale  =  request.env['sale.order'].sudo().search_read([('name','=',no_ref)], fields=['x_nopol', 'x_waktu_mulai', 'x_is_wash'])
 
             so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',no_ref)], fields=['project_ids'])
 
