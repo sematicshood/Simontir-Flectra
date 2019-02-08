@@ -108,7 +108,7 @@ class RegisterAPIBentar(http.Controller):
                     "x_antrian_service": "" if 'jenisService' not in request.jsonrequest else request.jsonrequest['jenisService'],
                     "x_is_wash": True if request.jsonrequest['cuci'] == "true" else False,
                     "x_nopol": "" if 'noPolisi' not in request.jsonrequest else request.jsonrequest['noPolisi'],
-                    "x_type_motor": request.jsonrequest['type']['name'],
+                    "x_type_motor": "" if 'type' not in request.jsonrequest else request.jsonrequest['type']['name'],
                     "date_order":tgll,
                     "gross_amount": "" if 'total' not in request.jsonrequest else request.jsonrequest['total']
                 })
@@ -146,7 +146,7 @@ class RegisterAPIBentar(http.Controller):
                         "order_id": createSaleOrder.id,
                         "product_id":"" if 'id' not in data else data['id'],
                         "name": "" if 'name' not in data else data['name'],
-                        "product_uom_qty":"" if 'qty' not in data else data['qty'],
+                        "product_uom_qty":1,
                         "price_unit":"" if 'harga' not in data else data['harga'],
                         'price_subtotal':"" if 'harga' not in data else data['harga']
                     })
@@ -181,7 +181,7 @@ class RegisterAPIBentar(http.Controller):
                     "x_antrian_service": "" if 'jenisService' not in request.jsonrequest else request.jsonrequest['jenisService'],
                     "x_is_wash": True if request.jsonrequest['cuci'] == "true" else False,
                     "x_nopol": "" if 'noPolisi' not in request.jsonrequest else request.jsonrequest['noPolisi'],
-                    "x_type_motor": request.jsonrequest['type']['name'],
+                    "x_type_motor": "" if 'type' not in request.jsonrequest else request.jsonrequest['type']['name'],
                     "date_order":tgll,
                     "gross_amount": "" if 'total' not in request.jsonrequest else request.jsonrequest['total']
                 })
@@ -219,7 +219,7 @@ class RegisterAPIBentar(http.Controller):
                         "order_id": createSaleOrder.id,
                         "product_id":"" if 'id' not in data else data['id'],
                         "name": "" if 'name' not in data else data['name'],
-                        "product_uom_qty":"" if 'qty' not in data else data['qty'],
+                        "product_uom_qty":1,
                         "price_unit":"" if 'harga' not in data else data['harga'],
                         'price_subtotal':"" if 'harga' not in data else data['harga']
                     })
