@@ -225,14 +225,6 @@ class BoardsAPIBentar(http.Controller):
                 ('task_id','=',rq['id'])
             ])
 
-            print('-'*100)
-            print(task[0].name.split(':')[1])
-            print(task)
-            print(cek)
-            print(task.project_id[0].analytic_account_id[0])
-            print(hr)
-            print('-'*100)
-
             if len(cek) == 0:
                 request.env['account.analytic.line'].sudo().create({
                     "name": task[0].name.split(':')[1],
@@ -240,7 +232,7 @@ class BoardsAPIBentar(http.Controller):
                     "user_id": task[0]['user_id'][0]['id'],
                     "partner_id": task[0]['user_id'][0]['id'],
                     "task_id": rq['id'],
-                    "employee_id": hr[0].id,
+                    "employee_id": hr[0].id if len(hr) > 0 else '',
                     "account_id": task.project_id[0].analytic_account_id[0].id
                 })
 
