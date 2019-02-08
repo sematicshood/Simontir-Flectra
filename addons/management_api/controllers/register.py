@@ -108,7 +108,7 @@ class RegisterAPIBentar(http.Controller):
                     "x_antrian_service": "" if 'jenisService' not in request.jsonrequest else request.jsonrequest['jenisService'],
                     "x_is_wash": True if request.jsonrequest['cuci'] == "true" else False,
                     "x_nopol": "" if 'noPolisi' not in request.jsonrequest else request.jsonrequest['noPolisi'],
-                    "x_type_motor": request.jsonrequest['type']['name'],
+                    "x_type_motor": "" if 'type' not in request.jsonrequest else request.jsonrequest['type']['name'],
                     "date_order":tgll,
                     "gross_amount": "" if 'total' not in request.jsonrequest else request.jsonrequest['total']
                 })
@@ -181,7 +181,7 @@ class RegisterAPIBentar(http.Controller):
                     "x_antrian_service": "" if 'jenisService' not in request.jsonrequest else request.jsonrequest['jenisService'],
                     "x_is_wash": True if request.jsonrequest['cuci'] == "true" else False,
                     "x_nopol": "" if 'noPolisi' not in request.jsonrequest else request.jsonrequest['noPolisi'],
-                    "x_type_motor": request.jsonrequest['type']['name'],
+                    "x_type_motor": "" if 'type' not in request.jsonrequest else request.jsonrequest['type']['name'],
                     "date_order":tgll,
                     "gross_amount": "" if 'total' not in request.jsonrequest else request.jsonrequest['total']
                 })
