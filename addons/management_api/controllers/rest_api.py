@@ -71,3 +71,17 @@ class ControllerAPIBentar(http.Controller):
             error = 'username_or_password_name_incorrect'
             _logger.error(info)
             return invalid_response(400, error, info)
+
+    @http.route('/simontir/getusers', type='json', auth="none", methods=['POST', 'OPTIONS'],
+        csrf=False, cors="*")
+    # @authentication
+    def getusers(self, **get):
+        try:
+            data = request.env['res.users'].sudo().search_read([], fields=['name'])
+
+            return valid_response(status=200, data={
+                'count': len(data),
+                'results': data
+            })
+        except Exception as identifier:
+            print(identifier)
