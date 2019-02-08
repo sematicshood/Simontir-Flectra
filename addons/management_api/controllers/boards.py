@@ -11,7 +11,7 @@ class BoardsAPIBentar(http.Controller):
     def getso(self):
         try:
             so = request.env['sale.order'].sudo().search([
-                ('state','!=','done'),
+                ('invoice_status','!=','invoiced'),
                 ('state','!=','cancel'),
             ], order="id desc")
 
