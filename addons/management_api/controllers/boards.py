@@ -218,7 +218,7 @@ class BoardsAPIBentar(http.Controller):
                 "x_status": "accept"
             })
 
-            hr    =  request.env['hr.employee'].sudo().search([('user_id','=',task[0]['user_id'])])
+            hr    =  request.env['hr.employee'].sudo().search([('user_id','=',task[0]['user_id'][0]['id'])])
 
             cek   =  request.env['account.analytic.line'].sudo().search([
                 ('name','=',task[0].name.split(':')[1]),
