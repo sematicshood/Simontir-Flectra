@@ -119,7 +119,6 @@ class BoardsAPIBentar(http.Controller):
             tasks =  request.env['project.task'].sudo().search([('project_id', '=', so[0]['project_ids'][0])])
 
             for order in data[0]['order_line']:
-                print(order.product_id[0].product_tmpl_id[0].type)
                 if order.product_id[0].product_tmpl_id[0].type != 'service':
                     request.env['project.task'].sudo().create({
                         'name': rq['invoice'] + ' sparepart:' + 'Ganti ' + order.product_id[0].product_tmpl_id[0].name,
@@ -147,6 +146,7 @@ class BoardsAPIBentar(http.Controller):
                     'email_from': tasks[0].email_from,
                     'priority': 'l',
                     'planned_hours': 1,
+                    'task_seq': '',
                     'project_id': so[0]['project_ids'][0]
                 })
 
@@ -218,7 +218,7 @@ class BoardsAPIBentar(http.Controller):
                 "x_status": "accept"
             })
 
-            hr    =  request.env['hr.employee'].sudo().search([('user_id','=',task[0]['user_id'])])
+            hr    =  request.env['hr.employee'].sudo().search([('user_id','=',task[0]['user_id'][0]['id'])])
 
             cek   =  request.env['account.analytic.line'].sudo().search([
                 ('name','=',task[0].name.split(':')[1]),
@@ -229,10 +229,10 @@ class BoardsAPIBentar(http.Controller):
                 request.env['account.analytic.line'].sudo().create({
                     "name": task[0].name.split(':')[1],
                     "unit_amount": 1,
-                    "user_id": task[0]['user_id'],
-                    "partner_id": task[0]['user_id'],
+                    "user_id": task[0]['user_id'][0]['id'],
+                    "partner_id": task[0]['user_id'][0]['id'],
                     "task_id": rq['id'],
-                    "employee_id": hr[0].id,
+                    "employee_id": hr[0].id if len(hr) > 0 else '',
                     "account_id": task.project_id[0].analytic_account_id[0].id
                 })
 
@@ -297,6 +297,10 @@ class BoardsAPIBentar(http.Controller):
         try:
             rq    =  request.jsonrequest
             data  =  request.env['sale.order'].sudo().search([('name','=',rq['invoice'])])
+
+            request.env['temporary.analisa'].sudo().search([('id','=',rq['id_saran'])]).write({
+                'x_saran': rq['saran']
+            })
 
             if len(data) > 0:
                 data.action_done()
