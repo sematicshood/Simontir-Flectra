@@ -119,7 +119,6 @@ class BoardsAPIBentar(http.Controller):
             tasks =  request.env['project.task'].sudo().search([('project_id', '=', so[0]['project_ids'][0])])
 
             for order in data[0]['order_line']:
-                print(order.product_id[0].product_tmpl_id[0].type)
                 if order.product_id[0].product_tmpl_id[0].type != 'service':
                     request.env['project.task'].sudo().create({
                         'name': rq['invoice'] + ' sparepart:' + 'Ganti ' + order.product_id[0].product_tmpl_id[0].name,
@@ -147,6 +146,7 @@ class BoardsAPIBentar(http.Controller):
                     'email_from': tasks[0].email_from,
                     'priority': 'l',
                     'planned_hours': 1,
+                    'task_seq': '',
                     'project_id': so[0]['project_ids'][0]
                 })
 
