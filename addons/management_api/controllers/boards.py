@@ -298,7 +298,7 @@ class BoardsAPIBentar(http.Controller):
             rq    =  request.jsonrequest
             data  =  request.env['sale.order'].sudo().search([('name','=',rq['invoice'])])
 
-            request.env['temporary.analisa'].search([('id','=',rq['id_saran'])]).write({
+            request.env['temporary.analisa'].sudo().search([('id','=',rq['id_saran'])]).write({
                 'x_saran': rq['saran']
             })
 
