@@ -298,6 +298,10 @@ class BoardsAPIBentar(http.Controller):
             rq    =  request.jsonrequest
             data  =  request.env['sale.order'].sudo().search([('name','=',rq['invoice'])])
 
+            request.env['temporary.analisa'].search([('id','=',rq['id_saran'])]).write({
+                'x_saran': rq['saran']
+            })
+
             if len(data) > 0:
                 data.action_done()
 
