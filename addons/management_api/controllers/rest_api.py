@@ -72,7 +72,7 @@ class ControllerAPIBentar(http.Controller):
             _logger.error(info)
             return invalid_response(400, error, info)
 
-    @http.route('/simontir/getusers', type='json', auth="none", methods=['POST', 'OPTIONS'],
+    @http.route('/simontir/getusers', type='json', auth="none", methods=['GET', 'OPTIONS'],
         csrf=False, cors="*")
     # @authentication
     def getusers(self, **get):
