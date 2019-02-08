@@ -333,3 +333,26 @@ class BoardsAPIBentar(http.Controller):
 
         except Exception as identifier:
             print(identifier)
+
+    @http.route('/simontir/get_cuci', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")        
+    # @authentication
+    def get_cuci(self):
+        try:
+            res = request.env['project.task'].sudo().search([('name', 'like', 'Cuci Motor'), ('progress', '<', 1)])
+            data = [{
+                "projectId": d.project_id.id,
+                "projectName": d.project_id.name,
+                "namaSo":d.sale_line_id.order_id.name,
+                "nopol": d.sale_line_id.order_id.x_nopol,
+                "typeMotor": d.sale_line_id.order_id.x_type_motor,
+                "namaPemilik": d.sale_line_id.order_id.partner_id.name,
+                "taskId":d.id,
+                "taskName":d.name,
+            }for d in res]
+
+
+            return valid_response(status=200, data={
+                'data': data
+            })
+        except Exception as e:
+            print(str(e))
