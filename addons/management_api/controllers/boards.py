@@ -342,7 +342,7 @@ class BoardsAPIBentar(http.Controller):
     # @authentication
     def get_cuci(self):
         try:
-            res = request.env['project.task'].sudo().search([('name', 'like', 'Cuci Motor'), ('progress', '<', 1)])
+            res = request.env['project.task'].sudo().search([('name', 'like', 'Cuci Motor'), ('timesheet_ids', '=', False)])
             data = [{
                 "projectId": d.project_id.id,
                 "projectName": d.project_id.name,
