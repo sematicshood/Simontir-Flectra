@@ -189,7 +189,7 @@ class BoardsAPIBentar(http.Controller):
 
             tasks =  request.env['project.task'].sudo().search_read([('project_id', '=', so[0]['project_ids'][0])], fields=['name', 'x_status'])
 
-            saran   =   request.env['temporary_analisa'].sudo().search_read([('x_ref_so', '=', sale[0]['id'])])
+            saran   =   request.env['temporary.analisa'].sudo().search_read([('x_ref_so', '=', sale[0]['id'])])
 
             return valid_response(status=200, data={
                 'count': len(tasks),
