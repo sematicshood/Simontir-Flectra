@@ -225,6 +225,10 @@ class BoardsAPIBentar(http.Controller):
                 ('task_id','=',rq['id'])
             ])
 
+            print('-'*100)
+            print(cek)
+            print('-'*100)
+
             if len(cek) == 0:
                 request.env['account.analytic.line'].sudo().create({
                     "name": task[0].name.split(':')[1],
