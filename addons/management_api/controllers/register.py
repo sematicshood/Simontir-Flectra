@@ -44,6 +44,8 @@ class RegisterAPIBentar(http.Controller):
                     'partner_id': 1
                     })
                 cek = self.cekSO()
+
+            brand   =   request.env['fleet.vehicle.model.brand'].sudo().search([('name','=','Honda')]);
                 
             data = [{
                 "id": data.id,
@@ -51,7 +53,7 @@ class RegisterAPIBentar(http.Controller):
                 "tipe_motor":[{
                     "id":d.id,
                     "name": d.display_name
-                }for d in request.env['fleet.vehicle.model'].sudo().search([])],
+                }for d in request.env['fleet.vehicle.model'].sudo().search([('brand_id','=',brand[0].id)])],
                 "product": [{
                     "id":p.id,
                     "name": p.name,
@@ -363,12 +365,12 @@ class RegisterAPIBentar(http.Controller):
                         "tanggal": h.date,
                         "biaya":h.amount,
                         "km": h.odometer,
-                        "frontdesk": h.write_uid.name, 
-                        "mekanik": h.x_mekanik.name,
+                        "frontdesk": h.x_front_desk[0].name, 
+                        "mekanik": h.x_mekanik[0].name,
                         "jasa": [{
                             "id":c.id,
-                            "name": c.cost_subtype_id.name
-                        }for c in h.cost_id],
+                            "description": c.description
+                        }for c in h.cost_ids],
                         "part": h.description
                     }for h in d.log_services]
                 } for d in cek]
