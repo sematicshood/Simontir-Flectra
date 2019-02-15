@@ -4,6 +4,7 @@ from flectra.http import request
 from . rest_api import authentication
 from . rest_exception import *
 import datetime
+import traceback
 
 class BoardsAPIBentar(http.Controller):
     @http.route('/simontir/getso', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
@@ -121,13 +122,14 @@ class BoardsAPIBentar(http.Controller):
             for order in data[0]['order_line']:
                 if order.product_id[0].product_tmpl_id[0].type != 'service':
                     request.env['project.task'].sudo().create({
-                        'name': rq['invoice'] + ' sparepart:' + 'Ganti ' + order.product_id[0].product_tmpl_id[0].name,
+                        'name': rq['invoice'] + ' sparepart:' + order.product_id[0].product_tmpl_id[0].name,
                         'user_id': rq['user_id'],
                         'company_id': tasks[0].company_id[0].id,
                         'email_from': tasks[0].email_from,
                         'priority': 'l',
                         'planned_hours': 1,
-                        'project_id': so[0]['project_ids'][0]
+                        'project_id': so[0]['project_ids'][0],
+                        'sale_line_id': order.id
                     })
 
 
@@ -147,7 +149,8 @@ class BoardsAPIBentar(http.Controller):
                     'priority': 'l',
                     'planned_hours': 1,
                     'task_seq': '',
-                    'project_id': so[0]['project_ids'][0]
+                    'project_id': so[0]['project_ids'][0],
+                    'sale_line_id': False
                 })
 
         except Exception as identifier:
@@ -187,7 +190,7 @@ class BoardsAPIBentar(http.Controller):
 
             so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',no_ref)], fields=['project_ids'])
 
-            tasks =  request.env['project.task'].sudo().search_read([('project_id', '=', so[0]['project_ids'][0])], fields=['name', 'x_status'])
+            tasks =  request.env['project.task'].sudo().search_read([('project_id', '=', so[0]['project_ids'][0])], fields=['name', 'x_status', 'x_state', 'x_duration'])
 
             saran   =   request.env['temporary.analisa'].sudo().search_read([('x_ref_so', '=', sale[0]['id'])])
 
@@ -273,11 +276,56 @@ class BoardsAPIBentar(http.Controller):
 
             so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',rq['invoice'])], fields=['project_ids'])
 
-            tasks =  request.env['project.task'].sudo().search([('project_id', '=', so[0]['project_ids'][0]), ('description', 'like', 'Cuci Motor')])
+            tasks =  request.env['project.task'].sudo().search([('project_id', '=', so[0]['project_ids'][0])])
 
-            tasks.write({
-                'user_id': rq['user_cuci']
-            })
+            vehicle =   request.env['fleet.vehicle'].sudo().search([('license_plate','=',data[0].x_nopol)])[0].id
+
+            service_type = request.env['fleet.service.type'].sudo().search([('name','=','Service Log')]);
+
+            if len(service_type) == 0:
+                service_type = request.env['fleet.service.type'].sudo().create({
+                    'name': 'Service Log',
+                    'category': 'service'
+                })
+
+            payload = {
+                'vehicle_id': vehicle,
+                'odometer': request.env['fleet.vehicle.odometer'].sudo().search([('vehicle_id', '=', vehicle)], order="id desc")[0].value,
+                'amount': data[0].amount_total,
+                'date': data[0].confirmation_date,
+                'purchaser_id': data[0].partner_id[0].id,
+                'cost_subtype_id': service_type[0].id,
+                'inv_ref': data[0].name,
+                'x_mekanik': tasks[0].user_id[0].id,
+                'x_front_desk': data[0].write_uid[0].id
+            }
+
+            log = request.env['fleet.vehicle.log.services'].sudo().create(payload)
+            cost_ids = request.env['fleet.vehicle.cost'].sudo().search([('cost_subtype_id', '=', log[0].cost_subtype_id[0].id), ('vehicle_id','=',vehicle)], order="id desc")
+
+            for task in tasks:
+                name_history = task.name.split(':')[1]
+                if task.sale_line_id:
+                    request.env['fleet.vehicle.cost'].sudo().create({
+                        'description': task.sale_line_id.name,
+                        'amount': task.sale_line_id.price_total,
+                        'parent_id': cost_ids[0].id,
+                        'vehicle_id': vehicle,
+                    })
+                else:
+                    request.env['fleet.vehicle.cost'].sudo().create({
+                        'description': name_history,
+                        'amount': 0,
+                        'parent_id': cost_ids[0].id,
+                        'vehicle_id': vehicle,
+                    })
+
+            if rq['user_cuci'] != "":
+                task_cuci =  request.env['project.task'].sudo().search([('project_id', '=', so[0]['project_ids'][0]), ('description', 'like', 'Cuci Motor')])
+
+                task_cuci.write({
+                    'user_id': rq['user_cuci']
+                })
 
             if len(data) > 0:
                 data.write({
@@ -285,11 +333,12 @@ class BoardsAPIBentar(http.Controller):
                 })
 
             return valid_response(status=200, data={
-                'data': data
+                'data': 'data'
             })
 
         except Exception as identifier:
             print(identifier)
+            print(traceback.format_exc())
 
     @http.route('/simontir/lock_so', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")        
     # @authentication
@@ -329,6 +378,44 @@ class BoardsAPIBentar(http.Controller):
 
                 data.write({
                     'x_is_reject': True
+                })
+
+            return valid_response(status=200, data={
+                'data': data
+            })
+
+        except Exception as identifier:
+            print(identifier)
+
+    @http.route('/simontir/task/finish', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")        
+    # @authentication
+    def finishTask(self):
+        try:
+            rq    =  request.jsonrequest
+            data  =  request.env['project.task'].sudo().search([('id','=',rq['id'])])
+            
+            if len(data) > 0:
+                data.write({
+                    'x_state': 'finished'
+                })
+
+            return valid_response(status=200, data={
+                'data': data[0].x_state
+            })
+
+        except Exception as identifier:
+            print(identifier)
+
+    @http.route('/simontir/task/unfinish', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")        
+    # @authentication
+    def unfinishTask(self):
+        try:
+            rq    =  request.jsonrequest
+            data  =  request.env['project.task'].sudo().search([('id','=',rq['id'])])
+            
+            if len(data) > 0:
+                data.write({
+                    'x_state': 'unfinished'
                 })
 
             return valid_response(status=200, data={
