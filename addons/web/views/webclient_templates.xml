@@ -252,6 +252,190 @@
         <!-- @Flectra: Gantt View Assets ::: End -->
 
         <link rel="stylesheet" type="text/less" href="/web/static/src/less/backend_theme/bootswatch_dark.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/apps.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/backend_theme/menu_launcher.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/backend_theme/navbar.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/backend_theme/flectra_style.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/backend_theme/search_view.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/backend_theme/form_view.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/backend_theme/list_view.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/backend_theme/control_panel.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/drag_n_drop_attachment.less"/>
+
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/backend_theme_customizer/colors.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/backend_theme_customizer/customize_model.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/backend_theme_customizer/variables.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/backend_theme_customizer/font.less"/>
+
+        <script type="text/javascript" src="/web/static/src/js/backend_theme_customizer/backend_theme_customizer.js"/>
+        <script type="text/javascript" src="/web/static/src/js/backend_theme_customizer/customize_switcher.js"/>
+        <script type="text/javascript" src="/web/static/src/js/chrome/bookmark.js"/>
+
+    </template>
+
+    <template id="web.assets_modern" name="Backend Assets Modern (used in backend interface)">
+        <t t-call="web.less_helpers"/>
+
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/import_bootstrap.less"/>
+
+        <link rel="stylesheet" type="text/css" href="/base/static/src/css/modules.css"/>
+
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/bootstrap_overridden.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/webclient_extra.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/webclient_layout.less"/>
+
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/webclient.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/domain_selector.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/model_field_selector.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/progress_bar.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/dropdown.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/dropdown_extra.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/tooltip.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/debug_manager.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/control_panel.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/fields.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/fields_extra.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/views.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/views_extra.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/pivot_view.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/graph_view.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/form_view.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/form_view_extra.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/list_view.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/list_view_extra.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/kanban_dashboard.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/kanban_column_progressbar.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/kanban_view.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/kanban_view_mobile.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/web_calendar.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/search_view.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/search_view_extra.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/data_export.less"/>
+
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/base_settings.less"/>
+        <script type="text/javascript" src="/base/static/src/js/res_config_settings.js"></script>
+
+        <script type="text/javascript" src="/web/static/lib/jquery.scrollTo/jquery.scrollTo.js"></script>
+        <script type="text/javascript" src="/web/static/lib/backbone/backbone.js"></script>
+        <script type="text/javascript" src="/web/static/lib/fuzzy-master/fuzzy.js"></script>
+
+        <script type="text/javascript" charset="utf-8">
+            flectra._modules = <t t-raw="get_modules_order()"/>;
+        </script>
+
+        <script type="text/javascript" src="/web/static/lib/py.js/lib/py.js"></script>
+        <!-- Special case: core.js declares $.browser needed by ba-bbq -->
+        <script type="text/javascript" src="/web/static/lib/jquery.ba-bbq/jquery.ba-bbq.js"></script>
+        <script type="text/javascript" src="/web/static/lib/jquery.nav-tabs-to-accordion/jquery.nav-tabs-to-accordion.js"></script>
+
+        <script type="text/javascript" src="/web/static/src/js/core/domain.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/core/pyeval.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/chrome/action_manager.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/chrome/control_panel.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/chrome/view_manager.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/chrome/abstract_web_client.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/chrome/web_client.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/_deprecated/data.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/core/context.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/core/misc.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/services/crash_manager.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/services/data_manager.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/services/session.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/widgets/auto_complete.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/widgets/change_password.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/chrome/user_logout.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/widgets/debug_manager.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/widgets/data_export.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/widgets/date_picker.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/widgets/domain_selector_dialog.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/widgets/domain_selector.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/widgets/iframe_widget.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/chrome/loading.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/widgets/model_field_selector.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/widgets/notification.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/chrome/sidebar.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/chrome/pager.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/chrome/systray_menu.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/widgets/switch_company_menu.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/chrome/user_menu.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/chrome/menu.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/chrome/apps_launcher.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/chrome/search_view.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/chrome/search_filters.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/chrome/search_inputs.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/chrome/search_menus.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/apps.js"></script>
+
+        <script type="text/javascript" src="/web/static/src/js/fields/abstract_field.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/fields/basic_fields.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/fields/field_registry.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/basic/widget_registry.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/fields/field_utils.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/fields/relational_fields.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/fields/special_fields.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/fields/upgrade_fields.js"></script>
+
+        <script type="text/javascript" src="/web/static/src/js/views/abstract_view.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/abstract_renderer.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/abstract_model.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/abstract_controller.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/basic/basic_model.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/basic/basic_view.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/basic/basic_controller.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/basic/basic_renderer.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/field_manager_mixin.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/standalone_field_manager_mixin.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/view_registry.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/view_dialogs.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/form/form_renderer.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/form/form_controller.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/form/form_view.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/graph/graph_model.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/graph/graph_controller.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/graph/graph_renderer.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/graph/graph_view.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/kanban/kanban_column.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/kanban/kanban_quick_create.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/kanban/kanban_column_progressbar.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/kanban/kanban_model.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/kanban/kanban_controller.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/kanban/kanban_record.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/kanban/kanban_renderer.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/kanban/kanban_renderer_mobile.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/kanban/kanban_view.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/list/list_editable_renderer.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/list/list_renderer.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/list/list_view.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/list/list_controller.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/pivot/pivot_model.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/pivot/pivot_controller.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/pivot/pivot_renderer.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/pivot/pivot_view.js"></script>
+
+        <script type="text/javascript" src="/web/static/src/js/views/calendar/calendar_controller.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/calendar/calendar_model.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/calendar/calendar_quick_create.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/calendar/calendar_renderer.js"></script>
+        <script type="text/javascript" src="/web/static/src/js/views/calendar/calendar_view.js"></script>
+
+        <script type="text/javascript" src="/web/static/src/js/report/qwebactionmanager.js"/>
+        <script type="text/javascript" src="/web/static/src/js/report/utils.js"/>
+        <script type="text/javascript" src="/web/static/src/js/report/client_action.js"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/report_backend.less"/>
+
+        <!-- @Flectra: Gantt View Assets ::: Start -->
+        <script type="text/javascript" src="/web/static/lib/jquery.ganttView/date.js"/>
+        <link rel="stylesheet" type="text/css" href="/web/static/lib/jquery.ganttView/jquery.ganttView.css"/>
+        <script type="text/javascript" src="/web/static/lib/jquery.ganttView/jquery.ganttView.js"/>
+
+        <script type="text/javascript" src="/web/static/src/js/views/gantt/gantt_model.js"/>
+        <script type="text/javascript" src="/web/static/src/js/views/gantt/gantt_controller.js"/>
+        <script type="text/javascript" src="/web/static/src/js/views/gantt/gantt_renderer.js"/>
+        <script type="text/javascript" src="/web/static/src/js/views/gantt/gantt_view.js"/>
+        <!-- @Flectra: Gantt View Assets ::: End -->
+
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/backend_theme/bootswatch_dark.less"/>
+        <link rel="stylesheet" type="text/less" href="/web/static/src/less/apps.less"/>
         <link rel="stylesheet" type="text/less" href="/web/static/src/less/backend_theme/menu_launcher.less"/>
         <link rel="stylesheet" type="text/less" href="/web/static/src/less/backend_theme/navbar.less"/>
         <link rel="stylesheet" type="text/less" href="/web/static/src/less/backend_theme/flectra_style.less"/>
@@ -400,7 +584,7 @@
                         <t t-if="not disable_database_manager">
                             <a class="" href="/web/database/manager">Manage Databases</a> <!--|-->
                         </t>
-                        <!--<a href="https://www.flectra.com" target="_blank">Powered by <span>Flectra</span></a>-->
+                        <!--<a href="https://www.flectrahq.com" target="_blank">Powered by <span>Flectra</span></a>-->
                     </div>
                 </div>
             </div>

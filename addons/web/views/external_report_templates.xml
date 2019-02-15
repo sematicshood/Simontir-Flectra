@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<flectra>
+    <template id="external_layout_standard">
+        <div class="header first-page" style="margin-bottom:5px;">
+            <div t-if="company.logo or company.report_header" class="row header-top" style="margin-top: 55px;">
+                <div class="col-xs-2 logo_report">
+                    <img style=" width: 100px;" t-if="company.logo" t-att-src="'data:image/png;base64,%s' % to_text(company.logo)"/>
+                </div>
+                <div class="col-xs-10 company-address" style="margin-top: 0px;">
+                    <p style="font-weight: 900; font-size: 20pt !important; margin-bottom: 0px;" class="company-name"><span t-field="company.partner_id.name"/></p>
+                    <p style="font-weight: 900; font-size: 12pt; margin-bottom: 0px;"><span t-field="company.partner_id.street"/>, <span t-field="company.partner_id.street2"/> <span t-field="company.partner_id.zip"/></p>
+                </div>
+            </div>
+            <div class="row" t-if="1 == 2">
+                <div class="col-xs-6" name="company_address">
+                    <span t-field="company.partner_id"
+                        t-field-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'
+                        style="border-bottom: 1px solid black; display:inline-block;"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="article o_report_layout_standard" style="margin-top: 0px;">            
+            <t t-raw="0" />
+        </div>
+
+        <div class="footer last-page" style="border-top: 2px solid black;">
+            <div class="col-xs-8" style="padding: 0;">
+                <div class="footer-text">
+                    <p style="font-size: 8pt; margin-bottom: 5px;">Garansi:</p>
+                    <p style="font-size: 8pt; line-height: 0.2;">-500 Km/1 Minggu untuk Servis Reguler</p>
+                    <p style="font-size: 8pt; line-height: 0.2;">-1.000 Km/1 Bulan untuk Bongkar Mesin Reguler</p>
+                    <p style="font-size: 8pt; line-height: 0.2;">-1.000 Km/1 Bulan untuk Servis cBR 250 dan PCX 150</p>
+                    <p style="font-size: 8pt; line-height: 0.2;">-1500 Km/45 Hari untuk Bongkar Mesin CBR 250 dan PCX 150</p>
+                    <p style="font-size: 8pt; line-height: 0.2;">SERVIS RUTIN DI AHASS MOTOR TERAWAT KANTONG HEMAT</p>
+                    <p style="font-size: 8pt; line-height: 0.2;">*Khusus Type CBR250R, PCX150</p>
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <div class="item-footer" t-if="1 == 2">
+                    <h6 t-field="company.website"></h6>
+                    <h6 t-field="company.email"></h6>
+                    <h6><span>Tlp. </span> <span t-field="company.phone"></span></h6>
+                </div>
+            </div>
+            <div class="col-xs-2 address_company" t-if="1 == 2">
+                <div class="item-footer">
+                    <h6 t-field="company.partner_id"
+                        t-field-options='{"widget": "contact", "fields": ["address"], "no_marker": true}'></h6>
+                </div>
+            </div>
+        </div>
+    </template>
+</flectra>

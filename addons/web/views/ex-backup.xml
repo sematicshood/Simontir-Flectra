@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<flectra>
+    <template id="external_layout_standard">
+        <div class="header first-page">
+            <div t-if="company.logo or company.report_header" class="row zero_min_height">
+                <div class="row col-xs-12 logo_report">
+                    <img height="150px" width="200px" t-if="company.logo" t-att-src="'data:image/png;base64,%s' % to_text(company.logo)"/>
+                    <div class="text-right-header">
+                        <h6>ONE STOP SOLUTION CAFE RESTO</h6>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="row">
+                <div class="col-xs-6" name="company_address">
+                    <span t-field="company.partner_id"
+                        t-field-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'
+                        style="border-bottom: 1px solid black; display:inline-block;"/>
+                </div>
+            </div> -->
+            
+        </div>
+
+        <div class="article o_report_layout_standard">
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <t t-raw="0" />
+            <br/>
+            <br/>
+            <br/>
+        </div>
+
+        <div class="footer last-page">
+            <div class="col-xs-4 image-footer">
+                <img src="/web/static/src/img/footer-logo.png" alt=""/>
+            </div>
+            <div class="col-xs-4">
+                <div class="item-footer">
+                    <h6 t-field="company.website"></h6>
+                    <h6 t-field="company.email"></h6>
+                    <h6><span>Tlp. </span> <span t-field="company.phone"></span></h6>
+                </div>
+            </div>
+            <div class="col-xs-4 address_company">
+                <div class="item-footer">
+                    <h6 t-field="company.partner_id"
+                        t-field-options='{"widget": "contact", "fields": ["address"], "no_marker": true}'></h6>
+                </div>
+            </div>
+        </div>
+    </template>
+</flectra>
