@@ -63,9 +63,14 @@ class RegisterAPIBentar(http.Controller):
                 }for p in request.env['product.product'].sudo().search([])]
             }for data in cek]
 
+            colors = [{
+                "color": color.color
+            } for color in request.env['vehicle.colors'].sudo().search([])]
+
             return valid_response(status=200, data={
                 'count': len(data),
-                'results': data
+                'results': data,
+                'colors': colors,
                 })
         except Exception as e:
             print(str(e))
@@ -84,12 +89,18 @@ class RegisterAPIBentar(http.Controller):
         #     print(cekSo.state)
         #     print("sudah save")
         #     pass
+        print(request.jsonrequest)
+
+        cekColorExist   =   request.env['vehicle.colors'].sudo().search_count([('color','=',request.jsonrequest['warnaKendaraan'])])
+
+        if cekColorExist == 0:
+            request.env['vehicle.colors'].sudo().create({
+                'color': request.jsonrequest['warnaKendaraan']
+            })
 
         try:
             tgl = ((request.jsonrequest['tglService']).split("T")[0]+" 00:00:00")
             tgll = datetime.datetime.strptime(tgl, '%Y-%m-%d %H:%M:%S')
-            print(request.jsonrequest)
-            print('-'*100)
 
             cekNopol = request.env['fleet.vehicle'].sudo().search([("license_plate", "=", request.jsonrequest['noPolisi'])])
             if len(cekNopol) == 0:
@@ -115,7 +126,8 @@ class RegisterAPIBentar(http.Controller):
                     "location":"" if 'noRangka' not in request.jsonrequest else request.jsonrequest['noRangka'],
                     "model_id":"" if len(request.jsonrequest['type']) == 0 else request.jsonrequest['type']['id'],
                     "model_year":"" if 'tahun' not in request.jsonrequest else request.jsonrequest['tahun'],
-                    "driver_id": createPemilik.id
+                    "driver_id": createPemilik.id,
+                    "color": request.jsonrequest['warnaKendaraan'],
                 })
 
                 createSaleOrder = request.env['sale.order'].sudo().search([('name', '=', request.jsonrequest['noUrut'])])
@@ -127,9 +139,9 @@ class RegisterAPIBentar(http.Controller):
                     "x_antrian_service": "" if 'jenisService' not in request.jsonrequest else request.jsonrequest['jenisService'],
                     "x_is_wash": True if request.jsonrequest['cuci'] == "true" else False,
                     "x_nopol": "" if 'noPolisi' not in request.jsonrequest else request.jsonrequest['noPolisi'],
-                    "x_type_motor": "" if len(request.jsonrequest['type']) == 0 else request.jsonrequest['type'][0]['name'],
+                    "x_type_motor": "" if len(request.jsonrequest['type']) == 0 else request.jsonrequest['type']['name'],
                     "date_order":tgll,
-                    "gross_amount": "" if 'total' not in request.jsonrequest else request.jsonrequest['total']
+                    "gross_amount": "" if 'total' not in request.jsonrequest else request.jsonrequest['total'],
                 })
 
                 createKM = request.env['fleet.vehicle.odometer'].sudo().create({
@@ -225,7 +237,7 @@ class RegisterAPIBentar(http.Controller):
                     "x_nopol": "" if 'noPolisi' not in request.jsonrequest else request.jsonrequest['noPolisi'],
                     "x_type_motor": "" if len(request.jsonrequest['type']) == 0 else request.jsonrequest['type']['name'],
                     "date_order":tgll,
-                    "gross_amount": "" if 'total' not in request.jsonrequest else request.jsonrequest['total']
+                    "gross_amount": "" if 'total' not in request.jsonrequest else request.jsonrequest['total'],
                 })
 
                 createKM = request.env['fleet.vehicle.odometer'].sudo().create({

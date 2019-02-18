@@ -40,12 +40,18 @@ class BoardsAPIBentar(http.Controller):
             print(identifier)
             print('-'*100)
 
-    @http.route('/simontir/getso_mekanik', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
+    @http.route('/simontir/getso_mekanik/<user_id>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def getso_mekanik(self):
+    def getso_mekanik(self, user_id):
         try:
             so = request.env['sale.order'].sudo().search([
                 ('state','=','sent')
+            ], order="id asc")
+
+            owns = request.env['sale.order'].sudo().search([
+                ('state','=','sale'),
+                ('invoice_status','=','no'),
+                ('mekanik_id','=',int(user_id))
             ], order="id asc")
 
             data = [{
@@ -62,10 +68,26 @@ class BoardsAPIBentar(http.Controller):
                     "type": o.product_id[0].product_tmpl_id[0].type
                 } for o in s.order_line]
             } for s in so]
+
+            own = [{
+                "no_polisi": s.x_nopol,
+                "customer": s.partner_id[0].name,
+                "tipe_kenadaraan": s.x_type_motor,
+                "status": s.state,
+                "invoice": s.invoice_status,
+                "antrian_service": s.x_antrian_service,
+                "name": s.name,
+                "cuci": s.x_is_wash,
+                "order_line": [{
+                    "name": o.name,
+                    "type": o.product_id[0].product_tmpl_id[0].type
+                } for o in s.order_line]
+            } for s in owns]
             
             return valid_response(status=200, data={
                     'count': len(data),
-                    'results': data
+                    'results': data,
+                    'own': own
                 })
         except Exception as identifier:
             print(identifier)
@@ -108,7 +130,8 @@ class BoardsAPIBentar(http.Controller):
             data.action_confirm()
 
             data.write({
-                'invoice_status': 'no'
+                'invoice_status': 'no',
+                'mekanik_id': rq['user_id'],
             })
             
             so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',rq['invoice'])], fields=['project_ids'])
@@ -396,7 +419,8 @@ class BoardsAPIBentar(http.Controller):
             
             if len(data) > 0:
                 data.write({
-                    'x_state': 'finished'
+                    'x_state': 'finished',
+                    'x_duration': rq['x_duration'],
                 })
 
             return valid_response(status=200, data={
@@ -425,11 +449,14 @@ class BoardsAPIBentar(http.Controller):
         except Exception as identifier:
             print(identifier)
 
-    @http.route('/simontir/get_cuci', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")        
+    @http.route('/simontir/get_cuci/<user_id>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")        
     # @authentication
-    def get_cuci(self):
+    def get_cuci(self, user_id):
         try:
-            res = request.env['project.task'].sudo().search([('name', 'like', 'Cuci Motor'), ('timesheet_ids', '=', False)])
+            res = request.env['project.task'].sudo().search([
+                ('name', 'like', 'Cuci Motor'), 
+                ('timesheet_ids', '=', False), 
+                ('user_id', '=', int(user_id))])
             data = [{
                 "projectId": d.project_id.id,
                 "projectName": d.project_id.name,
