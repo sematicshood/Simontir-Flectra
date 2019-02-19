@@ -33,8 +33,32 @@ class RegisterAPIBentar(http.Controller):
     #         }
     #     ]
     # }
+
+
     @http.route('/simontir/cekso', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
+
+    # RESPONSE
+    # {
+    # "count": 1,
+    # "results":[
+    #     {
+    #     "id": 46,
+    #     "name": "SO044",
+    #     "tipe_motor":[],
+    #     "product":[
+    #         {
+    #         "id": 42,
+    #         "name": "Ice Cream",
+    #         "product_type": "product",
+    #         "harga": 100,
+    #         "stok": 0,
+    #         "product_code": "ABCDE123",
+    #         "similiar": "Es Dung Dung"
+    #         }
+    #     ],
+    # "colors":[]
+    # }
     def onLoad(self):
         try:
             #cek SO dengan state quotation
@@ -59,7 +83,9 @@ class RegisterAPIBentar(http.Controller):
                     "name": p.name,
                     "product_type": p.type,
                     "harga": p.list_price,
-                    "stok": p.qty_available
+                    "stok": p.qty_available,
+                    "product_code": p.barcode,
+                    "similiar": p.description
                 }for p in request.env['product.product'].sudo().search([])]
             }for data in cek]
 
