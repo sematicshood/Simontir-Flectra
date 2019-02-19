@@ -44,6 +44,8 @@ class BoardsAPIBentar(http.Controller):
     # @authentication
     def getso_mekanik(self, user_id):
         try:
+            partnerId = request.env['res.users'].sudo().search([('id','=',int(user_id))])
+
             so = request.env['sale.order'].sudo().search([
                 ('state','=','sent')
             ], order="id asc")
@@ -51,7 +53,7 @@ class BoardsAPIBentar(http.Controller):
             owns = request.env['sale.order'].sudo().search([
                 ('state','=','sale'),
                 ('invoice_status','=','no'),
-                ('mekanik_id','=',int(user_id))
+                ('mekanik_id','=',partnerId.partner_id.id
             ], order="id asc")
 
             data = [{
@@ -126,12 +128,13 @@ class BoardsAPIBentar(http.Controller):
         try:
             rq    =  request.jsonrequest
             data  =  request.env['sale.order'].sudo().search([('name','=',rq['invoice'])])
+            partnerId = request.env['res.users'].sudo().search([('id','=',rq['user_id'])])
             
             data.action_confirm()
 
             data.write({
                 'invoice_status': 'no',
-                'mekanik_id': rq['user_id'],
+                'mekanik_id': partnerId.partner_id.id,
             })
             
             so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',rq['invoice'])], fields=['project_ids'])
