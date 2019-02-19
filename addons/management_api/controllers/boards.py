@@ -53,7 +53,7 @@ class BoardsAPIBentar(http.Controller):
             owns = request.env['sale.order'].sudo().search([
                 ('state','=','sale'),
                 ('invoice_status','=','no'),
-                ('mekanik_id','=',partnerId.partner_id.id
+                ('mekanik_id','=',partnerId.partner_id.id)
             ], order="id asc")
 
             data = [{
@@ -134,7 +134,7 @@ class BoardsAPIBentar(http.Controller):
 
             data.write({
                 'invoice_status': 'no',
-                'mekanik_id': partnerId.partner_id.id,
+                'mekanik_id': partnerId.partner_id.id
             })
             
             so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',rq['invoice'])], fields=['project_ids'])
