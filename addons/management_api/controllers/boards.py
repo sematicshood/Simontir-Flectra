@@ -382,7 +382,8 @@ class BoardsAPIBentar(http.Controller):
 
                 data.write({
                     'x_is_reject': False,
-                    'invoice_status': 'no'
+                    'invoice_status': 'no',
+                    'x_duration': rq['duration'],
                 })
 
             return valid_response(status=200, data={
@@ -477,3 +478,21 @@ class BoardsAPIBentar(http.Controller):
             })
         except Exception as e:
             print(str(e))
+
+    @http.route('/simontir/cekNoMesin', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")        
+    # @authentication
+    def cekNoMesin(self, *args, **kwargs):
+        try:
+            req = request.jsonrequest
+
+            if len(req) > 1:
+                cek = request.env['fleet.vehicle'].sudo().search([('vin_sn','=',req['nomesin'])])
+
+                if len(cek) > 0:
+                    if cek[0].license_plate != req['nopol']:
+                        return False
+
+            return True
+        except Exception as e:
+            print(str(e))
+            print(traceback.format_exc())

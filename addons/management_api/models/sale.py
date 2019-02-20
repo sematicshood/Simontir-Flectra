@@ -14,4 +14,5 @@ class roles_users(models.Model):
     x_waktu_mulai       =   fields.Datetime()
     x_is_reject         =   fields.Boolean(default=False)
     x_is_wash           =   fields.Boolean(default=False)
-    mekanik_id          =   fields.Many2one('res.partner', string='Mekanik')
+    x_duration          =   fields.Char()
+    mekanik_id          =   fields.Many2one('res.users', string='Mekanik')
