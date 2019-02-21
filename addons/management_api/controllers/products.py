@@ -25,3 +25,15 @@ class ProductsAPIBentar(http.Controller):
                 'count': len(res),
                 'results': res
             })
+
+    @http.route('/simontir/nopol/search', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
+    # @authentication
+    def nopolSearch(self, nopol = None):
+        res = []
+
+        res      = request.env['fleet.vehicle'].sudo().search_read([('license_plate', 'ilike', nopol)], fields=['license_plate'])
+
+        return valid_response(status=200, data={
+                'count': len(res),
+                'results': res
+            })
