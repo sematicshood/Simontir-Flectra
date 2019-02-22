@@ -451,7 +451,7 @@ class RegisterAPIBentar(http.Controller):
         try:
             data = [{
                 "id":d.id,
-                "no_urut": d.name,
+                "no_urut": so,
                 "antrian_service": d.x_antrian_service,
                 "tgl_service": d.date_order,
                 "estimasi_waktu": d.x_estimasi_waktu,
