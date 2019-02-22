@@ -64,6 +64,18 @@ class ControllerAPIBentar(http.Controller):
             ('id','=',uid)
         ], fields=['image', 'name', 'role'])
 
+        id_em = request.env['res.users'].search_read([
+            ('id','=',uid)
+        ])[0]['employee_ids'][0]
+
+        hr    = request.env['hr.employee'].sudo().search_read([('id','=',id_em)],
+                    fields=['job_id']
+                )
+
+        user[0]['job']  =   hr[0]['job_id'][1]
+
+        print(user)
+
         if uid is not False:
             return valid_response(status=200, data=user).response
         else:
