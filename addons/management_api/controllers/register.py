@@ -69,7 +69,7 @@ class RegisterAPIBentar(http.Controller):
                     })
                 cek = self.cekSO()
 
-            brand   =   request.env['fleet.vehicle.model.brand'].sudo().search([('name','=','Honda')]);
+            brand   =   request.env['fleet.vehicle.model.brand'].sudo().search([('name','ilike','Honda')]);
                 
             data = [{
                 "id": data.id,
@@ -221,7 +221,9 @@ class RegisterAPIBentar(http.Controller):
                             'price_subtotal':"" if 'harga' not in data else data['harga']
                         })
 
-                print(product_id)
+                request.env['product.product'].sudo().search([('id','in',product_id)]).write({
+                    'x_type_motor': [(4,request.jsonrequest['type']['id'])]
+                })
 
                 notExist = request.env['sale.order.line'].sudo().search([
                     ('order_id','=',createSaleOrder.id),
@@ -332,7 +334,9 @@ class RegisterAPIBentar(http.Controller):
                             'price_subtotal':cuci.list_price
                         })
 
-                print(product_id)
+                request.env['product.product'].sudo().search([('id','in',product_id)]).write({
+                    'x_type_motor': [(4,request.jsonrequest['type']['id'])]
+                })
 
                 notExist = request.env['sale.order.line'].sudo().search([
                     ('order_id','=',createSaleOrder.id),

@@ -37,3 +37,24 @@ class ProductsAPIBentar(http.Controller):
                 'count': len(res),
                 'results': res
             })
+
+    @http.route('/simontir/products/tes', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
+    # @authentication
+    def nopolSearch(self, nopol = None):
+        try:
+            res = []
+
+            tes = request.env['product.product'].sudo().search([('id','=',1)]).write({
+                'x_type_motor': [(4,45)]
+            })
+
+            print(tes)
+
+            res = request.env['product.product'].sudo().search_read([('id','=',1)])
+
+            return valid_response(status=200, data={
+                    'count': len(res),
+                    'results': res
+                })
+        except Exception as identifier:
+            print(traceback.format_exc())
