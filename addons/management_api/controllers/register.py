@@ -246,7 +246,7 @@ class RegisterAPIBentar(http.Controller):
             else:
                 print("ada")
                 createPembawa = request.env['res.partner'].sudo().create({
-                    "parent_id": cekNopol.driver_id.id,
+                    "parent_id": cekNopol[0].driver_id.id,
                     "name":"" if 'namaPembawa' not in request.jsonrequest else request.jsonrequest['namaPembawa'],
                     "street":"" if 'alamat' not in request.jsonrequest else request.jsonrequest['alamat'],
                     "type":"other"
