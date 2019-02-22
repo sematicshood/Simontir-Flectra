@@ -128,7 +128,7 @@ class RegisterAPIBentar(http.Controller):
             tgl = ((request.jsonrequest['tglService']).split("T")[0]+" 00:00:00")
             tgll = datetime.datetime.strptime(tgl, '%Y-%m-%d %H:%M:%S')
 
-            cekNopol = request.env['fleet.vehicle'].sudo().search([("license_plate", "=", request.jsonrequest['noPolisi'])])
+            cekNopol = request.env['fleet.vehicle'].sudo().search([("license_plate", "=", request.jsonrequest['noPolisi'])])[0]
             if len(cekNopol) == 0:
                 print("kosong")
 
@@ -246,7 +246,7 @@ class RegisterAPIBentar(http.Controller):
             else:
                 print("ada")
                 createPembawa = request.env['res.partner'].sudo().create({
-                    "parent_id": cekNopol[0].driver_id.id,
+                    "parent_id": cekNopol.driver_id.id,
                     "name":"" if 'namaPembawa' not in request.jsonrequest else request.jsonrequest['namaPembawa'],
                     "street":"" if 'alamat' not in request.jsonrequest else request.jsonrequest['alamat'],
                     "type":"other"
