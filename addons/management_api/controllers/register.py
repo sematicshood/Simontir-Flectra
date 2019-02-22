@@ -9,7 +9,6 @@ import traceback
 class RegisterAPIBentar(http.Controller):
     def cekNotExist(self, order_id, product_id):
         count = request.env['sale.order.line'].sudo().search_count([('order_id','=',order_id), ('product_id','=',product_id)])
-        print(count)
 
         if count > 0:
             return False
@@ -297,6 +296,7 @@ class RegisterAPIBentar(http.Controller):
                 for data in request.jsonrequest['sparepartsSelected']:
                     product_id.append(data['id'])
                     if self.cekNotExist(createSaleOrder.id, data['id']):
+                        print(data['name'], data['id'], createSaleOrder.id)
                         createSOLine = request.env['sale.order.line'].sudo().create({
                             "order_id": createSaleOrder.id,
                             "product_id":"" if 'id' not in data else data['id'],
@@ -309,6 +309,7 @@ class RegisterAPIBentar(http.Controller):
                 for data in request.jsonrequest['servicesSelected']:
                     product_id.append(data['id'])
                     if self.cekNotExist(createSaleOrder.id, data['id']):
+                        print(data['name'], data['id'], createSaleOrder.id)
                         createSOLine = request.env['sale.order.line'].sudo().create({
                             "order_id": createSaleOrder.id,
                             "product_id":"" if 'id' not in data else data['id'],
