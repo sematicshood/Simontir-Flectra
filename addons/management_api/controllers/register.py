@@ -9,6 +9,7 @@ import traceback
 class RegisterAPIBentar(http.Controller):
     def cekNotExist(self, order_id, product_id):
         count = request.env['sale.order.line'].sudo().search_count([('order_id','=',order_id), ('product_id','=',product_id)])
+        print(count)
 
         if count > 0:
             return False
