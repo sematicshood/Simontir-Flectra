@@ -168,6 +168,11 @@ class RegisterAPIBentar(http.Controller):
                     "x_type_motor": "" if len(request.jsonrequest['type']) == 0 else request.jsonrequest['type']['name'],
                     "date_order":tgll,
                     "gross_amount": "" if 'total' not in request.jsonrequest else request.jsonrequest['total'],
+                    "x_kpb": request.jsonrequest['kpb'],
+                    "x_service": request.jsonrequest['service'],
+                    "x_turun_mesin": request.jsonrequest['turunMesin'],
+                    "x_ganti_oli": request.jsonrequest['gantiOli'],
+                    "x_ganti_part": request.jsonrequest['gantiPart'],
                 })
 
                 createKM = request.env['fleet.vehicle.odometer'].sudo().create({
@@ -254,6 +259,8 @@ class RegisterAPIBentar(http.Controller):
                     "type":"other"
                 })
 
+                print(request.jsonrequest['gantiPart'])
+
                 createSaleOrder = request.env['sale.order'].sudo().search([('name', '=', request.jsonrequest['noUrut'])])
                 createSaleOrder.sudo().write({
                     "state":"sent",
@@ -266,6 +273,11 @@ class RegisterAPIBentar(http.Controller):
                     "x_type_motor": "" if len(request.jsonrequest['type']) == 0 else request.jsonrequest['type']['name'],
                     "date_order":tgll,
                     "gross_amount": "" if 'total' not in request.jsonrequest else request.jsonrequest['total'],
+                    "x_kpb": request.jsonrequest['kpb'],
+                    "x_service": request.jsonrequest['service'],
+                    "x_turun_mesin": request.jsonrequest['turunMesin'],
+                    "x_ganti_oli": request.jsonrequest['gantiOli'],
+                    "x_ganti_part": request.jsonrequest['gantiPart'],
                 })
 
                 createKM = request.env['fleet.vehicle.odometer'].sudo().create({
@@ -466,6 +478,11 @@ class RegisterAPIBentar(http.Controller):
                 "email": d.partner_id.email,
                 "sosmed": d.partner_id.website,
                 "nopol": d.x_nopol,
+                "kpb": d.x_kpb,
+                "service": d.x_service,
+                "gantiOli": d.x_ganti_oli,
+                "gantiPart": d.x_ganti_part,
+                "turunMesin": d.x_turun_mesin,
                 "pembawa":[{
                     "id":p.id,
                     "nama":p.name,
@@ -499,6 +516,9 @@ class RegisterAPIBentar(http.Controller):
                 }for s in request.env['sale.order.line'].sudo().search([('order_id', '=', d.id)])],
                 "total": d.gross_amount
             }for d in request.env['sale.order'].sudo().search([('name', '=', so)])]
+
+            print(data)
+
             return valid_response(status=200, data={
                 'count': len(data),
                 'results': data

@@ -9,17 +9,31 @@ import traceback
 class ProductsAPIBentar(http.Controller):
     @http.route('/simontir/products/search', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def productSearch(self, barcode = None, name = None, description = None, type = None):
-        res = []
+    def productSearch(self, barcode = None, name = None, description = None, type = None, vehicle = None):
+        res    = []
+
+        search = []
+
+        fields = ['name', 'barcode', 'qty_available', 'list_price', 'type']
+
+        if type != None:
+            search.append(('type', '=', type))
 
         if barcode != None:
-            res      = request.env['product.product'].sudo().search_read([('barcode', 'ilike', barcode), ('type', '=', type)], fields=['name', 'barcode', 'qty_available', 'list_price', 'type'])
+            search.append(('barcode', 'ilike', barcode))
 
         if name != None:
-            res = request.env['product.product'].sudo().search_read([('name', 'ilike', name), ('type', '=', type)], fields=['name', 'barcode', 'qty_available', 'list_price', 'type'])
+            search.append(('name', 'ilike', name))
 
         if description != None:
-            res = request.env['product.product'].sudo().search_read([('description', 'ilike', description), ('type', '=', type)], fields=['name', 'barcode', 'qty_available', 'list_price', 'type'])
+            search.append(('description', 'ilike', description))
+
+        if vehicle != None:
+            products = request.env['fleet.vehicle.model'].sudo().search_read([('id','=',vehicle)], fields=['x_product_ids'])[0]['x_product_ids']
+
+            search.append(('id','in',products))
+
+        res = request.env['product.product'].sudo().search_read(search, fields=fields)
 
         return valid_response(status=200, data={
                 'count': len(res),
@@ -37,24 +51,3 @@ class ProductsAPIBentar(http.Controller):
                 'count': len(res),
                 'results': res
             })
-
-    @http.route('/simontir/products/tes', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
-    # @authentication
-    def nopolSearch(self, nopol = None):
-        try:
-            res = []
-
-            tes = request.env['product.product'].sudo().search([('id','=',1)]).write({
-                'x_type_motor': [(4,45)]
-            })
-
-            print(tes)
-
-            res = request.env['product.product'].sudo().search_read([('id','=',1)])
-
-            return valid_response(status=200, data={
-                    'count': len(res),
-                    'results': res
-                })
-        except Exception as identifier:
-            print(traceback.format_exc())
