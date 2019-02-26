@@ -66,6 +66,28 @@ class FileAPIBentar(http.Controller, Google):
             for d in data:
                 self.createContact(d)
 
+            payload = {
+                "names": [
+                    {
+                        "givenName": "k['name']",
+                        "middleName": "license[0]['license_plate']"
+                    }
+                ],
+                "phoneNumbers": [
+                    {
+                        "value": 865737563345,
+                        "type": "Mobile"
+                    }
+                ],
+                "emailAddresses": [
+                    {
+                        "value": "k['email']"
+                    }
+                ]
+            }
+
+            self.createContact(payload)
+
             return valid_response(status=200, data={
                 'count': len(data),
                 'results': data
