@@ -75,7 +75,7 @@ class FileAPIBentar(http.Controller, Google):
                 ],
                 "phoneNumbers": [
                     {
-                        "value": 865737563345,
+                        "value": "865737563345",
                         "type": "Mobile"
                     }
                 ],
