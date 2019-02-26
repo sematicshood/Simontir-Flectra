@@ -36,6 +36,16 @@ class UsersAPIBentar(http.Controller):
                 'results': users
             })
 
+    # TODO
+    # Tambahin filter tanggal range bulan ini
+    @http.route('/simontir/users/getTotalService/<user>', type="http", auth="none", method=['GET', 'OPTIONS'], csrf=False, cors="*")
+    def getTotalService(self, user):
+        users = request.env['sale.order'].sudo().search_count([('mekanik_id','=',int(user)), ('state','=','done')])
+
+        return valid_response(status=200, data={
+                'results': users
+            })
+
     @http.route('/simontir/users/updateRoleUser', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")        
     # @authentication
     def updateRoleUser(self, *args, **kwargs):

@@ -20,11 +20,12 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'sale', 'fleet', 'product', 'project'],
+    'depends': ['base', 'sale', 'fleet', 'product', 'project', 'base_automation', 'account'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
         'views/views.xml',
+        'views/action_on_create_customer.xml',
     ],
 }

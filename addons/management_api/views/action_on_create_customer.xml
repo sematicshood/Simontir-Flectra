@@ -1,0 +1,14 @@
+<flectra>
+    <data noupdate="1">
+        <record id="id_automated_create_google_contact" model="base.automation">
+            <field name="name">Automation System: Create Google Contact</field>
+            <field name="model_id" ref="account.model_res_partner"/>
+            <field name="active">1</field>
+            <field name="trigger">on_create_or_write</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = model.createGoogleContact(record)
+            </field>
+        </record>
+    </data>
+</flectra>
