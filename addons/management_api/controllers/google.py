@@ -24,7 +24,7 @@ class Google():
             # The file token.pickle stores the user's access and refresh tokens, and is
             # created automatically when the authorization flow completes for the first
             # time.
-            if os.path.exists('/addons/management_api/config/token.pickle'):
+            if os.path.exists('token.pickle'):
                 with open('token.pickle', 'rb') as token:
                     credentials = pickle.load(token)
 
