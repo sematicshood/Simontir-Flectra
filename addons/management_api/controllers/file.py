@@ -128,8 +128,14 @@ class FileAPIBentar(http.Controller, Google):
                     start = date[0]
                     end   = date[1]
 
-                    domain.append(('create_date', '>=', start))
-                    domain.append(('create_date', '<=', end))
+                    if start == end:
+                        d = datetime.strptime(end, '%Y-%m-%d')
+
+                        domain.append(('create_date', '>=', start))
+                        domain.append(('create_date', '<', (d + timedelta(days=1)).strftime("%Y-%m-%d")))
+                    else:
+                        domain.append(('create_date', '>=', start))
+                        domain.append(('create_date', '<=', end))
 
             if 'kpb' in params:
                 kpb = params['kpb']
