@@ -17,7 +17,7 @@ class roles_users(models.Model):
     x_duration          =   fields.Char()
     mekanik_id          =   fields.Many2one('res.users', string='Mekanik')
     x_kpb               =   fields.Selection([(1, 1),(2, 2),(3, 3)], string="Type KPB")
-    x_service           =   fields.Selection([('Ringan', 'Ringan'), ('Lengkap', 'Ringan')], string="Service Type")
+    x_service           =   fields.Selection([('Ringan', 'Ringan'), ('Lengkap', 'Lengkap')], string="Service Type")
     x_ganti_oli         =   fields.Boolean(default=False, string="Ganti Oli")
     x_ganti_part        =   fields.Boolean(default=False, string="Ganti part")
     x_turun_mesin       =   fields.Boolean(default=False, string="Turun Mesin")

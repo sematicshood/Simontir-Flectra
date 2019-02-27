@@ -6,6 +6,8 @@ from . rest_exception import *
 import datetime
 import traceback
 from . google import *
+from datetime import timedelta, datetime
+import ast
 
 class FileAPIBentar(http.Controller, Google):
     def __init__(self):
@@ -100,24 +102,103 @@ class FileAPIBentar(http.Controller, Google):
     def waBlaster(self, **params):
         try:
             domain = []
-            fields = ['name']
+            fields = ['name', 'partner_id', 'x_nopol']
             data   = []
 
-            kontak = request.env['res.partner'].sudo().search_read(domain=domain, fields=fields)
+            if 'followUp' in params:
+                if params['followUp'] == 'true':
+                    today = datetime.today()
+                    d     = today - timedelta(days=1)
 
-            for k in kontak:
-                license = request.env['fleet.vehicle'].sudo().search_read([('driver_id','=',k['id'])], fields=["license_plate"])
+                    domain.append(('create_date', '>=', d.strftime("%Y-%m-%d")))
+                    domain.append(('create_date', '<', today.strftime("%Y-%m-%d")))
 
-                if len(license) > 0:
+            if 'reminder' in params:
+                if params['reminder'] == 'true':
+                    today = datetime.today()
+                    d     = today - timedelta(days=60)
+                    nd    = d + timedelta(days=1)
+
+                    domain.append(('create_date', '>=', d.strftime("%Y-%m-%d")))
+                    domain.append(('create_date', '<', nd.strftime("%Y-%m-%d")))
+
+            if 'date' in params:
+                if params['date'] != '':
+                    date  = params['date'].split(' - ')
+                    start = date[0]
+                    end   = date[1]
+
+                    domain.append(('create_date', '>=', start))
+                    domain.append(('create_date', '<=', end))
+
+            if 'kpb' in params:
+                kpb = params['kpb']
+                if kpb != '':
+                    domain.append(('x_kpb','=',int(kpb)))
+
+            if 'service' in params:
+                service = params['service']
+                if service != '':
+                    domain.append(('x_service','=',service))
+
+            if 'ganti_oli' in params:
+                ganti_oli = params['ganti_oli']
+                if ganti_oli != 'false':
+                    domain.append(('x_ganti_oli','=',True))
+
+            if 'ganti_part' in params:
+                ganti_part = params['ganti_part']
+                if ganti_part != 'false':
+                    domain.append(('x_ganti_part','=',True))
+
+            if 'turun_mesin' in params:
+                turun_mesin = params['turun_mesin']
+                if turun_mesin != 'false':
+                    domain.append(('x_turun_mesin','=',True))
+
+            if 'type_motor' in params:
+                type_motor = ast.literal_eval(params['type_motor'])
+                if len(type_motor) > 0 and type_motor != 'null':
+                    domain.append(('x_type_motor','in',type_motor))
+
+
+            print(domain)
+
+            sales = request.env['sale.order'].sudo().search_read(domain=domain, fields=fields)
+            i = 1
+
+            for s in sales:
+
+                if s['x_nopol']:
                     data.append({
+                        'No': i,
                         'Check': 'FALSE',
-                        'Name': k['name'] + ' ' + license[0]['license_plate'],
+                        'Target': s['partner_id'][1] + ' ' + s['x_nopol'],
+                        'Source': '',
                         'Status': '',
                     })
+
+                    i += 1
 
             return valid_response(status=200, data={
                 'count': len(data),
                 'results': data
+            })
+
+        except Exception as identifier:
+            print(traceback.format_exc())
+
+
+    @http.route('/simontir/kendaraan/getType', type="http", methods=["GET", "OPTIONS"], auth="none", cors="*", csrf=False)
+    def getTypeKendaraan(self, **params):
+        try:
+            brand   =   request.env['fleet.vehicle.model.brand'].sudo().search([('name','ilike','Honda')])
+
+            type_motor =[d.display_name for d in request.env['fleet.vehicle.model'].sudo().search([('brand_id','=',brand[0].id)])]
+
+            return valid_response(status=200, data={
+                'count': len(type_motor),
+                'results': type_motor
             })
 
         except Exception as identifier:
