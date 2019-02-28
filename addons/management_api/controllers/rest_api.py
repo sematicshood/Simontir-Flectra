@@ -60,7 +60,7 @@ class ControllerAPIBentar(http.Controller):
         data = request.jsonrequest
         print(flectra.tools.config['db_name'])
 
-        uid  = request.session.authenticate(flectra.tools.config['db_name'], data['login'], data['password'])
+        uid  = request.session.authenticate('newsimontir', data['login'], data['password'])
         user = request.env['res.users'].search_read([
             ('id','=',uid)
         ], fields=['image', 'name', 'role'])
