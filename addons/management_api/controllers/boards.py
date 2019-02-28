@@ -137,7 +137,7 @@ class BoardsAPIBentar(http.Controller):
                 'mekanik_id': partnerId.partner_id.id
             })
             
-            so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',rq['invoice'])], fields=['project_ids'])
+            so    =  request.env['account.analytic.account'].sudo().search_read([('name','like',rq['invoice'])], fields=['project_ids'])
 
             request.env['sale.order'].sudo().search([('name','=',rq['invoice'])]).write({
                 'x_waktu_mulai': datetime.datetime.now()
@@ -190,7 +190,7 @@ class BoardsAPIBentar(http.Controller):
         try:
             sale  =  request.env['sale.order'].sudo().search_read([('name','=',no_ref)], fields=['x_nopol', 'x_waktu_mulai', 'x_is_wash'])
 
-            so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',no_ref)], fields=['project_ids'])
+            so    =  request.env['account.analytic.account'].sudo().search_read([('name','like',no_ref)], fields=['project_ids'])
 
             tasks =  request.env['project.task'].sudo().search_read([('project_id', '=', so[0]['project_ids'][0])], fields=['name', 'x_status'])
 
@@ -214,7 +214,7 @@ class BoardsAPIBentar(http.Controller):
         try:
 
             no_ref = str(no_ref)
-            
+
             sale  =  request.env['sale.order'].sudo().search_read([('name','=',no_ref)], fields=['x_nopol', 'x_waktu_mulai', 'x_is_wash'])
             so    =  request.env['account.analytic.account'].sudo().search_read([('name','like',no_ref)], fields=['project_ids'])
             tasks =  request.env['project.task'].sudo().search_read([('project_id', '=', so[0]['project_ids'][0])], fields=['name', 'x_status', 'x_state', 'x_duration'])
@@ -301,7 +301,7 @@ class BoardsAPIBentar(http.Controller):
             rq    =  request.jsonrequest
             data  =  request.env['sale.order'].sudo().search([('name','=',rq['invoice'])])
 
-            so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',rq['invoice'])], fields=['project_ids'])
+            so    =  request.env['account.analytic.account'].sudo().search_read([('name','like',rq['invoice'])], fields=['project_ids'])
 
             tasks =  request.env['project.task'].sudo().search([('project_id', '=', so[0]['project_ids'][0])])
 
