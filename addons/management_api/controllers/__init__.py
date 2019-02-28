@@ -6,3 +6,4 @@ from . import products
 from . import users
 from . import file
 from . import google
+from . import cash_count
