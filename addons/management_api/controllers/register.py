@@ -238,13 +238,13 @@ class RegisterAPIBentar(http.Controller):
                 notExist.unlink()
 
                 if request.jsonrequest['cuci'] == "true":
-                    cuci = request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')])
+                    cuci = request.env['product.product'].sudo().search([('name', '=', 'CUCI MOTOR')])
 
                     if self.cekNotExist(createSaleOrder.id, cuci.id):
                         createSOLine = request.env['sale.order.line'].sudo().create({
                             "order_id": createSaleOrder.id,
                             "product_id":request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).id,
-                            "name": 'Cuci Motor',
+                            "name": 'CUCI MOTOR',
                             "product_uom_qty":1,
                             "price_unit":request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).list_price,
                             'price_subtotal':request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).list_price
