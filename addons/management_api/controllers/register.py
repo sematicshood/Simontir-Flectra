@@ -128,7 +128,7 @@ class RegisterAPIBentar(http.Controller):
             tgl = ((request.jsonrequest['tglService']).split("T")[0]+" 00:00:00")
             tgll = datetime.datetime.strptime(tgl, '%Y-%m-%d %H:%M:%S')
 
-            cekNopol = request.env['fleet.vehicle'].sudo().search([("license_plate", "=", request.jsonrequest['noPolisi'])])[0]
+            cekNopol = request.env['fleet.vehicle'].sudo().search([("license_plate", "=", request.jsonrequest['noPolisi'])])
             if len(cekNopol) == 0:
                 print("kosong")
 
