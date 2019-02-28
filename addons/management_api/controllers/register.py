@@ -128,7 +128,7 @@ class RegisterAPIBentar(http.Controller):
             tgl = ((request.jsonrequest['tglService']).split("T")[0]+" 00:00:00")
             tgll = datetime.datetime.strptime(tgl, '%Y-%m-%d %H:%M:%S')
 
-            cekNopol = request.env['fleet.vehicle'].sudo().search([("license_plate", "=", request.jsonrequest['noPolisi'])])[0]
+            cekNopol = request.env['fleet.vehicle'].sudo().search([("license_plate", "=", request.jsonrequest['noPolisi'])])
             if len(cekNopol) == 0:
                 print("kosong")
 
@@ -238,16 +238,16 @@ class RegisterAPIBentar(http.Controller):
                 notExist.unlink()
 
                 if request.jsonrequest['cuci'] == "true":
-                    cuci = request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')])
+                    cuci = request.env['product.product'].sudo().search([('name', '=', 'CUCI MOTOR GRATIS')])
 
                     if self.cekNotExist(createSaleOrder.id, cuci.id):
                         createSOLine = request.env['sale.order.line'].sudo().create({
                             "order_id": createSaleOrder.id,
-                            "product_id":request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).id,
-                            "name": 'Cuci Motor',
+                            "product_id":cuci.id,
+                            "name": 'CUCI MOTOR',
                             "product_uom_qty":1,
-                            "price_unit":request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).list_price,
-                            'price_subtotal':request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')]).list_price
+                            "price_unit":cuci.list_price,
+                            'price_subtotal':cuci.list_price
                         })
                 
             else:
@@ -334,7 +334,7 @@ class RegisterAPIBentar(http.Controller):
                         })
 
                 if request.jsonrequest['cuci'] == "true":
-                    cuci = request.env['product.product'].sudo().search([('name', '=', 'Cuci Motor')])
+                    cuci = request.env['product.product'].sudo().search([('name', '=', 'CUCI MOTOR GRATIS')])
 
                     if self.cekNotExist(createSaleOrder.id, cuci.id):
                         createSOLine = request.env['sale.order.line'].sudo().create({

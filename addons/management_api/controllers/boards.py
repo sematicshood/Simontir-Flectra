@@ -208,10 +208,15 @@ class BoardsAPIBentar(http.Controller):
 
         pass
 
-    @http.route('/simontir/get_task/<no_ref>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
+    @http.route('/simontir/get_task/<path:no_ref>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
     def get_task (self, no_ref):
         try:
+
+            print(no_ref)
+
+            no_ref = str(no_ref)
+
             sale  =  request.env['sale.order'].sudo().search_read([('name','=',no_ref)], fields=['x_nopol', 'x_waktu_mulai', 'x_is_wash'])
 
             so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',no_ref)], fields=['project_ids'])
@@ -232,7 +237,7 @@ class BoardsAPIBentar(http.Controller):
                 }
             })
         except Exception as identifier:
-            print(identifier)
+            print(str(identifier))
 
         pass
 
