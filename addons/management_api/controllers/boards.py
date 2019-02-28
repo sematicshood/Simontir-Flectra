@@ -213,14 +213,10 @@ class BoardsAPIBentar(http.Controller):
     def get_task (self, no_ref):
         try:
 
-            print(no_ref)
-
             no_ref = str(no_ref)
-
+            
             sale  =  request.env['sale.order'].sudo().search_read([('name','=',no_ref)], fields=['x_nopol', 'x_waktu_mulai', 'x_is_wash'])
-
-            so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',no_ref)], fields=['project_ids'])
-
+            so    =  request.env['account.analytic.account'].sudo().search_read([('name','like',no_ref)], fields=['project_ids'])
             tasks =  request.env['project.task'].sudo().search_read([('project_id', '=', so[0]['project_ids'][0])], fields=['name', 'x_status', 'x_state', 'x_duration'])
 
             saran   =   request.env['temporary.analisa'].sudo().search_read([('x_ref_so', '=', sale[0]['id'])])
