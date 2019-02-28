@@ -232,7 +232,7 @@ class BoardsAPIBentar(http.Controller):
                 }
             })
         except Exception as identifier:
-            print(identifier)
+            print(str(identifier))
 
         pass
 
