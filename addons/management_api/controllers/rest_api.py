@@ -58,6 +58,7 @@ class ControllerAPIBentar(http.Controller):
     # @authentication
     def index(self, **get):
         data = request.jsonrequest
+        print(flectra.tools.config['db_name'])
 
         uid  = request.session.authenticate(flectra.tools.config['db_name'], data['login'], data['password'])
         user = request.env['res.users'].search_read([
