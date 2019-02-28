@@ -215,6 +215,8 @@ class BoardsAPIBentar(http.Controller):
 
             print(no_ref)
 
+            no_ref = str(no_ref)
+
             sale  =  request.env['sale.order'].sudo().search_read([('name','=',no_ref)], fields=['x_nopol', 'x_waktu_mulai', 'x_is_wash'])
 
             so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',no_ref)], fields=['project_ids'])
