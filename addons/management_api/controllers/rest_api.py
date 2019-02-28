@@ -58,14 +58,29 @@ class ControllerAPIBentar(http.Controller):
     # @authentication
     def index(self, **get):
         data = request.jsonrequest
-        print(flectra.tools.config['db_name'])
 
-        uid  = request.session.authenticate('newsimontir', data['login'], data['password'])
-        user = request.env['res.users'].search_read([
+        try:
+            request.session.authenticate(flectra.tools.config['db_name'], data['login'], data['password'])
+        except:
+            # Invalid database:
+            info = "Invalid database!"
+            error = 'invalid_database'
+            _logger.error(info)
+            return invalid_response(400, error, info)
+
+        uid = request.session.uid
+        # flectra login failed:
+        if not uid:
+            info = "flectra User authentication failed!"
+            error = 'flectra_user_authentication_failed'
+            _logger.error(info)
+            return invalid_response(401, error, info)
+
+        user = request.env['res.users'].sudo().search_read([
             ('id','=',uid)
         ], fields=['image', 'name', 'role'])
 
-        id_em = request.env['res.users'].search_read([
+        id_em = request.env['res.users'].sudo().search_read([
             ('id','=',uid)
         ])[0]['employee_ids'][0]
 
@@ -75,8 +90,7 @@ class ControllerAPIBentar(http.Controller):
 
         user[0]['job']  =   hr[0]['job_id'][1]
 
-        print(user)
-
+        # Successful response:
         if uid is not False:
             return valid_response(status=200, data=user).response
         else:
