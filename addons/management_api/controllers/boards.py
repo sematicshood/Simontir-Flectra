@@ -208,7 +208,7 @@ class BoardsAPIBentar(http.Controller):
 
         pass
 
-    @http.route('/simontir/get_task/<no_ref>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
+    @http.route('/simontir/get_task/<path:no_ref>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
     def get_task (self, no_ref):
         try:
