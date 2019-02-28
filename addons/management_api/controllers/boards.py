@@ -184,10 +184,12 @@ class BoardsAPIBentar(http.Controller):
             
         pass
 
-    @http.route('/simontir/get_final_detail/<no_ref>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
+    @http.route('/simontir/get_final_detail/<path:no_ref>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
     def get_final_detail(self, no_ref):
         try:
+            no_ref = str(no_ref)
+
             sale  =  request.env['sale.order'].sudo().search_read([('name','=',no_ref)], fields=['x_nopol', 'x_waktu_mulai', 'x_is_wash'])
 
             so    =  request.env['account.analytic.account'].sudo().search_read([('name','like',no_ref)], fields=['project_ids'])
