@@ -353,7 +353,7 @@ class BoardsAPIBentar(http.Controller):
                     })
 
             if rq['user_cuci'] != "":
-                task_cuci =  request.env['project.task'].sudo().search([('project_id', '=', so[0]['project_ids'][0]), ('description', 'like', 'Cuci Motor')])
+                task_cuci =  request.env['project.task'].sudo().search([('project_id', '=', so[0]['project_ids'][0]), ('description', 'like', '%CUCI MOTOR GRATIS')])
 
                 task_cuci.write({
                     'user_id': rq['user_cuci']
@@ -464,9 +464,11 @@ class BoardsAPIBentar(http.Controller):
     def get_cuci(self, user_id):
         try:
             res = request.env['project.task'].sudo().search([
-                ('name', 'like', 'Cuci Motor'), 
+                ('name', 'like', '%CUCI MOTOR GRATIS'), 
                 ('timesheet_ids', '=', False), 
                 ('user_id', '=', int(user_id))])
+            print("="*100)
+            print(res)
             data = [{
                 "projectId": d.project_id.id,
                 "projectName": d.project_id.name,
@@ -477,7 +479,7 @@ class BoardsAPIBentar(http.Controller):
                 "taskId":d.id,
                 "taskName":d.name,
             }for d in res]
-
+            print(data)
 
             return valid_response(status=200, data={
                 'data': data
