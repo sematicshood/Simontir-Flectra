@@ -467,8 +467,7 @@ class BoardsAPIBentar(http.Controller):
                 ('name', 'like', '%CUCI MOTOR GRATIS'), 
                 ('timesheet_ids', '=', False), 
                 ('user_id', '=', int(user_id))])
-            print("="*100)
-            print(res)
+                
             data = [{
                 "projectId": d.project_id.id,
                 "projectName": d.project_id.name,
@@ -479,7 +478,6 @@ class BoardsAPIBentar(http.Controller):
                 "taskId":d.id,
                 "taskName":d.name,
             }for d in res]
-            print(data)
 
             return valid_response(status=200, data={
                 'data': data
