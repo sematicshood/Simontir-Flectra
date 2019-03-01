@@ -72,7 +72,7 @@
                                             <td width="10%">Mknk/Ksr</td>
                                             <td width="23%">: <span t-field="o.origin"/></td>
                                             <td width="20%">Tgl Cetak</td>
-                                            <td width="13%">: <span t-field="o.name"/></td>
+                                            <td width="13%">: <span t-field="o.date_invoice"/></td>
                                         </tr>
                                     </table>
                                 </t>
