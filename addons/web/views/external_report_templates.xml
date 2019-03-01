@@ -8,7 +8,7 @@
                 </div>
                 <div class="col-xs-10 company-address" style="margin-top: 0px;">
                     <p style="font-weight: 900; font-size: 20pt !important; margin-bottom: 0px;" class="company-name"><span t-field="company.partner_id.name"/></p>
-                    <p style="font-weight: 900; font-size: 12pt; margin-bottom: 0px;"><span t-field="company.partner_id.street"/>, <span t-field="company.partner_id.street2"/> <span t-field="company.partner_id.zip"/></p>
+                    <p style="font-weight: 900; font-size: 10pt; margin-bottom: 0px;"><span t-field="company.partner_id.street"/>, <span t-field="company.partner_id.street2"/> <span t-field="company.partner_id.zip"/></p>
                 </div>
             </div>
             <div class="row" t-if="1 == 2">

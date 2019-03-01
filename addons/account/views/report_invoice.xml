@@ -4,8 +4,8 @@
         <template id="report_invoice_document">
             <t t-call="web.external_layout">
                 <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})" />
-                <t t-set="amount_product"></t>
-                <t t-set="amount_service"></t>
+                <t t-set="amount_product" t-value="0"></t>
+                <t t-set="amount_service" t-value="0"></t>
                 <div class="page">
                     <div class="row" t-if="1 == 2">
                         <div name="invoice_address" class="col-xs-5 col-xs-offset-7">
@@ -16,12 +16,12 @@
                     </div>
 
                     <div width="100%" style="border-top: 1px solid black; border-bottom: 1px solid black;">
-                        <h4 style="margin: 3px 0px 2px 150px; font-weight: 800;">
+                        <h5 style="margin: 3px 0px 2px 150px; font-weight: 800;">
                             <span t-if="o.type == 'out_invoice' and (o.state == 'open' or o.state == 'paid')" style="margin-right: 40px;">I N V O I C E</span>
                             <span t-field="o.number"/>
-                        </h4>
+                        </h5>
                     </div>   
-                    
+
                     <h4 t-if="1 == 2">
                         <span t-if="o.type == 'out_invoice' and (o.state == 'open' or o.state == 'paid')" style="margin-right: 20px;">I N V O I C E</span>
                         <span t-if="o.type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
@@ -31,7 +31,7 @@
                         <span t-if="o.type == 'in_invoice'">Vendor Bill</span>
                         <span t-field="o.number"/>
                     </h4>
-                 
+
                     <table width="100%" style="border-top: 0.5px solid black; border-bottom: 0.5px solid black;">    
                         
                     </table> 
@@ -134,7 +134,7 @@
                                 <th colspan="6">Suku Cadang : </th>
                             </tr>
                             <tr t-foreach="o.invoice_line_ids" t-as="l" t-if="l.product_id.type == 'product'">
-                                <t t-set="amount_product" t-value="+ l.price_subtotal"></t>
+                                <t t-set="amount_product" t-value="amount_product + l.price_subtotal"></t>
                                 <td><span t-field="l.product_id.barcode"/></td>
                                 <td><span t-field="l.name"/></td>
                                 <td class="hidden"><span t-field="l.origin"/></td>
@@ -160,7 +160,7 @@
                                 <th colspan="6">Rincian Jasa : </th>
                             </tr>
                             <tr t-foreach="o.invoice_line_ids" t-as="l" t-if="l.product_id.type == 'service'">
-                                 <t t-set="amount_service" t-value="+ l.price_subtotal"></t>
+                                 <t t-set="amount_service" t-value="amount_service + l.price_subtotal"></t>
                                 <td><span t-field="l.product_id.barcode"/></td>
                                 <td><span t-field="l.name"/></td>
                                 <td class="hidden"><span t-field="l.origin"/></td>
@@ -223,7 +223,7 @@
                                 <p style="font-size: 8pt;"><strong>Saran Mekanik : </strong></p>
                                 <t t-foreach="request.env['sale.order'].search([('name', '=', o.origin), ('invoice_ids', '=', o.id)])" t-as="SO">
                                     <t t-foreach="request.env['temporary.analisa'].search([('x_ref_so', '=', SO.id)])" t-as="TA">
-                                        <pre style="font-size: 8pt; line-height: 0.56; margin: -10px  10px 0px 0px; padding: 5px 0px 5px 0px; background-color: transparent; border: 0px; color: black; overflow: hidden;" t-field="TA.x_saran" />
+                                        <pre style="font-size: 8pt; margin: -10px  10px 0px 0px; padding: 5px 0px 5px 0px; background-color: transparent; border: 0px; color: black; overflow: hidden;" t-field="TA.x_saran" />
                                     </t>
                                 </t>                         
                             </div>
@@ -233,7 +233,7 @@
                                 <p style="font-size: 8pt;"><strong>Analisa Service Advisor : </strong></p>
                                 <t t-foreach="request.env['sale.order'].search([('name', '=', o.origin), ('invoice_ids', '=', o.id)])" t-as="SO">
                                     <t t-foreach="request.env['temporary.analisa'].search([('x_ref_so', '=', SO.id)])" t-as="TA">
-                                        <pre style="font-size: 8pt; line-height: 0.56; margin: -10px  10px 0px 0px; padding: 5px 0px 5px 0px; background-color: transparent; border: 0px; color: black; overflow: hidden;" t-field="TA.x_analisa" />
+                                        <pre style="font-size: 8pt; margin: -10px  10px 0px 0px; padding: 5px 0px 5px 0px; background-color: transparent; border: 0px; color: black; overflow: hidden;" t-field="TA.x_analisa" />
                                     </t>
                                 </t>                         
                             </div>

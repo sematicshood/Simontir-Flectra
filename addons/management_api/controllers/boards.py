@@ -137,7 +137,7 @@ class BoardsAPIBentar(http.Controller):
                 'mekanik_id': partnerId.partner_id.id
             })
             
-            so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',rq['invoice'])], fields=['project_ids'])
+            so    =  request.env['account.analytic.account'].sudo().search_read([('name','like',rq['invoice'])], fields=['project_ids'])
 
             request.env['sale.order'].sudo().search([('name','=',rq['invoice'])]).write({
                 'x_waktu_mulai': datetime.datetime.now()
@@ -184,13 +184,15 @@ class BoardsAPIBentar(http.Controller):
             
         pass
 
-    @http.route('/simontir/get_final_detail/<no_ref>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
+    @http.route('/simontir/get_final_detail/<path:no_ref>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
     def get_final_detail(self, no_ref):
         try:
+            no_ref = str(no_ref)
+
             sale  =  request.env['sale.order'].sudo().search_read([('name','=',no_ref)], fields=['x_nopol', 'x_waktu_mulai', 'x_is_wash'])
 
-            so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',no_ref)], fields=['project_ids'])
+            so    =  request.env['account.analytic.account'].sudo().search_read([('name','like',no_ref)], fields=['project_ids'])
 
             tasks =  request.env['project.task'].sudo().search_read([('project_id', '=', so[0]['project_ids'][0])], fields=['name', 'x_status'])
 
@@ -213,14 +215,10 @@ class BoardsAPIBentar(http.Controller):
     def get_task (self, no_ref):
         try:
 
-            print(no_ref)
-
             no_ref = str(no_ref)
 
             sale  =  request.env['sale.order'].sudo().search_read([('name','=',no_ref)], fields=['x_nopol', 'x_waktu_mulai', 'x_is_wash'])
-
-            so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',no_ref)], fields=['project_ids'])
-
+            so    =  request.env['account.analytic.account'].sudo().search_read([('name','like',no_ref)], fields=['project_ids'])
             tasks =  request.env['project.task'].sudo().search_read([('project_id', '=', so[0]['project_ids'][0])], fields=['name', 'x_status', 'x_state', 'x_duration'])
 
             saran   =   request.env['temporary.analisa'].sudo().search_read([('x_ref_so', '=', sale[0]['id'])])
@@ -267,7 +265,10 @@ class BoardsAPIBentar(http.Controller):
                     "partner_id": task[0]['user_id'][0]['id'],
                     "task_id": rq['id'],
                     "employee_id": hr[0].id if len(hr) > 0 else '',
-                    "account_id": task.project_id[0].analytic_account_id[0].id
+                    "account_id": task.project_id[0].analytic_account_id[0].id,
+                    "project_id": task.project_id.id,
+                    "product_uom_id": task.project_id.sale_line_id.product_uom.id
+
                 })
 
         except Exception as identifier:
@@ -305,7 +306,7 @@ class BoardsAPIBentar(http.Controller):
             rq    =  request.jsonrequest
             data  =  request.env['sale.order'].sudo().search([('name','=',rq['invoice'])])
 
-            so    =  request.env['account.analytic.account'].sudo().search_read([('name','=',rq['invoice'])], fields=['project_ids'])
+            so    =  request.env['account.analytic.account'].sudo().search_read([('name','like',rq['invoice'])], fields=['project_ids'])
 
             tasks =  request.env['project.task'].sudo().search([('project_id', '=', so[0]['project_ids'][0])])
 
