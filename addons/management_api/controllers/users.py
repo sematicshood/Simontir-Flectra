@@ -3,7 +3,7 @@ import flectra
 from flectra.http import request
 from . rest_api import authentication
 from . rest_exception import *
-import datetime
+from datetime import datetime, timedelta
 import traceback
 
 class UsersAPIBentar(http.Controller):
@@ -36,15 +36,40 @@ class UsersAPIBentar(http.Controller):
                 'results': users
             })
 
-    # TODO
-    # Tambahin filter tanggal range bulan ini
+    def getFirstDay(self, date):
+        return datetime(date.year, date.month, 1).strftime('%Y-%m-%d')
+
+    def getLastDay(self, date):
+        year  = date.year
+        month = date.month + 1
+
+        if date.month == 12:
+            year  = date.year + 1
+            month = 1
+
+
+        d   =   datetime(year, month, 1) - timedelta(days=1)
+        
+        return d.strftime('%Y-%m-%d')
+
     @http.route('/simontir/users/getTotalService/<user>', type="http", auth="none", method=['GET', 'OPTIONS'], csrf=False, cors="*")
     def getTotalService(self, user):
-        users = request.env['sale.order'].sudo().search_count([('mekanik_id','=',int(user)), ('state','=','done')])
+        try:
+            domain = [
+                ('mekanik_id','=',int(user)), 
+                ('state','=','done'),
+                ('create_date','>=',self.getFirstDay(datetime.today())),
+                ('create_date','<=',self.getLastDay(datetime.today()))
+            ]
+            print(domain)
 
-        return valid_response(status=200, data={
-                'results': users
-            })
+            users = request.env['sale.order'].sudo().search_count(domain)
+
+            return valid_response(status=200, data={
+                    'results': users
+                })
+        except Exception as identifier:
+            pass
 
     @http.route('/simontir/users/updateRoleUser', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")        
     # @authentication
