@@ -265,7 +265,10 @@ class BoardsAPIBentar(http.Controller):
                     "partner_id": task[0]['user_id'][0]['id'],
                     "task_id": rq['id'],
                     "employee_id": hr[0].id if len(hr) > 0 else '',
-                    "account_id": task.project_id[0].analytic_account_id[0].id
+                    "account_id": task.project_id[0].analytic_account_id[0].id,
+                    "project_id": task.project_id.id,
+                    "product_uom_id": task.project_id.sale_line_id.product_uom.id
+
                 })
 
         except Exception as identifier:
