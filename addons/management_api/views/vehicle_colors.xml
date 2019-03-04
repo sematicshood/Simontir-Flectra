@@ -1,0 +1,39 @@
+<flectra>
+    <data>
+        <!-- explicit list view definition -->
+    
+        <record model="ir.ui.view" id="management_api.list_vehicle_colors">
+            <field name="name">List Vehicle Colors</field>
+            <field name="model">vehicle.colors</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="color"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="management_api.form_vehicle_colors">
+            <field name="name">Form Vehicle Colors</field>
+            <field name="model">vehicle.colors</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <label for="color" string="Vehicle Color"/>
+                        <field name="color"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    
+
+        <!-- actions opening views on models -->
+        
+        <record model="ir.actions.act_window" id="management_api.action_window_vehicle_colors">
+            <field name="name">List Vehicle Colors</field>
+            <field name="res_model">vehicle.colors</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Vehicle Colors" id="management_api.colors" parent="management_api.menu_2" action="management_api.action_window_vehicle_colors"/>
+    </data>
+</flectra>

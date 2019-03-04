@@ -1,25 +1,9 @@
 <flectra>
   <data>
-    <record model="ir.ui.view" id="fleet_models_replace_form">
-        <field name="name">fleet.models.replace.form</field>
-        <field name="model">fleet.vehicle.model</field>
-        <field name="inherit_id" ref="fleet.fleet_vehicle_model_view_form" />
-        <field name="type">form</field>
-        <field name="arch" type="xml">
-            <xpath expr="/form/sheet/notebook" position="inside">
-                <page string="Products" name="products">
-                    <sheet>
-                        <field name="x_product_ids" widget="many2many"/>
-                    </sheet>
-                </page>
-            </xpath>
-        </field>
-    </record>
-
     <!-- explicit list view definition -->
     
     <record model="ir.ui.view" id="management_api.list">
-      <field name="name">management_api list</field>
+      <field name="name">List Management API Key</field>
       <field name="model">management_api.management_api</field>
       <field name="arch" type="xml">
         <tree>
@@ -31,11 +15,12 @@
     </record>
 
     <record model="ir.ui.view" id="management_api.form">
-      <field name="name">management_api form</field>
+      <field name="name">Form Management API Key</field>
       <field name="model">management_api.management_api</field>
       <field name="arch" type="xml">
         <form>
           <sheet>
+            <label for="name" string="Name Apps"/>
             <field name="name"/>
           </sheet>
         </form>
@@ -46,7 +31,7 @@
     <!-- actions opening views on models -->
     
     <record model="ir.actions.act_window" id="management_api.action_window">
-      <field name="name">management_api window</field>
+      <field name="name">List Management API Key</field>
       <field name="res_model">management_api.management_api</field>
       <field name="view_mode">tree,form</field>
     </record>
@@ -54,10 +39,13 @@
 
     <!-- Top menu item -->
     
-    <menuitem name="management_api" id="management_api.menu_root"/>
+    <menuitem name="Bengkel" id="management_api.menu_root"/>
     <!-- menu categories -->
     
-    <menuitem name="Menu 1" id="management_api.menu_1" parent="management_api.menu_root" action="management_api.action_window"/>
+    <menuitem name="Management API" id="management_api.menu_1" parent="management_api.menu_root"/>
+    <menuitem name="Vehicle" id="management_api.menu_2" parent="management_api.menu_root"/>
+
+    <menuitem name="Credentials" id="management_api.credentials" parent="management_api.menu_1" action="management_api.action_window"/>
    
   </data>
 </flectra>

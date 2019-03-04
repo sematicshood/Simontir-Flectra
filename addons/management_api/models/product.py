@@ -1,6 +1,6 @@
 from flectra import models, fields
 
-class product(models.Model):
-    _inherit    =   'product.product'
+class productTemplate(models.Model):
+    _inherit    =   'product.template'
 
-    x_type_motor = fields.Many2many('fleet.vehicle.model', string='Tipe Motor')
+    vehicle_models_ids = fields.Many2many('fleet.vehicle.model', string='Vehicle Models')

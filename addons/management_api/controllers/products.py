@@ -16,6 +16,8 @@ class ProductsAPIBentar(http.Controller):
 
         fields = ['name', 'barcode', 'qty_available', 'list_price', 'type']
 
+        limit  = 10
+
         if type != None:
             search.append(('type', '=', type))
 
@@ -31,9 +33,9 @@ class ProductsAPIBentar(http.Controller):
         if vehicle != None:
             products = request.env['fleet.vehicle.model'].sudo().search_read([('id','=',vehicle)], fields=['x_product_ids'])[0]['x_product_ids']
 
-            search.append(('id','in',products))
+            search.append(('product_tmpl_id','in',products))
 
-        res = request.env['product.product'].sudo().search_read(search, fields=fields)
+        res = request.env['product.product'].sudo().search_read(search, fields=fields, limit=limit)
 
         return valid_response(status=200, data={
                 'count': len(res),
@@ -45,7 +47,7 @@ class ProductsAPIBentar(http.Controller):
     def nopolSearch(self, nopol = None):
         res = []
 
-        res      = request.env['fleet.vehicle'].sudo().search_read([('license_plate', 'ilike', nopol)], fields=['license_plate'])
+        res      = request.env['fleet.vehicle'].sudo().search_read([('license_plate', 'ilike', nopol)], fields=['license_plate'], limit=10)
 
         return valid_response(status=200, data={
                 'count': len(res),

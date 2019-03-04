@@ -10,4 +10,4 @@ class fleet(models.Model):
     _inherit    =   'fleet.vehicle.model'
 
     x_group_motor   =   fields.Char()
-    x_product_ids = fields.Many2many('product.product', string='Product Motor')
+    x_product_ids = fields.Many2many('product.template', string='Product Motor')

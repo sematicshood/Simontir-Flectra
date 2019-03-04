@@ -1,0 +1,35 @@
+<flectra>
+    <data>
+        <record model="ir.ui.view" id="fleet_models_replace_form">
+            <field name="name">fleet.models.replace.form</field>
+            <field name="model">fleet.vehicle.model</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_model_view_form" />
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook" position="inside">
+                    <page string="Products" name="products">
+                        <sheet>
+                            <field name="x_product_ids" widget="many2many"/>
+                        </sheet>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_template_vehicle_models_form_view" model="ir.ui.view">
+            <field name="name">product.template.form.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook" position="inside">
+                    <page string="Vehicle Models" name="vehicle_models">
+                        <sheet>
+                            <field name="vehicle_models_ids" widget="many2many"/>
+                        </sheet>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</flectra>

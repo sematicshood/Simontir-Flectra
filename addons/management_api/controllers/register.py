@@ -226,8 +226,8 @@ class RegisterAPIBentar(http.Controller):
                             'price_subtotal':"" if 'harga' not in data else data['harga']
                         })
 
-                request.env['product.product'].sudo().search([('id','in',product_id)]).write({
-                    'x_type_motor': [(4,request.jsonrequest['type']['id'])]
+                request.env['product.template'].sudo().search([('product_id','in',product_id)]).write({
+                    'vehicle_models_ids': [(4,request.jsonrequest['type']['id'])]
                 })
 
                 notExist = request.env['sale.order.line'].sudo().search([
@@ -346,8 +346,8 @@ class RegisterAPIBentar(http.Controller):
                             'price_subtotal':cuci.list_price
                         })
 
-                request.env['product.product'].sudo().search([('id','in',product_id)]).write({
-                    'x_type_motor': [(4,request.jsonrequest['type']['id'])]
+                request.env['product.template'].sudo().search([('product_id','in',product_id)]).write({
+                    'vehicle_models_ids': [(4,request.jsonrequest['type']['id'])]
                 })
 
                 notExist = request.env['sale.order.line'].sudo().search([

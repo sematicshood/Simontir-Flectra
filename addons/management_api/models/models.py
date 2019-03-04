@@ -7,7 +7,7 @@ import datetime
 class management_api(models.Model):
     _name = 'management_api.management_api'
 
-    name            = fields.Char()
+    name            = fields.Char(string="Name apps")
     client_api      = fields.Text(compute="_client_api", store=True)
     client_secret   = fields.Text(compute="_client_secret", store=True)
 
