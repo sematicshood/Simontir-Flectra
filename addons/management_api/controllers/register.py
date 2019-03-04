@@ -461,7 +461,7 @@ class RegisterAPIBentar(http.Controller):
         except Exception as e:
             print(str(e))
 
-    @http.route('/simontir/print-so/<so>', type='http', auth='none', methods=['GET'], csrf=False, cors="*")
+    @http.route('/simontir/print-so/<path:so>', type='http', auth='none', methods=['GET'], csrf=False, cors="*")
     # @authentication
     def printSO(self, so):
         try:
