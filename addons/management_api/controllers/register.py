@@ -244,7 +244,7 @@ class RegisterAPIBentar(http.Controller):
                         createSOLine = request.env['sale.order.line'].sudo().create({
                             "order_id": createSaleOrder.id,
                             "product_id":cuci.id,
-                            "name": 'CUCI MOTOR',
+                            "name": 'CUCI MOTOR GRATIS',
                             "product_uom_qty":1,
                             "price_unit":cuci.list_price,
                             'price_subtotal':cuci.list_price
@@ -340,7 +340,7 @@ class RegisterAPIBentar(http.Controller):
                         createSOLine = request.env['sale.order.line'].sudo().create({
                             "order_id": createSaleOrder.id,
                             "product_id":cuci.id,
-                            "name": "Cuci Motor",
+                            "name": "CUCI MOTOR GRATIS",
                             "product_uom_qty":1,
                             "price_unit":cuci.list_price,
                             'price_subtotal':cuci.list_price
@@ -461,7 +461,7 @@ class RegisterAPIBentar(http.Controller):
         except Exception as e:
             print(str(e))
 
-    @http.route('/simontir/print-so/<so>', type='http', auth='none', methods=['GET'], csrf=False, cors="*")
+    @http.route('/simontir/print-so/<path:so>', type='http', auth='none', methods=['GET'], csrf=False, cors="*")
     # @authentication
     def printSO(self, so):
         try:

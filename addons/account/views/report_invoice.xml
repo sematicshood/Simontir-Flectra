@@ -51,7 +51,7 @@
                                         </tr>
                                         <tr>
                                             <td width="10%">Alamat</td>
-                                            <td width="23%">: <span t-esc="o.partner_id.street2"/></td>
+                                            <td width="23%">: <span t-esc="o.partner_id.street"/></td>
                                             <td width="10%">No. Rangka</td>
                                             <td width="23%">: <span t-field="FV.location"/></td>
                                             <td width="20%">Tahun/warna</td>
@@ -59,7 +59,7 @@
                                         </tr>
                                         <tr>
                                             <td width="10%">Telp</td>
-                                            <td width="23%">: <span t-field="o.partner_id.phone"/></td>
+                                            <td width="23%">: <span t-field="o.partner_id.mobile"/></td>
                                             <td width="10%">No. Mesin</td>
                                             <td width="23%">: <span t-field="FV.vin_sn"/></td>
                                             <td width="20%">Kmbl Service KM</td>                                            
@@ -72,7 +72,7 @@
                                             <td width="10%">Mknk/Ksr</td>
                                             <td width="23%">: <span t-field="o.origin"/></td>
                                             <td width="20%">Tgl Cetak</td>
-                                            <td width="13%">: <span t-field="o.name"/></td>
+                                            <td width="13%">: <span t-field="o.date_invoice"/></td>
                                         </tr>
                                     </table>
                                 </t>
