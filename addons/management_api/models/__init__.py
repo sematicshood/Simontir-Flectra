@@ -10,3 +10,4 @@ from . import temporaryAnalisa
 from . import task
 from . import colors
 from . import cash_count
+from . import wablaster

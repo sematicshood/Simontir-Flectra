@@ -1,0 +1,39 @@
+<flectra>
+    <data>
+        <record model="ir.ui.view" id="crm.list_wablaster">
+            <field name="name">List WA Sender</field>
+            <field name="model">wablaster</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="messages"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="crm.form_wablaster">
+            <field name="name">Form WA Sender</field>
+            <field name="model">wablaster</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <label for="phones">Receiver</label>
+                        <field name="phones" widget="many2many"/>
+                        <label for="messages">Messages</label>
+                        <field name="messages"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    
+
+        <!-- actions opening views on models -->
+        
+        <record model="ir.actions.act_window" id="crm.action_window_wablaster">
+            <field name="name">Wa Semder</field>
+            <field name="res_model">wablaster</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="WA Sender" id="crm.wa_sender" parent="crm.crm_menu_root" action="crm.action_window_wablaster"/>
+    </data>
+</flectra>

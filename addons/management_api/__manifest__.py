@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'sale', 'fleet', 'product', 'project', 'base_automation', 'account'],
+    'depends': ['base', 'sale', 'fleet', 'product', 'project', 'base_automation', 'account', 'crm'],
 
     # always loaded
     'data': [
@@ -30,5 +30,6 @@
         'views/vehicle_colors.xml',
         'views/action_on_create_customer.xml',
         'views/custom_field_product.xml',
+        'views/wa_sender_form.xml',
     ],
 }
