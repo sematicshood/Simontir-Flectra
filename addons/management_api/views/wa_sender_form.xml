@@ -17,7 +17,7 @@
                 <form>
                     <sheet>
                         <label for="phones">Receiver</label>
-                        <field name="phones" widget="many2many"/>
+                        <field name="phones" widget="many2many" options="{'limit': 500}"/>
                         <label for="messages">Messages</label>
                         <field name="messages"/>
                     </sheet>

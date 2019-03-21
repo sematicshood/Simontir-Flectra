@@ -1,0 +1,14 @@
+<flectra>
+    <data noupdate="1">
+        <record id="wablaster_automated_send_wa" model="base.automation">
+            <field name="name">Automation System: Wa Sender</field>
+            <field name="model_id" ref="management_api.model_wablaster"/>
+            <field name="active">1</field>
+            <field name="trigger">on_create_or_write</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = model.sender(record)
+            </field>
+        </record>
+    </data>
+</flectra>

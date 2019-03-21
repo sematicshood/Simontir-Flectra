@@ -1,0 +1,59 @@
+<flectra>
+    <data>
+        <!-- explicit list view definition -->
+    
+        <record model="ir.ui.view" id="management_api.list_account_wablaster">
+            <field name="name">List Account Wa Blaster</field>
+            <field name="model">wablaster.account</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="username"/>
+                    <field name="email"/>
+                    <field name="phone_number"/>
+                    <field name="api_key"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="management_api.form_account_wablaster">
+            <field name="name">Form Account Wa Blaster</field>
+            <field name="model">wablaster.account</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <sheet>
+                            <label for="username" string="username"/>
+                            <field name="username"/>
+                        </sheet>
+
+                        <sheet>
+                            <label for="email" string="email"/>
+                            <field name="email"/>
+                        </sheet>
+
+                        <sheet>
+                            <label for="phone_number" string="phone number"/>
+                            <field name="phone_number"/>
+                        </sheet>
+
+                        <sheet>
+                            <label for="api_key" string="api key"/>
+                            <field name="api_key"/>
+                        </sheet>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    
+
+        <!-- actions opening views on models -->
+        
+        <record model="ir.actions.act_window" id="management_api.action_window_account_wablaster">
+            <field name="name">List Account Wa Blaster</field>
+            <field name="res_model">wablaster.account</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Account Wa Blaster" id="management_api.account_wablaster" parent="management_api.menu_1" action="management_api.action_window_account_wablaster"/>
+    </data>
+</flectra>
