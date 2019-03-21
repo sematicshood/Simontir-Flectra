@@ -29,5 +29,6 @@
         'views/fleet_models_product.xml',
         'views/vehicle_colors.xml',
         'views/action_on_create_customer.xml',
+        'views/custom_field_product.xml',
     ],
 }

@@ -9,38 +9,48 @@ import traceback
 class ProductsAPIBentar(http.Controller):
     @http.route('/simontir/products/search', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def productSearch(self, barcode = None, name = None, description = None, type = None, vehicle = None):
-        res    = []
+    def productSearch(self, barcode = None, name = None, description = None, type = None, vehicle = None, page = 0, register = None):
+        try:
+            res    = []
 
-        search = []
+            search = []
 
-        fields = ['name', 'barcode', 'qty_available', 'list_price', 'type']
+            fields = ['name', 'barcode', 'qty_available', 'list_price', 'type', 'sales_count', 'minimal_km']
 
-        limit  = 10
+            limit  = 10
+            offset = int(page)
+            offset = ((offset - 1) if offset > 0 else 0) * limit
 
-        if type != None:
-            search.append(('type', '=', type))
+            if type != None:
+                search.append(('type', '=', type))
 
-        if barcode != None:
-            search.append(('barcode', 'ilike', barcode))
+            if barcode != None:
+                search.append(('barcode', 'ilike', barcode))
 
-        if name != None:
-            search.append(('name', 'ilike', name))
+            if name != None:
+                search.append(('name', 'ilike', name))
 
-        if description != None:
-            search.append(('description', 'ilike', description))
+            if description != None:
+                search.append(('description', 'ilike', description))
 
-        if vehicle != None:
-            products = request.env['fleet.vehicle.model'].sudo().search_read([('id','=',vehicle)], fields=['x_product_ids'])[0]['x_product_ids']
+            if register != None:
+                if register == 'true':
+                    search.append(('registrasi', '=', True))
 
-            search.append(('product_tmpl_id','in',products))
+            if vehicle != None:
+                products = request.env['fleet.vehicle.model'].sudo().search_read([('id','=',vehicle)], fields=['x_product_ids'])[0]['x_product_ids']
 
-        res = request.env['product.product'].sudo().search_read(search, fields=fields, limit=limit)
+                search.append(('product_tmpl_id','in',products))
 
-        return valid_response(status=200, data={
-                'count': len(res),
-                'results': res
-            })
+            res = request.env['product.product'].sudo().search_read(search, fields=fields, limit=limit, offset=offset, order="sales_count desc")
+            total = request.env['product.product'].sudo().search_count(search)
+
+            return valid_response(status=200, data={
+                    'count': total,
+                    'results': res
+                })
+        except Exception as identifier:
+            print(traceback.format_exc())
 
     @http.route('/simontir/nopol/search', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication

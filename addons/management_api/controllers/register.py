@@ -78,16 +78,7 @@ class RegisterAPIBentar(http.Controller):
                     "id":d.id,
                     "name": d.display_name
                 }for d in request.env['fleet.vehicle.model'].sudo().search([('brand_id','=',brand[0].id)])],
-                "product": [{
-                    "id":p.id,
-                    "name": p.name,
-                    "product_type": p.type,
-                    "harga": p.list_price,
-                    "stok": p.qty_available,
-                    "product_code": p.barcode,
-                    "similiar": p.description
-                }for p in request.env['product.product'].sudo().search([])]
-            }for data in cek]
+            }for data in cek[0]]
 
             colors = [{
                 "color": color.color

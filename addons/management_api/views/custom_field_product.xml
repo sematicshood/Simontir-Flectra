@@ -1,0 +1,18 @@
+<flectra>
+    <data>
+        <record id="product_template_custom_field_models_form_view" model="ir.ui.view">
+            <field name="name">product.template.form.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook/page[@name='general_information']/group" position="inside">
+                    <group name="group_more">
+                        <field name="minimal_km"/>
+                        <field name="registrasi"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</flectra>
