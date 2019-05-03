@@ -5,6 +5,7 @@ from . rest_api import authentication
 from . rest_exception import *
 import datetime
 import traceback
+import dateutil.parser
 
 class RegisterAPIBentar(http.Controller):
     def cekNotExist(self, order_id, product_id):
@@ -106,7 +107,7 @@ class RegisterAPIBentar(http.Controller):
         #     print(cekSo.state)
         #     print("sudah save")
         #     pass
-        print(request.jsonrequest)
+        # print(request.jsonrequest)
 
         cekColorExist   =   request.env['vehicle.colors'].sudo().search_count([('color','=',request.jsonrequest['warnaKendaraan'])])
 
@@ -171,12 +172,19 @@ class RegisterAPIBentar(http.Controller):
                     "vehicle_id": createDataMotor.id
                 })
 
-                # dalam perulangan
+                request.env['temporary.keluhan'].sudo().search([('id', 'in', request.jsonrequest['keluhanDelete'])]).unlink()
+
                 for data in request.jsonrequest['keluhanKonsumen']:
-                    createKeluhan = request.env['temporary.keluhan'].sudo().create({
-                        "x_ref_so":createSaleOrder.id,
-                        "x_keluhan": "" if 'nama' not in data else data['nama']
-                    })
+                    if 'id' in data:
+                        createKeluhan = request.env['temporary.keluhan'].sudo().search([('id', '=', int(data['id']))]).write({
+                            "x_ref_so":createSaleOrder.id,
+                            "x_keluhan": "" if 'nama' not in data else data['nama']
+                        })
+                    else:
+                        createKeluhan = request.env['temporary.keluhan'].sudo().create({
+                            "x_ref_so":createSaleOrder.id,
+                            "x_keluhan": "" if 'nama' not in data else data['nama']
+                        })
 
                 if self.cekTempNotExist(createSaleOrder.id):
                     createAnalisa = request.env['temporary.analisa'].sudo().create({
@@ -195,7 +203,7 @@ class RegisterAPIBentar(http.Controller):
 
                 for data in request.jsonrequest['sparepartsSelected']:
                     product_id.append(data['id'])
-                    if self.cekNotExist(createSaleOrder.id, data['id']):
+                    if self.cekNotExist(createSaleOrder.id, data['product_tmpl_id']):
                         createSOLine = request.env['sale.order.line'].sudo().create({
                             "order_id": createSaleOrder.id,
                             "product_id":"" if 'id' not in data else data['id'],
@@ -207,7 +215,7 @@ class RegisterAPIBentar(http.Controller):
 
                 for data in request.jsonrequest['servicesSelected']:
                     product_id.append(data['id'])
-                    if self.cekNotExist(createSaleOrder.id, data['id']):
+                    if self.cekNotExist(createSaleOrder.id, data['product_tmpl_id']):
                         createSOLine = request.env['sale.order.line'].sudo().create({
                             "order_id": createSaleOrder.id,
                             "product_id":"" if 'id' not in data else data['id'],
@@ -217,7 +225,7 @@ class RegisterAPIBentar(http.Controller):
                             'price_subtotal':"" if 'harga' not in data else data['harga']
                         })
 
-                request.env['product.template'].sudo().search([('product_id','in',product_id)]).write({
+                request.env['product.template'].sudo().search([('id','in',product_id)]).write({
                     'vehicle_models_ids': [(4,request.jsonrequest['type']['id'])]
                 })
 
@@ -276,12 +284,20 @@ class RegisterAPIBentar(http.Controller):
                     "vehicle_id": cekNopol.id
                 })
 
-                # dalam perulangan
+                request.env['temporary.keluhan'].sudo().search([('id', 'in', request.jsonrequest['keluhanDelete'])]).unlink()
+
                 for data in request.jsonrequest['keluhanKonsumen']:
-                    createKeluhan = request.env['temporary.keluhan'].sudo().create({
-                        "x_ref_so":createSaleOrder.id,
-                        "x_keluhan": "" if 'nama' not in data else data['nama']
-                    })
+                    if 'id' in data:
+                        if data['id'] not in request.jsonrequest['keluhanDelete']:
+                            createKeluhan = request.env['temporary.keluhan'].sudo().search([('id', '=', int(data['id']))]).write({
+                                "x_ref_so":createSaleOrder.id,
+                                "x_keluhan": "" if 'nama' not in data else data['nama']
+                            })
+                    else:
+                        createKeluhan = request.env['temporary.keluhan'].sudo().create({
+                            "x_ref_so":createSaleOrder.id,
+                            "x_keluhan": "" if 'nama' not in data else data['nama']
+                        })
                 
                 if self.cekTempNotExist(createSaleOrder.id):
                     createAnalisa = request.env['temporary.analisa'].sudo().create({
@@ -299,7 +315,7 @@ class RegisterAPIBentar(http.Controller):
                 product_id = []
 
                 for data in request.jsonrequest['sparepartsSelected']:
-                    product_id.append(data['id'])
+                    product_id.append(data['product_tmpl_id'])
                     if self.cekNotExist(createSaleOrder.id, data['id']):
                         print(data['name'], data['id'], createSaleOrder.id)
                         createSOLine = request.env['sale.order.line'].sudo().create({
@@ -312,7 +328,7 @@ class RegisterAPIBentar(http.Controller):
                         })
 
                 for data in request.jsonrequest['servicesSelected']:
-                    product_id.append(data['id'])
+                    product_id.append(data['product_tmpl_id'])
                     if self.cekNotExist(createSaleOrder.id, data['id']):
                         print(data['name'], data['id'], createSaleOrder.id)
                         createSOLine = request.env['sale.order.line'].sudo().create({
@@ -336,8 +352,8 @@ class RegisterAPIBentar(http.Controller):
                             "price_unit":cuci.list_price,
                             'price_subtotal':cuci.list_price
                         })
-
-                request.env['product.template'].sudo().search([('product_id','in',product_id)]).write({
+                
+                request.env['product.template'].sudo().search([('id','in',product_id)]).write({
                     'vehicle_models_ids': [(4,request.jsonrequest['type']['id'])]
                 })
 
@@ -458,14 +474,14 @@ class RegisterAPIBentar(http.Controller):
         try:
             data = [{
                 "id":d.id,
-                "no_urut": so,
-                "antrian_service": d.x_antrian_service,
-                "tgl_service": d.date_order,
-                "estimasi_waktu": d.x_estimasi_waktu,
-                "is_wash": d.x_is_wash,
-                "partner_id": d.partner_id.id,
-                "nama_pemilik":d.partner_id.name,
-                "no_telp": d.partner_id.mobile,
+                "noUrut": so,
+                "antrianService": d.x_antrian_service,
+                "tglService": d.date_order,
+                "estimasiWaktu": d.x_estimasi_waktu,
+                "isWash": d.x_is_wash,
+                "partnerId": d.partner_id.id,
+                "namaPemilik":d.partner_id.name,
+                "noTelp": d.partner_id.mobile,
                 "email": d.partner_id.email,
                 "sosmed": d.partner_id.website,
                 "nopol": d.x_nopol,
@@ -493,6 +509,7 @@ class RegisterAPIBentar(http.Controller):
                     "km": request.env['fleet.vehicle.odometer'].sudo().search([('vehicle_id', '=', m.id)], order="id desc", limit=1).value 
                 }for m in request.env['fleet.vehicle'].sudo().search([('driver_id', '=', d.partner_id.id)])],
                 "keluhan_konsumen": [{
+                    "id": k.id,
                     "nama": k.x_keluhan
                 }for k in request.env['temporary.keluhan'].sudo().search([('x_ref_so', '=', d.id)])],
                 "analisa_service":request.env['temporary.analisa'].sudo().search([('x_ref_so', '=', d.id)]).x_analisa,
@@ -503,12 +520,11 @@ class RegisterAPIBentar(http.Controller):
                     "type":s.product_id.type,
                     "qty":s.product_uom_qty,
                     "harga":s.price_unit,
-                    "subtotal":s.price_subtotal
+                    "subtotal":s.price_subtotal,
+                    "product_tmpl_id": s.product_id.product_tmpl_id.id
                 }for s in request.env['sale.order.line'].sudo().search([('order_id', '=', d.id)])],
                 "total": d.gross_amount
             }for d in request.env['sale.order'].sudo().search([('name', '=', so)])]
-
-            print(data)
 
             return valid_response(status=200, data={
                 'count': len(data),

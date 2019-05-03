@@ -17,7 +17,7 @@ class ProductsAPIBentar(http.Controller):
             search = []
 
             fields = ['name', 'barcode', 'qty_available',
-                      'list_price', 'type', 'sales_count']
+                      'list_price', 'type', 'sales_count', 'product_tmpl_id']
 
             limit = 10
             offset = int(page)
