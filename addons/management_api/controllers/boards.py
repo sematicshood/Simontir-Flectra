@@ -114,6 +114,7 @@ class BoardsAPIBentar(http.Controller):
             "antrian_service": s.x_antrian_service,
             "name": s.name,
             "cuci": s.x_is_wash,
+            "mekanik": s.mekanik_id.name,
             "order_line": [{
                 "name": o.name,
                 "type": o.product_id[0].product_tmpl_id[0].type
@@ -125,6 +126,22 @@ class BoardsAPIBentar(http.Controller):
             'results': data
         })
 
+    @http.route('/simontir/pick_final', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")
+    # @authentication
+    def pick_final(self):
+        try:
+            rq = request.jsonrequest
+            data = request.env['sale.order'].sudo().search(
+                [('name', '=', rq['invoice'])])
+
+            data.write({
+                'invoice_status': 'no',
+                'checker_id': rq['user_id'],
+            })
+
+        except Exception as identifier:
+            print(identifier)
+
     @http.route('/simontir/pick_so', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
     def pick_so(self):
@@ -132,14 +149,14 @@ class BoardsAPIBentar(http.Controller):
             rq = request.jsonrequest
             data = request.env['sale.order'].sudo().search(
                 [('name', '=', rq['invoice'])])
-            partnerId = request.env['res.users'].sudo().search(
-                [('id', '=', rq['user_id'])])
+            # partnerId = request.env['res.users'].sudo().search(
+            #     [('id', '=', rq['user_id'])])
 
             data.action_confirm()
 
             data.write({
                 'invoice_status': 'no',
-                'mekanik_id': partnerId.partner_id.id
+                'mekanik_id': rq['user_id'],
             })
 
             so = request.env['account.analytic.account'].sudo().search_read(
@@ -189,8 +206,6 @@ class BoardsAPIBentar(http.Controller):
         except Exception as identifier:
             print(identifier)
 
-        pass
-
     @http.route('/simontir/get_final_detail/<path:no_ref>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
     def get_final_detail(self, no_ref):
@@ -220,6 +235,18 @@ class BoardsAPIBentar(http.Controller):
 
         pass
 
+    @http.route('/simontir/count_final/<int:id>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
+    def count_final(self, id):
+        try:
+            data = request.env['sale.order'].sudo().search_count(
+                [('checker_id', '=', id)])
+
+            return valid_response(status=200, data={
+                'count': data,
+            })
+        except Exception as identifier:
+            print(str(identifier))
+
     @http.route('/simontir/get_task/<path:no_ref>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
     def get_task(self, no_ref):
@@ -231,6 +258,7 @@ class BoardsAPIBentar(http.Controller):
                 [('name', '=', no_ref)], fields=['x_nopol', 'x_waktu_mulai', 'x_is_wash'])
             so = request.env['account.analytic.account'].sudo().search_read(
                 [('name', 'like', no_ref)], fields=['project_ids'])
+
             tasks = request.env['project.task'].sudo().search_read(
                 [('project_id', '=', so[0]['project_ids'][0])], fields=['name', 'x_status', 'x_state', 'x_duration'])
 
@@ -250,8 +278,6 @@ class BoardsAPIBentar(http.Controller):
             })
         except Exception as identifier:
             print(str(identifier))
-
-        pass
 
     @http.route('/simontir/accept', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
