@@ -31,5 +31,26 @@
                 </xpath>
             </field>
         </record>
+
+        <record id="product_template_note_form_view" model="ir.ui.view">
+            <field name="name">product.template.form.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook" position="inside">
+                    <page string="Note" name="note">
+                        <sheet>
+                            <group name="group_more">
+                                <field name="x_dept"/>
+                                <field name="x_ins_counter"/>
+                                <field name="x_ins_jasa"/>
+                                <field name="x_ins_part"/>
+                            </group>
+                        </sheet>
+                    </page>
+                </xpath>
+            </field>
+        </record>
     </data>
 </flectra>
