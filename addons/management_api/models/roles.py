@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flectra import models, fields, api
-try:
-    from flectra.addons.management_api.controllers.google import *
-except Exception as identifier:
-    pass
+from flectra.addons.management_api.controllers.google import *
 
 
 class roles_users(models.Model):

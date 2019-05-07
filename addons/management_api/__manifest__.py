@@ -34,7 +34,4 @@
         'views/setting_account_wablaster.xml',
         'views/trigger_wa_sender.xml',
     ],
-    'demo': [
-        'demo/dummy.xml',
-    ]
 }
