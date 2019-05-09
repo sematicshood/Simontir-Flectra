@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<flectra>
+    <data>
+        <record id="res_users_67" model="res.users">
+            <field name="id">67</field>
+            <field name="company_id">1</field>
+            <field name="partner_id">1</field>
+            <field name="active">True</field>
+            <field name="notification_type">email</field>
+            <field name="login">dummy@email.dev</field>
+        </record>
+    </data>
+</flectra>

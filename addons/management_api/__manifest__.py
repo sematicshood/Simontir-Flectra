@@ -33,5 +33,5 @@
         'views/wa_sender_form.xml',
         'views/setting_account_wablaster.xml',
         'views/trigger_wa_sender.xml',
-    ],
+    ]
 }

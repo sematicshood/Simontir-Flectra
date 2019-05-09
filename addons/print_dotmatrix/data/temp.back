@@ -1,0 +1,32 @@
+<flectra>
+    <data>
+        <record id="template_dotmatrix_invoice" model="mail.template">
+            <field name="name">Dot Matrix Invoice</field>
+            <field name="model_id" ref="account.model_account_invoice"></field>
+            <field name="subject">Dot Matrix Template for Invoice</field>
+            <field name="body_html"><![CDATA[
+${'INVOICE'.rjust(30)} ${object.number}
+${''.rjust(80, '-')}
+${'Customer:'.rjust(20)} ${object.partner_id.display_name.ljust(20)} ${'Date:'.rjust(20)} ${object.date_invoice}
+${' '.rjust(20)} ${object.partner_id.street.ljust(20)} ${'Salespersion:'.rjust(20)} ${object.user_id.name}
+${' '.rjust(20)} ${object.partner_id.street2.ljust(20) if object.partner_id.street else ''.ljust(20)}
+${' '.rjust(20)} ${object.partner_id.city.ljust(20)} ${'Currency:'.rjust(20)} ${object.currency_id.name}
+${' '.rjust(20)} ${object.partner_id.country_id.name.ljust(20)}
+${'Payterm Term:'.rjust(20)} ${object.payment_term_id.name.ljust(20) if object.payment_term_id else ''.ljust(20)}
+
+Invoice Lines
+${''.rjust(80, '-')}
+${'Product'.ljust(20)} ${'Qty'.rjust(6)} ${'UoM'.ljust(4)} ${'Price Unit'.rjust(13)} ${'Taxes'.ljust(10)} ${'Sub Total'.rjust(14)}
+${''.rjust(80, '-')}
+% for l in object.invoice_line_ids:
+${l.product_id.name[:28].ljust(28)} ${"{:4,.0f}".format(l,quantity).rjust(6)} ${l.uom_id.name.ljust(4)} ${"{:4,.0f}".format(l.price_uom).rjust(6)}
+% endfor
+${''.rjust(80, '-')}
+${'Total Before Tax:'.rjust(59)} ${"{:20,.0f}".format(object.amount_untaxed).rjust(20)}
+${'Tax:'.rjust(59)} ${"{:20,.0f}".format(object.amount_tax).rjust(20)}
+${'Balance:'.rjust(59)} ${"{:20,.0f}".format(object.amount_total).rjust(20)}
+${'Balance:'.rjust(59)} ${"{:20,.0f}".format(object.residual).rjust(20)}
+]]>            </field>
+        </record>
+    </data>
+</flectra>
