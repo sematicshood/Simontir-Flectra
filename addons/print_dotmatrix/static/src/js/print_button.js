@@ -2,6 +2,7 @@ flectra.define('print_dotmatrix.print_button', function (require) {
     "user strict";
 
     var form_widget = require('web.FormRenderer');
+    var core = require('web.core');
 
     form_widget.include({
         _addOnClickAction: function ($el, node) {
@@ -40,7 +41,10 @@ flectra.define('print_dotmatrix.print_button', function (require) {
                         }
                     });
                 } else {
-                    this._super();
+                    self.trigger_up('button_clicked', {
+                        attrs: node.attrs,
+                        record: self.state,
+                    });
                 }
             });
         }
