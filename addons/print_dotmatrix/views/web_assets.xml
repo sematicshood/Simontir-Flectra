@@ -1,0 +1,9 @@
+<flectra>
+    <data>
+        <template id="assets_backend" name="x_export_view assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/print_dotmatrix/static/src/js/print_button.js"></script>
+            </xpath>
+        </template>
+    </data>
+</flectra>

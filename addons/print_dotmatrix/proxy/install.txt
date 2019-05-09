@@ -1,0 +1,14 @@
+Cara Install - Sematics: Bima Pangestu
+
+1. Install printer barcode di windows control panel, gunakan generic printer driver dan kasih nama misalnya "unta"
+
+2. Install XAMPP (PHP + Apache) di komputer client
+
+3. Copy folder ini ke htdocs
+
+4. Copy file php_printer.dll ke php\extension yang ada di folder XAMPP
+
+5. Edit file php.ini di XAMPP untuk enable printer
+== extension=php_printer.dll
+
+6. Restart Apache

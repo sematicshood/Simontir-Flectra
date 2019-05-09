@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <flectra>
-    <data noupdate="1">
+    <data>
         <record id="res_users_67" model="res.users">
             <field name="id">67</field>
             <field name="company_id">1</field>

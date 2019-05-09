@@ -35,6 +35,6 @@
         'views/trigger_wa_sender.xml',
     ],
     'demo': [
-        'demo/dummy.xml',
+        'data/dummy.xml',
     ]
 }
