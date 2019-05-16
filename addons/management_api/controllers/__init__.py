@@ -9,3 +9,4 @@ from . import google
 from . import cash_count
 from . import laporan_harian
 from . import profile
+from . import board_mekanik
