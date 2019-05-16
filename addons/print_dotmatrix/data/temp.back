@@ -5,6 +5,10 @@
             <field name="model_id" ref="account.model_account_invoice"></field>
             <field name="subject">Dot Matrix Template for Invoice</field>
             <field name="body_html"><![CDATA[
+                ${object.company_if.rjust(5)}
+${'Jl. Krangkungan / Anggajaya II No. 17'.rjust(5)}
+${'Condongcatur, Depok, Sleman, Yogyakarta'.rjust(5)}
+${''.rjust(100, '_')}            
 ${'INVOICE'.rjust(30)} ${object.number}
 ${''.rjust(80, '-')}
 ${'Customer:'.rjust(20)} ${object.partner_id.display_name.ljust(20)} ${'Date:'.rjust(20)} ${object.date_invoice}
