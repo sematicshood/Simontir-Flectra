@@ -11,7 +11,7 @@
 
                 <notebook position="inside">
                     <page string="Dot Matrix">
-                        <button string="Refresh Printer Data" icon="fa-print" states="open" type="object" name="generate_printer_data"/>
+                        <button string="Refresh Printer Data" icon="fa-print" type="object" name="generate_printer_data"/>
                         <pre>
                             <field name="printer_data"/>
                         </pre>

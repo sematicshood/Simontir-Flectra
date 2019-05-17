@@ -10,3 +10,4 @@ from . import cash_count
 from . import laporan_harian
 from . import profile
 from . import board_mekanik
+from . import profile_staff
