@@ -7,10 +7,11 @@ import datetime
 import traceback
 from datetime import datetime, timedelta
 
+
 class CashCount(http.Controller):
 
     @http.route('/simontir/cash_count', methods=["GET", "OPTIONS"], cors="*", csrf=False, auth="none", type="http")
-    def getCashCount(self, date = None):
+    def getCashCount(self, date=None):
         try:
             domain = []
 
@@ -20,25 +21,26 @@ class CashCount(http.Controller):
             data = request.env['cash.count'].sudo().search_read(domain)
 
             return valid_response(status=200, data={
-                    'count': len(data),
-                    'results': data
-                })
+                'count': len(data),
+                'results': data
+            })
         except Exception as identifier:
             print(traceback.format_exc())
 
     @http.route('/simontir/cash_count/get_total_saldo', methods=["GET", "OPTIONS"], cors="*", csrf=False, auth="none", type="http")
-    def getTotalSaldo(self, date = None):
+    def getTotalSaldo(self, date=None):
         try:
-            domain = [('invoice_status', '=', 'invoiced')]
+            domain = [('state', '=', 'paid')]
 
             if date != None:
-                da    = datetime.strptime(date, '%Y-%m-%d')
-                d     = da + timedelta(days=1)
+                da = datetime.strptime(date, '%Y-%m-%d')
+                d = da + timedelta(days=1)
 
                 domain.append(('create_date', '>=', date))
                 domain.append(('create_date', '<', d.strftime("%Y-%m-%d")))
 
-            data = request.env['sale.order'].sudo().search_read(domain, fields=['amount_total'])
+            data = request.env['account.invoice'].sudo().search_read(
+                domain, fields=['amount_total'])
 
             total = 0
 
@@ -46,8 +48,8 @@ class CashCount(http.Controller):
                 total += d['amount_total']
 
             return valid_response(status=200, data={
-                    'results': total
-                })
+                'results': total
+            })
         except Exception as identifier:
             print(traceback.format_exc())
 
@@ -57,7 +59,7 @@ class CashCount(http.Controller):
             data = request.jsonrequest
             cash = request.env['cash.count'].sudo()
 
-            cek  = cash.search([('date', '=', data['date'])])
+            cek = cash.search([('date', '=', data['date'])])
 
             if len(cek) > 0:
                 cek.write(data)
