@@ -234,10 +234,11 @@ class ProfileAPI(http.Controller):
                 user_id.append(staff.id)
 
             domain_attendance_this = domain
-            domain_attendance_this.append(('id', 'in', user_id))
+            domain_attendance_this.append(
+                ('employee_id', 'in', user_employee_))
 
             domain_attendance_prev = prev_domain
-            domain_attendance_prev.append(('id', 'in', user_id))
+            domain_attendance_prev.append(('employee_id', 'in', user_id))
 
             attendance_this_month = request.env['hr.attendance'].sudo(
             ).search_count(domain_attendance_this)
