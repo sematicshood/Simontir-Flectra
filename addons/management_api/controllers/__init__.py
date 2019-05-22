@@ -12,3 +12,4 @@ from . import profile
 from . import board_mekanik
 from . import profile_staff
 from . import profile_service_advisor
+from . import profile_mekanik
