@@ -42,8 +42,9 @@ class ProfileMekanikAPI(http.Controller):
         jasa_month = 0
 
         for unit_month in unit_entri_month:
-            if unit_month['is_service']:
-                jasa_month += 1
+            for line in unit_month.order_line:
+                if line[0]['is_service']:
+                    jasa_month += 1
 
         domain_unit_entri_year = domain_year.copy()
         domain_unit_entri_year.append(('mekanik_id', '=', id))
@@ -53,8 +54,9 @@ class ProfileMekanikAPI(http.Controller):
         jasa_year = 0
 
         for unit_year in unit_entri_year:
-            if unit_year['is_service']:
-                jasa_year += 1
+            for line in unit_year.order_line:
+                if line[0]['is_service']:
+                    jasa_year += 1
 
         unit_permonth = []
         unit_this_month = 0
