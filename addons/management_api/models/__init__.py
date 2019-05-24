@@ -11,3 +11,4 @@ from . import task
 from . import colors
 from . import cash_count
 from . import wablaster
+from . import payroll

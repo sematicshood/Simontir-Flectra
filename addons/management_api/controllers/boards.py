@@ -147,6 +147,21 @@ class BoardsAPIBentar(http.Controller):
     def pick_so(self):
         try:
             rq = request.jsonrequest
+            day = datetime.date.today().day
+            month = datetime.date.today().month
+            year = datetime.date.today().year
+
+            employee = request.env['hr.employee'].sudo().search(
+                [('user_id', '=', rq['user_id'])])
+
+            attendance = request.env['hr.attendance'].sudo().search_count([('employee_id', '=', employee[0]['id']), (
+                'check_in', '>=', '{}-{}-{}'.format(year, month, day)), ('check_in', '<', '{}-{}-{}'.format(year, month, day + 1))])
+
+            if attendance == 0:
+                return invalid_response(400, 'Bad Request', 'Absensi terlebih dahulu')
+
+            print('-'*100)
+
             data = request.env['sale.order'].sudo().search(
                 [('name', '=', rq['invoice'])])
             # partnerId = request.env['res.users'].sudo().search(
@@ -474,6 +489,21 @@ class BoardsAPIBentar(http.Controller):
         except Exception as identifier:
             print(identifier)
 
+    def get_attendance(self, rq):
+        day = datetime.date.today().day
+        month = datetime.date.today().month
+        year = datetime.date.today().year
+
+        employee = request.env['hr.employee'].sudo().search(
+            [('user_id', '=', rq['user_id'])])
+
+        print(employee)
+
+        attendance = request.env['hr.attendance'].sudo().search([('employee_id', '=', employee[0]['id']), (
+            'check_in', '>=', '{}-{}-{}'.format(year, month, day)), ('check_in', '<', '{}-{}-{}'.format(year, month, day + 1))])
+
+        return attendance
+
     @http.route('/simontir/task/finish', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
     def finishTask(self):
@@ -481,6 +511,39 @@ class BoardsAPIBentar(http.Controller):
             rq = request.jsonrequest
             data = request.env['project.task'].sudo().search(
                 [('id', '=', rq['id'])])
+
+            task = data[0]['name'].split('sparepart')
+            attendance = self.get_attendance(rq)
+
+            if task[0].split('keluhan') == 1:
+
+                if len(task) == 2:
+                    name = task[1].split(':')[1]
+                else:
+                    name = task[0].split(':')[1]
+
+                product = request.env['product.template'].sudo().search(
+                    [('name', '=', name)])
+
+                if len(task) == 2:
+                    attendance.write({
+                        'intensif_part': attendance.intensif_part + product[0]['x_ins_part'],
+                        'total_part': attendance.total_part + 1,
+                        'intensif_counter': attendance.intensif_counter + 1,
+                        'total_ue': attendance.total_ue + 1,
+                    })
+                else:
+                    if task == 'CUCI MOTOR GRATIS':
+                        attendance.write({
+                            'ins_cuci_motor': attendance.ins_cuci_motor + 1000,
+                        })
+                    else:
+                        attendance.write({
+                            'intensif_jasa': attendance.intensif_jasa + product[0]['x_ins_jasa'],
+                            'total_jasa': attendance.total_jasa + 1,
+                            'intensif_counter': attendance.intensif_counter + 1,
+                            'total_ue': attendance.total_ue + 1,
+                        })
 
             if len(data) > 0:
                 data.write({
@@ -502,6 +565,39 @@ class BoardsAPIBentar(http.Controller):
             rq = request.jsonrequest
             data = request.env['project.task'].sudo().search(
                 [('id', '=', rq['id'])])
+
+            task = data[0]['name'].split('sparepart')
+            attendance = self.get_attendance(rq)
+
+            if task[0].split('keluhan') == 1:
+
+                if len(task) == 2:
+                    name = task[1].split(':')[1]
+                else:
+                    name = task[0].split(':')[1]
+
+                product = request.env['product.template'].sudo().search(
+                    [('name', '=', name)])
+
+                if len(task) == 2:
+                    attendance.write({
+                        'intensif_part': attendance.intensif_part - product[0]['x_ins_part'],
+                        'total_part': attendance.total_part - 1,
+                        'intensif_counter': attendance.intensif_counter - 1,
+                        'total_ue': attendance.total_ue - 1,
+                    })
+                else:
+                    if task == 'CUCI MOTOR GRATIS':
+                        attendance.write({
+                            'ins_cuci_motor': attendance.ins_cuci_motor - 1000,
+                        })
+                    else:
+                        attendance.write({
+                            'intensif_jasa': attendance.intensif_jasa - product[0]['x_ins_jasa'],
+                            'total_jasa': attendance.total_jasa - 1,
+                            'intensif_counter': attendance.intensif_counter - 1,
+                            'total_ue': attendance.total_ue - 1,
+                        })
 
             if len(data) > 0:
                 data.write({
