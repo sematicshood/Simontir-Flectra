@@ -421,6 +421,8 @@ class BoardsAPIBentar(http.Controller):
             if rq['user_cuci'] != "":
                 task_cuci = request.env['project.task'].sudo().search(
                     [('project_id', '=', so[0]['project_ids'][0]), ('description', 'like', '%CUCI MOTOR GRATIS')])
+                print(so[0]['project_ids'][0])
+                print('-'*100)
 
                 task_cuci.write({
                     'user_id': rq['user_cuci']

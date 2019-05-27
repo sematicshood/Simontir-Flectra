@@ -228,11 +228,12 @@ class RegisterAPIBentar(http.Controller):
                             'price_subtotal':"" if 'harga' not in data else data['harga']
                         })
 
-                if request.jsonrequest['cuci'] == "true":
+                if request.jsonrequest['cuci'] == True:
                     cuci = request.env['product.product'].sudo().search([('name', '=', 'CUCI MOTOR GRATIS')])
 
                     if self.cekNotExist(createSaleOrder.id, cuci.id):
-                        createSOLine = request.env['sale.order.line'].sudo().create({
+                        product_id.append(cuci.id)
+                        request.env['sale.order.line'].sudo().create({
                             "order_id": createSaleOrder.id,
                             "product_id":cuci.id,
                             "name": "CUCI MOTOR GRATIS",
@@ -371,12 +372,13 @@ class RegisterAPIBentar(http.Controller):
                             "price_unit":"" if 'harga' not in data else data['harga'],
                             'price_subtotal':"" if 'harga' not in data else data['harga']
                         })
-
-                if request.jsonrequest['cuci'] == "true":
+                
+                if request.jsonrequest['cuci'] == True:
                     cuci = request.env['product.product'].sudo().search([('name', '=', 'CUCI MOTOR GRATIS')])
 
                     if self.cekNotExist(createSaleOrder.id, cuci.id):
-                        createSOLine = request.env['sale.order.line'].sudo().create({
+                        product_id.append(cuci.id)
+                        request.env['sale.order.line'].sudo().create({
                             "order_id": createSaleOrder.id,
                             "product_id":cuci.id,
                             "name": "CUCI MOTOR GRATIS",
