@@ -513,9 +513,9 @@ class BoardsAPIBentar(http.Controller):
                 [('id', '=', rq['id'])])
 
             task = data[0]['name'].split('sparepart')
-            attendance = self.get_attendance(rq)
+            attendance = self.get_attendance(rq)[0]
 
-            if task[0].split('keluhan') == 1:
+            if len(task[0].split('keluhan')) == 1:
 
                 if len(task) == 2:
                     name = task[1].split(':')[1]
