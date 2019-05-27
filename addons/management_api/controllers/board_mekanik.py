@@ -21,7 +21,7 @@ class BoardMekanikAPI(http.Controller):
         domain = [('date_order', '=', '{}-{}-{}'.format(year, month, day))]
 
         for user in users_mekanik:
-            domain_mekanik = ('mekanik_id', '=', user['user_id'][0]['id'])
+            domain_mekanik = ('mekanik_id', '=', user['user_id'][0]['user_id'])
             sales = request.env['sale.order'].sudo().search_count(domain)
 
             domain.append(domain_mekanik)
