@@ -56,7 +56,7 @@ class BoardsAPIBentar(http.Controller):
             owns = request.env['sale.order'].sudo().search([
                 ('state', '=', 'sale'),
                 ('invoice_status', '=', 'no'),
-                ('mekanik_id', '=', partnerId.partner_id.id)
+                ('mekanik_id', '=', int(user_id))
             ], order="id asc")
 
             data = [{
