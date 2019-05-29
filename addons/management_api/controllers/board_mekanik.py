@@ -18,10 +18,11 @@ class BoardMekanikAPI(http.Controller):
         ).search([('job_id', '=', mekanik[0]['id'])])
         users = []
 
-        domain = [('date_order', '=', '{}-{}-{}'.format(year, month, day))]
+        domain = [('date_order', '>=', '{}-{}-{}'.format(year, month, day)),
+                  ('date_order', '<', '{}-{}-{}'.format(year, month, int(day) + 1))]
 
         for user in users_mekanik:
-            domain_mekanik = ('mekanik_id', '=', user['user_id'][0]['user_id'])
+            domain_mekanik = ('mekanik_id', '=', user['user_id'][0]['id'])
             sales = request.env['sale.order'].sudo().search_count(domain)
 
             domain.append(domain_mekanik)

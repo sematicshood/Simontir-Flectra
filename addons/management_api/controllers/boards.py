@@ -196,6 +196,17 @@ class BoardsAPIBentar(http.Controller):
                         'project_id': so[0]['project_ids'][0],
                         'sale_line_id': order.id
                     })
+                if order.product_id[0].product_tmpl_id[0].name == 'CUCI MOTOR GRATIS':
+                    request.env['project.task'].sudo().create({
+                        'name': rq['invoice'] + ':CUCI MOTOR GRATIS',
+                        'user_id': rq['user_id'],
+                        'company_id': tasks[0].company_id[0].id,
+                        'email_from': tasks[0].email_from,
+                        'priority': 'l',
+                        'planned_hours': 1,
+                        'project_id': so[0]['project_ids'][0],
+                        'sale_line_id': order.id
+                    })
 
             for task in tasks:
                 task.write({
@@ -366,6 +377,12 @@ class BoardsAPIBentar(http.Controller):
             data = request.env['sale.order'].sudo().search(
                 [('name', '=', rq['invoice'])])
 
+            attendance = self.get_attendance(data[0]['user_id'][0]['id'])[0]
+
+            attendance.write({
+                'total_ue': attendance.total_ue + 1,
+            })
+
             so = request.env['account.analytic.account'].sudo().search_read(
                 [('name', 'like', rq['invoice'])], fields=['project_ids'])
 
@@ -421,8 +438,6 @@ class BoardsAPIBentar(http.Controller):
             if rq['user_cuci'] != "":
                 task_cuci = request.env['project.task'].sudo().search(
                     [('project_id', '=', so[0]['project_ids'][0]), ('description', 'like', '%CUCI MOTOR GRATIS')])
-                print(so[0]['project_ids'][0])
-                print('-'*100)
 
                 task_cuci.write({
                     'user_id': rq['user_cuci']
@@ -491,15 +506,13 @@ class BoardsAPIBentar(http.Controller):
         except Exception as identifier:
             print(identifier)
 
-    def get_attendance(self, rq):
+    def get_attendance(self, id):
         day = datetime.date.today().day
         month = datetime.date.today().month
         year = datetime.date.today().year
 
         employee = request.env['hr.employee'].sudo().search(
-            [('user_id', '=', rq['user_id'])])
-
-        print(employee)
+            [('user_id', '=', id)])
 
         attendance = request.env['hr.attendance'].sudo().search([('employee_id', '=', employee[0]['id']), (
             'check_in', '>=', '{}-{}-{}'.format(year, month, day)), ('check_in', '<', '{}-{}-{}'.format(year, month, day + 1))])
@@ -515,7 +528,7 @@ class BoardsAPIBentar(http.Controller):
                 [('id', '=', rq['id'])])
 
             task = data[0]['name'].split('sparepart')
-            attendance = self.get_attendance(rq)[0]
+            attendance = self.get_attendance(rq['user_id'])[0]
 
             if len(task[0].split('keluhan')) == 1:
 
@@ -532,7 +545,6 @@ class BoardsAPIBentar(http.Controller):
                         'intensif_part': attendance.intensif_part + product[0]['x_ins_part'],
                         'total_part': attendance.total_part + 1,
                         'intensif_counter': attendance.intensif_counter + 1,
-                        'total_ue': attendance.total_ue + 1,
                     })
                 else:
                     if task == 'CUCI MOTOR GRATIS':
@@ -544,7 +556,6 @@ class BoardsAPIBentar(http.Controller):
                             'intensif_jasa': attendance.intensif_jasa + product[0]['x_ins_jasa'],
                             'total_jasa': attendance.total_jasa + 1,
                             'intensif_counter': attendance.intensif_counter + 1,
-                            'total_ue': attendance.total_ue + 1,
                         })
 
             if len(data) > 0:
@@ -569,7 +580,7 @@ class BoardsAPIBentar(http.Controller):
                 [('id', '=', rq['id'])])
 
             task = data[0]['name'].split('sparepart')
-            attendance = self.get_attendance(rq)
+            attendance = self.get_attendance(rq['user_id'])[0]
 
             if task[0].split('keluhan') == 1:
 

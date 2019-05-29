@@ -165,6 +165,7 @@ class RegisterAPIBentar(http.Controller):
                     "x_turun_mesin": request.jsonrequest['turunMesin'],
                     "x_ganti_oli": request.jsonrequest['gantiOli'],
                     "x_ganti_part": request.jsonrequest['gantiPart'],
+                    "user_id": request.jsonrequest['user_id']
                 })
 
                 createKM = request.env['fleet.vehicle.odometer'].sudo().create({
@@ -252,20 +253,6 @@ class RegisterAPIBentar(http.Controller):
                 ])
 
                 notExist.unlink()
-
-                if request.jsonrequest['cuci'] == "true":
-                    cuci = request.env['product.product'].sudo().search([('name', '=', 'CUCI MOTOR GRATIS')])
-
-                    if self.cekNotExist(createSaleOrder.id, cuci.id):
-                        createSOLine = request.env['sale.order.line'].sudo().create({
-                            "order_id": createSaleOrder.id,
-                            "product_id":cuci.id,
-                            "name": 'CUCI MOTOR GRATIS',
-                            "product_uom_qty":1,
-                            "price_unit":cuci.list_price,
-                            'price_subtotal':cuci.list_price
-                        })
-                
             else:
                 print("ada")
                 createPembawa = request.env['res.partner'].sudo().create({
@@ -308,6 +295,7 @@ class RegisterAPIBentar(http.Controller):
                     "x_turun_mesin": request.jsonrequest['turunMesin'],
                     "x_ganti_oli": request.jsonrequest['gantiOli'],
                     "x_ganti_part": request.jsonrequest['gantiPart'],
+                    "user_id": request.jsonrequest['user_id']
                 })
 
                 createKM = request.env['fleet.vehicle.odometer'].sudo().create({
@@ -395,8 +383,6 @@ class RegisterAPIBentar(http.Controller):
                     ('order_id','=',createSaleOrder.id),
                     ('product_id', 'not in', product_id)
                 ])
-
-                print(product_id)
 
                 notExist.unlink()
         except Exception as e:
