@@ -147,87 +147,89 @@ class BoardsAPIBentar(http.Controller):
     def pick_so(self):
         try:
             rq = request.jsonrequest
-            day = datetime.date.today().day
-            month = datetime.date.today().month
-            year = datetime.date.today().year
-
-            employee = request.env['hr.employee'].sudo().search(
-                [('user_id', '=', rq['user_id'])])
-
-            attendance = request.env['hr.attendance'].sudo().search_count([('employee_id', '=', employee[0]['id']), (
-                'check_in', '>=', '{}-{}-{}'.format(year, month, day)), ('check_in', '<', '{}-{}-{}'.format(year, month, day + 1))])
-
-            if attendance == 0:
-                return invalid_response(400, 'Bad Request', 'Absensi terlebih dahulu')
-
-            print('-'*100)
-
             data = request.env['sale.order'].sudo().search(
                 [('name', '=', rq['invoice'])])
-            # partnerId = request.env['res.users'].sudo().search(
-            #     [('id', '=', rq['user_id'])])
 
-            data.action_confirm()
+            if len(data[0]['mekanik_id']) == 0:
+                print('-'*100)
+                day = datetime.date.today().day
+                month = datetime.date.today().month
+                year = datetime.date.today().year
 
-            data.write({
-                'invoice_status': 'no',
-                'mekanik_id': rq['user_id'],
-            })
+                employee = request.env['hr.employee'].sudo().search(
+                    [('user_id', '=', rq['user_id'])])
 
-            so = request.env['account.analytic.account'].sudo().search_read(
-                [('name', 'like', rq['invoice'])], fields=['project_ids'])
+                attendance = request.env['hr.attendance'].sudo().search([('employee_id', '=', employee[0]['id']), (
+                    'check_in', '>=', str((datetime.datetime.now()).date())), ('check_in', '<', str((datetime.datetime.now() + datetime.timedelta(days=1)).date()))])
 
-            request.env['sale.order'].sudo().search([('name', '=', rq['invoice'])]).write({
-                'x_waktu_mulai': datetime.datetime.now()
-            })
+                if len(attendance) == 0:
+                    return invalid_response(400, 'Bad Request', 'Absensi terlebih dahulu')
 
-            tasks = request.env['project.task'].sudo().search(
-                [('project_id', '=', so[0]['project_ids'][0])])
+                attendance.write({
+                    'total_ue': attendance.total_ue + 1,
+                })
 
-            for order in data[0]['order_line']:
-                if order.product_id[0].product_tmpl_id[0].type != 'service':
+                data.action_confirm()
+
+                data.write({
+                    'invoice_status': 'no',
+                    'mekanik_id': rq['user_id'],
+                })
+
+                so = request.env['account.analytic.account'].sudo().search_read(
+                    [('name', 'like', rq['invoice'])], fields=['project_ids'])
+
+                request.env['sale.order'].sudo().search([('name', '=', rq['invoice'])]).write({
+                    'x_waktu_mulai': datetime.datetime.now()
+                })
+
+                tasks = request.env['project.task'].sudo().search(
+                    [('project_id', '=', so[0]['project_ids'][0])])
+
+                for order in data[0]['order_line']:
+                    if order.product_id[0].product_tmpl_id[0].type != 'service':
+                        request.env['project.task'].sudo().create({
+                            'name': rq['invoice'] + ' sparepart:' + order.product_id[0].product_tmpl_id[0].name,
+                            'user_id': rq['user_id'],
+                            'company_id': tasks[0].company_id[0].id,
+                            'email_from': tasks[0].email_from,
+                            'priority': 'l',
+                            'planned_hours': 1,
+                            'project_id': so[0]['project_ids'][0],
+                            'sale_line_id': order.id
+                        })
+                    if order.product_id[0].product_tmpl_id[0].name == 'CUCI MOTOR GRATIS':
+                        request.env['project.task'].sudo().create({
+                            'name': rq['invoice'] + ':CUCI MOTOR GRATIS',
+                            'user_id': rq['user_id'],
+                            'company_id': tasks[0].company_id[0].id,
+                            'email_from': tasks[0].email_from,
+                            'priority': 'l',
+                            'planned_hours': 1,
+                            'project_id': so[0]['project_ids'][0],
+                            'sale_line_id': order.id
+                        })
+
+                for task in tasks:
+                    task.write({
+                        'user_id': rq['user_id']
+                    })
+
+                keluhan = request.env['temporary.keluhan'].sudo().search(
+                    [('x_ref_so', '=', data[0]['id'])])
+
+                for kel in keluhan:
                     request.env['project.task'].sudo().create({
-                        'name': rq['invoice'] + ' sparepart:' + order.product_id[0].product_tmpl_id[0].name,
+                        'name': rq['invoice'] + ' keluhan:' + kel.x_keluhan,
                         'user_id': rq['user_id'],
                         'company_id': tasks[0].company_id[0].id,
                         'email_from': tasks[0].email_from,
                         'priority': 'l',
                         'planned_hours': 1,
+                        'task_seq': '',
                         'project_id': so[0]['project_ids'][0],
-                        'sale_line_id': order.id
+                        'sale_line_id': False
                     })
-                if order.product_id[0].product_tmpl_id[0].name == 'CUCI MOTOR GRATIS':
-                    request.env['project.task'].sudo().create({
-                        'name': rq['invoice'] + ':CUCI MOTOR GRATIS',
-                        'user_id': rq['user_id'],
-                        'company_id': tasks[0].company_id[0].id,
-                        'email_from': tasks[0].email_from,
-                        'priority': 'l',
-                        'planned_hours': 1,
-                        'project_id': so[0]['project_ids'][0],
-                        'sale_line_id': order.id
-                    })
-
-            for task in tasks:
-                task.write({
-                    'user_id': rq['user_id']
-                })
-
-            keluhan = request.env['temporary.keluhan'].sudo().search(
-                [('x_ref_so', '=', data[0]['id'])])
-
-            for kel in keluhan:
-                request.env['project.task'].sudo().create({
-                    'name': rq['invoice'] + ' keluhan:' + kel.x_keluhan,
-                    'user_id': rq['user_id'],
-                    'company_id': tasks[0].company_id[0].id,
-                    'email_from': tasks[0].email_from,
-                    'priority': 'l',
-                    'planned_hours': 1,
-                    'task_seq': '',
-                    'project_id': so[0]['project_ids'][0],
-                    'sale_line_id': False
-                })
 
         except Exception as identifier:
             print(identifier)
@@ -376,12 +378,6 @@ class BoardsAPIBentar(http.Controller):
             rq = request.jsonrequest
             data = request.env['sale.order'].sudo().search(
                 [('name', '=', rq['invoice'])])
-
-            attendance = self.get_attendance(data[0]['user_id'][0]['id'])[0]
-
-            attendance.write({
-                'total_ue': attendance.total_ue + 1,
-            })
 
             so = request.env['account.analytic.account'].sudo().search_read(
                 [('name', 'like', rq['invoice'])], fields=['project_ids'])

@@ -110,6 +110,8 @@ class RegisterAPIBentar(http.Controller):
         # print(request.jsonrequest)
 
         cekColorExist   =   request.env['vehicle.colors'].sudo().search_count([('color','=',request.jsonrequest['warnaKendaraan'])])
+        print(request.jsonrequest['warnaKendaraan'])
+        print('-'*100)
 
         if cekColorExist == 0:
             request.env['vehicle.colors'].sudo().create({
