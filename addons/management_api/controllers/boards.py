@@ -40,7 +40,6 @@ class BoardsAPIBentar(http.Controller):
             })
         except Exception as identifier:
             print(identifier)
-            print('-'*100)
 
     @http.route('/simontir/getso_mekanik/<user_id>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
@@ -96,7 +95,6 @@ class BoardsAPIBentar(http.Controller):
             })
         except Exception as identifier:
             print(identifier)
-            print('-'*100)
 
     @http.route('/simontir/getso_finalcheck', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
@@ -151,7 +149,6 @@ class BoardsAPIBentar(http.Controller):
                 [('name', '=', rq['invoice'])])
 
             if len(data[0]['mekanik_id']) == 0:
-                print('-'*100)
                 day = datetime.date.today().day
                 month = datetime.date.today().month
                 year = datetime.date.today().year
@@ -373,14 +370,18 @@ class BoardsAPIBentar(http.Controller):
 
     @http.route('/simontir/finish_final', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def finish_final(self):
+    def finish_final(self, invoice=None):
         try:
             rq = request.jsonrequest
+            invoiced = invoice if invoice != None else rq['invoice']
+            print(invoiced)
+            print('-'*100)
+
             data = request.env['sale.order'].sudo().search(
-                [('name', '=', rq['invoice'])])
+                [('name', '=', invoiced)])
 
             so = request.env['account.analytic.account'].sudo().search_read(
-                [('name', 'like', rq['invoice'])], fields=['project_ids'])
+                [('name', 'like', invoiced)], fields=['project_ids'])
 
             tasks = request.env['project.task'].sudo().search(
                 [('project_id', '=', so[0]['project_ids'][0])])
@@ -431,13 +432,14 @@ class BoardsAPIBentar(http.Controller):
                         'vehicle_id': vehicle,
                     })
 
-            if rq['user_cuci'] != "":
-                task_cuci = request.env['project.task'].sudo().search(
-                    [('project_id', '=', so[0]['project_ids'][0]), ('description', 'like', '%CUCI MOTOR GRATIS')])
+            if 'user_cuci' in rq:
+                if rq['user_cuci'] != "":
+                    task_cuci = request.env['project.task'].sudo().search(
+                        [('project_id', '=', so[0]['project_ids'][0]), ('description', 'like', '%CUCI MOTOR GRATIS')])
 
-                task_cuci.write({
-                    'user_id': rq['user_cuci']
-                })
+                    task_cuci.write({
+                        'user_id': rq['user_cuci']
+                    })
 
             if len(data) > 0:
                 data.write({
@@ -472,6 +474,10 @@ class BoardsAPIBentar(http.Controller):
                     'invoice_status': 'no',
                     'x_duration': rq['duration'],
                 })
+
+                if data[0]['x_antrian_service'] == 'Light Repair':
+                    print('masuk'*100)
+                    self.finish_final(rq['invoice'])
 
             return valid_response(status=200, data={
                 'data': data
@@ -511,7 +517,7 @@ class BoardsAPIBentar(http.Controller):
             [('user_id', '=', id)])
 
         attendance = request.env['hr.attendance'].sudo().search([('employee_id', '=', employee[0]['id']), (
-            'check_in', '>=', '{}-{}-{}'.format(year, month, day)), ('check_in', '<', '{}-{}-{}'.format(year, month, day + 1))])
+            'check_in', '>=', str((datetime.datetime.now()).date())), ('check_in', '<', str((datetime.datetime.now() + datetime.timedelta(days=1)).date()))])
 
         return attendance
 
