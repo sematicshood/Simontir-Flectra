@@ -6,6 +6,7 @@ from . rest_exception import *
 import datetime
 import traceback
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 
 class CashCount(http.Controller):
@@ -30,14 +31,12 @@ class CashCount(http.Controller):
     @http.route('/simontir/cash_count/get_total_saldo', methods=["GET", "OPTIONS"], cors="*", csrf=False, auth="none", type="http")
     def getTotalSaldo(self, date=None):
         try:
-            domain = [('state', '=', 'paid')]
+            da = datetime.strptime(date, '%Y-%m-%d')
+            d = da + timedelta(days=1)
+            ma = datetime.strptime("{}-{}-{}".format(da.year, da.month, 1), '%Y-%m-%d')
+            m = ma + relativedelta(month=da.month+1)
 
-            if date != None:
-                da = datetime.strptime(date, '%Y-%m-%d')
-                d = da + timedelta(days=1)
-
-                domain.append(('create_date', '>=', date))
-                domain.append(('create_date', '<', d.strftime("%Y-%m-%d")))
+            domain = ['&', '&', ('date', '>=', date), ('date', '<', d.strftime("%Y-%m-%d")), '&', '&', ('date', '>=', ma), ('date', '<', m), ("state", "not in", ["draft", "cancel"]), '|', ("type", "=", "out_invoice"), ("type", "=", "out_refund")]
 
             data = request.env['account.invoice'].sudo().search_read(
                 domain, fields=['amount_total'])
@@ -48,7 +47,8 @@ class CashCount(http.Controller):
                 total += d['amount_total']
 
             return valid_response(status=200, data={
-                'results': total
+                'results': total,
+                'data': data,
             })
         except Exception as identifier:
             print(traceback.format_exc())
