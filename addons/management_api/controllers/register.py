@@ -137,7 +137,6 @@ class RegisterAPIBentar(http.Controller):
                     "parent_id": createPemilik.id,
                     "name":"" if 'namaPembawa' not in request.jsonrequest else request.jsonrequest['namaPembawa'],
                     "street":"" if 'alamat' not in request.jsonrequest else request.jsonrequest['alamat'],
-                    "type":"other"
                 })
 
                 createDataMotor = request.env['fleet.vehicle'].sudo().create({
@@ -261,8 +260,9 @@ class RegisterAPIBentar(http.Controller):
                     "parent_id": cekNopol.driver_id.id,
                     "name":"" if 'namaPembawa' not in request.jsonrequest else request.jsonrequest['namaPembawa'],
                     "street":"" if 'alamat' not in request.jsonrequest else request.jsonrequest['alamat'],
-                    "type":"other"
                 })
+                print(createPembawa)
+                print('-'*100)
 
                 request.env['res.partner'].sudo().search([('id', '=', cekNopol['driver_id']['id'])]).write({
                     "name":"" if 'namaPemilik' not in request.jsonrequest else request.jsonrequest['namaPemilik'],
