@@ -84,8 +84,6 @@ class UsersAPIBentar(http.Controller):
         year = int(year)
         day = int(day)
 
-        
-
         domain = [('date_order', '>=', '{}-{}-{}'.format(
                 year, month, day)), ('date_order', '<', str(datetime(year, month, day) + timedelta(days=1)))]
 
