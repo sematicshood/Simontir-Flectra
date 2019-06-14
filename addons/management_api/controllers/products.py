@@ -10,11 +10,14 @@ import traceback
 class ProductsAPIBentar(http.Controller):
     @http.route('/simontir/products/search', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def productSearch(self, barcode=None, name=None, description=None, type=None, vehicle=None, page=0, register=None):
+    def productSearch(self, barcode=None, name=None, description=None, type=None, vehicle=None, page=0, register=None, equal='ilike'):
         try:
             res = []
 
             search = []
+
+            print(equal)
+            print('-'*100)
 
             fields = ['name', 'barcode', 'qty_available',
                       'list_price', 'type', 'sales_count', 'product_tmpl_id', 'minimal_km']
@@ -27,13 +30,13 @@ class ProductsAPIBentar(http.Controller):
                 search.append(('type', '=', type))
 
             if barcode != None:
-                search.append(('barcode', 'ilike', barcode))
+                search.append(('barcode', equal, barcode))
 
             if name != None:
-                search.append(('name', 'ilike', name))
+                search.append(('name', equal, name))
 
             if description != None:
-                search.append(('description', 'ilike', description))
+                search.append(('description', equal, description))
 
             if register != None:
                 if register == 'true':

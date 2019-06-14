@@ -24,3 +24,8 @@ class roles_users(models.Model):
     x_ganti_oli = fields.Boolean(default=False, string="Ganti Oli")
     x_ganti_part = fields.Boolean(default=False, string="Ganti part")
     x_turun_mesin = fields.Boolean(default=False, string="Turun Mesin")
+    x_claim = fields.Boolean(default=False, string="Claim")
+    x_job_return = fields.Boolean(default=False, string="Job Return")
+    x_service_kunjungan = fields.Boolean(default=False, string="Service Kunjungan")
+    x_other_job = fields.Boolean(default=False, string="Other Job")
+    x_spesial_program = fields.Boolean(default=False, string="Spesial Program")

@@ -166,6 +166,11 @@ class RegisterAPIBentar(http.Controller):
                     "x_turun_mesin": request.jsonrequest['turunMesin'],
                     "x_ganti_oli": request.jsonrequest['gantiOli'],
                     "x_ganti_part": request.jsonrequest['gantiPart'],
+                    "x_claim": request.jsonrequest['claim'],
+                    "x_job_return": request.jsonrequest['jobReturn'],
+                    "x_service_kunjungan": request.jsonrequest['serviceKunjungan'],
+                    "x_other_job": request.jsonrequest['otherJob'],
+                    "x_spesial_program": request.jsonrequest['spesialProgram'],
                     "user_id": request.jsonrequest['user_id']
                 })
 
@@ -297,6 +302,11 @@ class RegisterAPIBentar(http.Controller):
                     "x_turun_mesin": request.jsonrequest['turunMesin'],
                     "x_ganti_oli": request.jsonrequest['gantiOli'],
                     "x_ganti_part": request.jsonrequest['gantiPart'],
+                    "x_claim": request.jsonrequest['claim'],
+                    "x_job_return": request.jsonrequest['jobReturn'],
+                    "x_service_kunjungan": request.jsonrequest['serviceKunjungan'],
+                    "x_other_job": request.jsonrequest['otherJob'],
+                    "x_spesial_program": request.jsonrequest['spesialProgram'],
                     "user_id": request.jsonrequest['user_id']
                 })
 
@@ -514,6 +524,11 @@ class RegisterAPIBentar(http.Controller):
                 "gantiOli": d.x_ganti_oli,
                 "gantiPart": d.x_ganti_part,
                 "turunMesin": d.x_turun_mesin,
+                "claim": d.x_claim,
+                "jobReturn": d.x_job_return,
+                "serviceKunjungan": d.x_service_kunjungan,
+                "otherJob": d.x_other_job,
+                "spesialProgram": d.x_spesial_program,
                 "pembawa":[{
                     "id":p.id,
                     "nama":p.name,

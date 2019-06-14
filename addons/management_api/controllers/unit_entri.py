@@ -45,30 +45,26 @@ class UsersAPIBentar(http.Controller):
             get_order = self.build_dict(data, key="date_order")
             od = get_order.get(o.date_order.split(' ')[0])
 
+            product = 0
+            service = 0
+
+            for line in o.order_line:
+                if line.is_service:
+                    service += 1
+                else:
+                    product += 1
+
             if od is None:
                 data.append({
                     'date_order': o.date_order,
-                    'total_order': 0,
-                    'product': 0,
-                    'service': 0,
+                    'total_order': 1,
+                    'product': product,
+                    'service': service,
                 })
             else:
-                product = 0
-                service = 0
-                order = 0
-
-                for line in o.order_line:
-                    if line.is_service:
-                        service += 1
-                    else:
-                        product += 1
-
-                    order += 1
-                        
-
                 data[od['index']] = {
                     'date_order': od['date_order'],
-                    'total_order': int(od['total_order']) + int(order),
+                    'total_order': int(od['total_order']) + 1,
                     'product': int(od['product']) + int(product),
                     'service': int(od['service']) + int(service),
                 }
