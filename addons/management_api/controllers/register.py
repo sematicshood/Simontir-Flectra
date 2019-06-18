@@ -8,6 +8,70 @@ import traceback
 import dateutil.parser
 
 class RegisterAPIBentar(http.Controller):
+    def __init__(self):
+        self.services = [
+            {
+                'key': 'otherJob',
+                'name': 'OJ'
+            },
+            {
+                'key': 'gantiOli',
+                'name': 'GO'
+            },
+            {
+                'key': 'gantiPart',
+                'name': 'GOP'
+            },
+            {
+                'key': 'turunMesin',
+                'name': 'HR'
+            },
+            {
+                'key': 'jobReturn',
+                'name': 'JR'
+            },
+            {
+                'key': 'serviceKunjungan',
+                'name': 'SK'
+            },
+            {
+                'key': 'spesialProgram',
+                'name': 'SP'
+            },
+            {
+                'key': 'service',
+                'name': 'SL',
+                'sub': 'lengkap'
+            },
+            {
+                'key': 'service',
+                'name': 'SR',
+                'sub': 'ringan'
+            },
+        ]
+
+    def cekTag(self, json, table):
+        tag_ids = []
+
+        for service in self.services:
+            if json[service['key']]:
+                if 'sub' in service:
+                    if service['sub'] == json[service['key']]:
+                        id = self.searchTag(table, service['name'])
+                        if id != None:
+                            tag_ids.append(id)
+                else:
+                    id = self.searchTag(table, service['name'])
+                    if id != None:
+                        tag_ids.append(id)
+
+        return tag_ids
+
+    def searchTag(self, table, name):
+        tag = request.env[table].sudo().search([('name', '=', name)])
+
+        return tag[0].id if len(tag) > 0 else None
+
     def cekNotExist(self, order_id, product_id):
         count = request.env['sale.order.line'].sudo().search_count([('order_id','=',order_id), ('product_id','=',product_id)])
 
@@ -171,7 +235,8 @@ class RegisterAPIBentar(http.Controller):
                     "x_service_kunjungan": request.jsonrequest['serviceKunjungan'],
                     "x_other_job": request.jsonrequest['otherJob'],
                     "x_spesial_program": request.jsonrequest['spesialProgram'],
-                    "user_id": request.jsonrequest['user_id']
+                    "user_id": request.jsonrequest['user_id'],
+                    'tag_ids': [(6,0,self.cekTag(request.jsonrequest, 'crm.lead.tag'))]
                 })
 
                 createKM = request.env['fleet.vehicle.odometer'].sudo().create({
@@ -219,7 +284,8 @@ class RegisterAPIBentar(http.Controller):
                             "name": "" if 'name' not in data else data['name'],
                             "product_uom_qty":"" if 'qty' not in data else data['qty'],
                             "price_unit":"" if 'harga' not in data else data['harga'],
-                            'price_subtotal':"" if 'harga' not in data else data['harga']
+                            'price_subtotal':"" if 'harga' not in data else data['harga'],
+                            'tag_ids': [(6,0,self.cekTag(request.jsonrequest, 'account.analytic.tag'))]
                         })
 
                 for data in request.jsonrequest['servicesSelected']:
@@ -232,7 +298,8 @@ class RegisterAPIBentar(http.Controller):
                             "name": "" if 'name' not in data else data['name'],
                             "product_uom_qty":1,
                             "price_unit":"" if 'harga' not in data else data['harga'],
-                            'price_subtotal':"" if 'harga' not in data else data['harga']
+                            'price_subtotal':"" if 'harga' not in data else data['harga'],
+                            'tag_ids': [(6,0,self.cekTag(request.jsonrequest, 'account.analytic.tag'))]
                         })
 
                 if request.jsonrequest['cuci'] == True:
@@ -246,7 +313,8 @@ class RegisterAPIBentar(http.Controller):
                             "name": "CUCI MOTOR GRATIS",
                             "product_uom_qty":1,
                             "price_unit":cuci.list_price,
-                            'price_subtotal':cuci.list_price
+                            'price_subtotal':cuci.list_price,
+                            'tag_ids': [(6,0,self.cekTag(request.jsonrequest, 'account.analytic.tag'))]
                         })
                 
                 request.env['product.template'].sudo().search([('id','in',product_tmpl_id)]).write({
@@ -307,7 +375,8 @@ class RegisterAPIBentar(http.Controller):
                     "x_service_kunjungan": request.jsonrequest['serviceKunjungan'],
                     "x_other_job": request.jsonrequest['otherJob'],
                     "x_spesial_program": request.jsonrequest['spesialProgram'],
-                    "user_id": request.jsonrequest['user_id']
+                    "user_id": request.jsonrequest['user_id'],
+                    'tag_ids': [(6,0,self.cekTag(request.jsonrequest, 'crm.lead.tag'))]
                 })
 
                 createKM = request.env['fleet.vehicle.odometer'].sudo().create({
@@ -357,7 +426,8 @@ class RegisterAPIBentar(http.Controller):
                             "name": "" if 'name' not in data else data['name'],
                             "product_uom_qty":"" if 'qty' not in data else data['qty'],
                             "price_unit":"" if 'harga' not in data else data['harga'],
-                            'price_subtotal':"" if 'harga' not in data else data['harga']
+                            'price_subtotal':"" if 'harga' not in data else data['harga'],
+                            'tag_ids': [(6,0,self.cekTag(request.jsonrequest, 'account.analytic.tag'))]
                         })
 
                 for data in request.jsonrequest['servicesSelected']:
@@ -370,7 +440,8 @@ class RegisterAPIBentar(http.Controller):
                             "name": "" if 'name' not in data else data['name'],
                             "product_uom_qty":1,
                             "price_unit":"" if 'harga' not in data else data['harga'],
-                            'price_subtotal':"" if 'harga' not in data else data['harga']
+                            'price_subtotal':"" if 'harga' not in data else data['harga'],
+                            'tag_ids': [(6,0,self.cekTag(request.jsonrequest, 'account.analytic.tag'))]
                         })
                 
                 if request.jsonrequest['cuci'] == True:
@@ -384,7 +455,8 @@ class RegisterAPIBentar(http.Controller):
                             "name": "CUCI MOTOR GRATIS",
                             "product_uom_qty":1,
                             "price_unit":cuci.list_price,
-                            'price_subtotal':cuci.list_price
+                            'price_subtotal':cuci.list_price,
+                            'tag_ids': [(6,0,self.cekTag(request.jsonrequest, 'account.analytic.tag'))]
                         })
                 
                 request.env['product.template'].sudo().search([('id','in',product_tmpl_id)]).write({
