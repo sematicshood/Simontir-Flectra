@@ -16,9 +16,6 @@ class ProductsAPIBentar(http.Controller):
 
             search = []
 
-            print(equal)
-            print('-'*100)
-
             fields = ['name', 'barcode', 'qty_available',
                       'list_price', 'type', 'sales_count', 'product_tmpl_id', 'minimal_km']
 
@@ -43,10 +40,18 @@ class ProductsAPIBentar(http.Controller):
                     search.append(('registrasi', '=', True))
 
             if vehicle != None:
-                products = request.env['fleet.vehicle.model'].sudo().search_read(
-                    [('id', '=', vehicle)], fields=['x_product_ids'])[0]['x_product_ids']
+                products = request.env['fleet.vehicle.model'].sudo().search(
+                    [('id', '=', vehicle)])[0]['x_product_ids']
+                arr = []
+                
+                if name != None and equal == "=":
+                    for p in products:
+                        if p.name.upper().replace(" ", "") == name.upper().replace(" ", ""):
+                            arr.append(p.id)
+                else:
+                    arr = [p.id for p in products]
 
-                search.append(('product_tmpl_id', 'in', products))
+                search.append(('product_tmpl_id', 'in', arr))
 
             res = request.env['product.product'].sudo().search_read(
                 search, fields=fields, limit=limit, offset=offset, order="sales_count desc")
