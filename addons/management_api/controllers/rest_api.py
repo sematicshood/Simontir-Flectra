@@ -78,7 +78,7 @@ class ControllerAPIBentar(http.Controller):
 
         user = request.env['res.users'].sudo().search_read([
             ('id','=',uid)
-        ], fields=['image', 'name', 'role'])
+        ], fields=['image', 'name', 'role', 'company_id'])
 
         id_em = request.env['res.users'].sudo().search_read([
             ('id','=',uid)

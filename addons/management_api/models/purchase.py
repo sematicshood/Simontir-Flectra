@@ -1,7 +1,7 @@
-from flectra import models, fields
+from flectra import models, fields, api
 
 class purchase_order_line(models.Model):
-    _inherits = 'purchase.order.line'
+    _inherit = 'purchase.order.line'
 
     @api.one
     def create(self, vals):
