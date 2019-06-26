@@ -15,16 +15,16 @@ class UsersAPIBentar(http.Controller):
 
     @http.route('/simontir/unit_entri/month', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def unitEntriMonth(self, month, year, user_id, type):
+    def unitEntriMonth(self, month, year, user_id, type, company_id):
         month = int(month)
         year = int(year)
 
         if month != 12:
             domain = [('date_order', '>=', '{}-{}-1'.format(
-                year, month)), ('date_order', '<', '{}-{}-1'.format(year, month + 1))]
+                year, month)), ('date_order', '<', '{}-{}-1'.format(year, month + 1)), ('company_id', '=', int(company_id))]
         else:
             domain = [('date_order', '>=', '{}-{}-1'.format(
-                year, month)), ('date_order', '<', '{}-{}-1'.format(year + 1, 1))]
+                year, month)), ('date_order', '<', '{}-{}-1'.format(year + 1, 1)), ('company_id', '=', int(company_id))]
 
         role = "user_id"
 
@@ -75,13 +75,13 @@ class UsersAPIBentar(http.Controller):
 
     @http.route('/simontir/unit_entri/day', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def unitEntriDay(self, day, month, year, user_id, type):
+    def unitEntriDay(self, day, month, year, user_id, type, company_id):
         month = int(month)
         year = int(year)
         day = int(day)
 
         domain = [('date_order', '>=', '{}-{}-{}'.format(
-                year, month, day)), ('date_order', '<', str(datetime(year, month, day) + timedelta(days=1)))]
+                year, month, day)), ('date_order', '<', str(datetime(year, month, day) + timedelta(days=1))), ('company_id', '=', int(company_id))]
 
         role = ''
 

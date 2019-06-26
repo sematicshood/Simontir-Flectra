@@ -11,7 +11,7 @@ from itertools import groupby
 class ProfileMekanikAPI(http.Controller):
     @http.route('/simontir/profile/mekanik/<int:id>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def getMekanik(self, id, month=None, year=None):
+    def getMekanik(self, id, month=None, year=None, company_id=None):
         if month and year:
             count = 0
             month = int(month)
@@ -19,15 +19,20 @@ class ProfileMekanikAPI(http.Controller):
 
             if month != 12:
                 domain_month = [('create_date', '>=', '{}-{}-1'.format(
-                    year, month)), ('create_date', '<', '{}-{}-1'.format(year, month + 1))]
+                    year, month)), ('create_date', '<', '{}-{}-1'.format(year, month + 1)),
+                    ('company_id', '=', int(company_id))]
             else:
                 domain_month = [('create_date', '>=', '{}-{}-1'.format(
-                    year, month)), ('create_date', '<', '{}-{}-1'.format(year + 1, 1))]
+                    year, month)), ('create_date', '<', '{}-{}-1'.format(year + 1, 1)),
+                    ('company_id', '=', int(company_id))]
 
             domain_year = [('create_date', '>=', '{}-1-1'.format(
                 year)), ('create_date', '<', '{}-1-1'.format(year + 1))]
 
-        hr = request.env['hr.employee'].sudo().search([('user_id', '=', id)])
+        hr = request.env['hr.employee'].sudo().search([
+            ('user_id', '=', id),
+            ('company_id', '=', int(company_id))
+        ])
 
         domain_attendance_month = domain_month.copy()
         domain_attendance_month.append(('employee_id', '=', hr[0].id))

@@ -11,7 +11,7 @@ from itertools import groupby
 class ProfileAPI(http.Controller):
     @http.route('/simontir/profile/service-advisor/<int:id>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def getStaff(self, id, month=None, year=None):
+    def getStaff(self, id, month=None, year=None, company_id=None):
         if month and year:
             count = 0
             month = int(month)
@@ -19,19 +19,27 @@ class ProfileAPI(http.Controller):
 
             if month != 12:
                 domain_create = [('create_date', '>=', '{}-{}-1'.format(
-                    year, month)), ('create_date', '<', '{}-{}-1'.format(year, month + 1))]
+                    year, month)), ('create_date', '<', '{}-{}-1'.format(year, month + 1)),
+                    ('company_id', '=', int(company_id))]
                 domain_unit_entri = [('date_order', '>=', '{}-{}-1'.format(
-                    year, month)), ('date_order', '<', '{}-{}-1'.format(year, month + 1))]
+                    year, month)), ('date_order', '<', '{}-{}-1'.format(year, month + 1)),
+                    ('company_id', '=', int(company_id))]
             else:
                 domain_create = [('create_date', '>=', '{}-{}-1'.format(
-                    year, month)), ('create_date', '<', '{}-{}-1'.format(year + 1, 1))]
+                    year, month)), ('create_date', '<', '{}-{}-1'.format(year + 1, 1)),
+                    ('company_id', '=', int(company_id))]
                 domain_unit_entri = [('date_order', '>=', '{}-{}-1'.format(
-                    year, month)), ('date_order', '<', '{}-{}-1'.format(year + 1, 1))]
+                    year, month)), ('date_order', '<', '{}-{}-1'.format(year + 1, 1)),
+                    ('company_id', '=', int(company_id))]
 
-        hr = request.env['hr.employee'].sudo().search([('user_id', '=', id)])
+        hr = request.env['hr.employee'].sudo().search([
+            ('user_id', '=', id),
+            ('company_id', '=', int(company_id))
+        ])
 
         domain_attendance = domain_create.copy()
         domain_attendance.append(('employee_id', '=', hr[0].id))
+        
         attendance = request.env['hr.attendance'].sudo(
         ).search_count(domain_attendance)
 

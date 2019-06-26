@@ -10,11 +10,12 @@ import traceback
 class BoardsAPIBentar(http.Controller):
     @http.route('/simontir/getso', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def getso(self):
+    def getso(self, company_id):
         try:
             so = request.env['sale.order'].sudo().search([
                 ('invoice_status', '!=', 'invoiced'),
                 ('state', '!=', 'cancel'),
+                ('company_id', '=', int(company_id))
             ], order="id desc")
 
             data = [{
@@ -43,19 +44,23 @@ class BoardsAPIBentar(http.Controller):
 
     @http.route('/simontir/getso_mekanik/<user_id>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def getso_mekanik(self, user_id):
+    def getso_mekanik(self, user_id, company_id):
         try:
-            partnerId = request.env['res.users'].sudo().search(
-                [('id', '=', int(user_id))])
+            partnerId = request.env['res.users'].sudo().search([
+                ('id', '=', int(user_id)),
+                ('company_id', '=', int(company_id))
+            ])
 
             so = request.env['sale.order'].sudo().search([
-                ('state', '=', 'sent')
+                ('state', '=', 'sent'),
+                ('company_id', '=', int(company_id))
             ], order="id asc")
 
             owns = request.env['sale.order'].sudo().search([
                 ('state', '=', 'sale'),
                 ('invoice_status', '=', 'no'),
-                ('mekanik_id', '=', int(user_id))
+                ('mekanik_id', '=', int(user_id)),
+                ('company_id', '=', int(company_id))
             ], order="id asc")
 
             data = [{
@@ -98,9 +103,9 @@ class BoardsAPIBentar(http.Controller):
 
     @http.route('/simontir/getso_finalcheck', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def getso_finalcheck(self):
+    def getso_finalcheck(self, company_id):
         so = request.env['sale.order'].sudo().search([
-            ('state', '=', 'done'), ('invoice_status', '=', 'no')
+            ('state', '=', 'done'), ('invoice_status', '=', 'no'), ('company_id', '=', int(company_id))
         ], order="id asc")
 
         data = [{
@@ -126,11 +131,13 @@ class BoardsAPIBentar(http.Controller):
 
     @http.route('/simontir/pick_final', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def pick_final(self):
+    def pick_final(self, company_id):
         try:
             rq = request.jsonrequest
-            data = request.env['sale.order'].sudo().search(
-                [('name', '=', rq['invoice'])])
+            data = request.env['sale.order'].sudo().search([
+                ('name', '=', rq['invoice']),
+                ('company_id', '=', int(company_id))
+            ])
 
             data.write({
                 'invoice_status': 'no',
@@ -142,22 +149,30 @@ class BoardsAPIBentar(http.Controller):
 
     @http.route('/simontir/pick_so', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def pick_so(self):
+    def pick_so(self, company_id):
         try:
             rq = request.jsonrequest
-            data = request.env['sale.order'].sudo().search(
-                [('name', '=', rq['invoice'])])
+            data = request.env['sale.order'].sudo().search([
+                ('name', '=', rq['invoice']),
+                ('company_id', '=', int(company_id))
+            ])
 
             if len(data[0]['mekanik_id']) == 0:
                 day = datetime.date.today().day
                 month = datetime.date.today().month
                 year = datetime.date.today().year
 
-                employee = request.env['hr.employee'].sudo().search(
-                    [('user_id', '=', rq['user_id'])])
+                employee = request.env['hr.employee'].sudo().search([
+                    ('user_id', '=', rq['user_id']),
+                    ('company_id', '=', int(company_id))
+                ])
 
-                attendance = request.env['hr.attendance'].sudo().search([('employee_id', '=', employee[0]['id']), (
-                    'check_in', '>=', str((datetime.datetime.now()).date())), ('check_in', '<', str((datetime.datetime.now() + datetime.timedelta(days=1)).date()))])
+                attendance = request.env['hr.attendance'].sudo().search([
+                    ('employee_id', '=', employee[0]['id']), 
+                    ('check_in', '>=', str((datetime.datetime.now()).date())), 
+                    ('check_in', '<', str((datetime.datetime.now() + datetime.timedelta(days=1)).date())),
+                    ('company_id', '=', int(company_id))
+                ])
 
                 if len(attendance) == 0:
                     return invalid_response(400, 'Bad Request', 'Absensi terlebih dahulu')
@@ -173,15 +188,21 @@ class BoardsAPIBentar(http.Controller):
                     'mekanik_id': rq['user_id'],
                 })
 
-                so = request.env['account.analytic.account'].sudo().search_read(
-                    [('name', 'like', rq['invoice'])], fields=['project_ids'])
+                so = request.env['account.analytic.account'].sudo().search_read([
+                    ('name', 'like', rq['invoice']),
+                    ('company_id', '=', int(company_id))
+                ], fields=['project_ids'])
 
-                request.env['sale.order'].sudo().search([('name', '=', rq['invoice'])]).write({
+                request.env['sale.order'].sudo().search([
+                    ('name', '=', rq['invoice'])('company_id', '=', int(company_id))
+                ]).write({
                     'x_waktu_mulai': datetime.datetime.now()
                 })
 
-                tasks = request.env['project.task'].sudo().search(
-                    [('project_id', '=', so[0]['project_ids'][0])])
+                tasks = request.env['project.task'].sudo().search([
+                    ('project_id', '=', so[0]['project_ids'][0]),
+                    ('company_id', '=', int(company_id))
+                ])
 
                 for order in data[0]['order_line']:
                     if order.product_id[0].product_tmpl_id[0].type != 'service':
@@ -212,8 +233,10 @@ class BoardsAPIBentar(http.Controller):
                         'user_id': rq['user_id']
                     })
 
-                keluhan = request.env['temporary.keluhan'].sudo().search(
-                    [('x_ref_so', '=', data[0]['id'])])
+                keluhan = request.env['temporary.keluhan'].sudo().search([
+                    ('x_ref_so', '=', data[0]['id']),
+                    ('company_id', '=', int(company_id))
+                ])
 
                 for kel in keluhan:
                     request.env['project.task'].sudo().create({
@@ -233,18 +256,24 @@ class BoardsAPIBentar(http.Controller):
 
     @http.route('/simontir/get_final_detail/<path:no_ref>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def get_final_detail(self, no_ref):
+    def get_final_detail(self, no_ref, company_id):
         try:
             no_ref = str(no_ref)
 
-            sale = request.env['sale.order'].sudo().search_read(
-                [('name', '=', no_ref)], fields=['x_nopol', 'x_waktu_mulai', 'x_is_wash'])
+            sale = request.env['sale.order'].sudo().search_read([
+                ('name', '=', no_ref),
+                ('company_id', '=', int(company_id))
+            ], fields=['x_nopol', 'x_waktu_mulai', 'x_is_wash'])
 
-            so = request.env['account.analytic.account'].sudo().search_read(
-                [('name', 'like', no_ref)], fields=['project_ids'])
+            so = request.env['account.analytic.account'].sudo().search_read([
+                ('name', 'like', no_ref),
+                ('company_id', '=', int(company_id))
+            ], fields=['project_ids'])
 
-            tasks = request.env['project.task'].sudo().search_read(
-                [('project_id', '=', so[0]['project_ids'][0])], fields=['name', 'x_status'])
+            tasks = request.env['project.task'].sudo().search_read([
+                ('project_id', '=', so[0]['project_ids'][0]),
+                ('company_id', '=', int(company_id))
+            ], fields=['name', 'x_status'])
 
             return valid_response(status=200, data={
                 'count': len(tasks),
@@ -261,10 +290,12 @@ class BoardsAPIBentar(http.Controller):
         pass
 
     @http.route('/simontir/count_final/<int:id>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
-    def count_final(self, id):
+    def count_final(self, id, company_id):
         try:
-            data = request.env['sale.order'].sudo().search_count(
-                [('checker_id', '=', id)])
+            data = request.env['sale.order'].sudo().search_count([
+                ('checker_id', '=', id),
+                ('company_id', '=', int(company_id))
+            ])
 
             return valid_response(status=200, data={
                 'count': data,
@@ -274,21 +305,30 @@ class BoardsAPIBentar(http.Controller):
 
     @http.route('/simontir/get_task/<path:no_ref>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def get_task(self, no_ref):
+    def get_task(self, no_ref, company_id):
         try:
 
             no_ref = str(no_ref)
 
-            sale = request.env['sale.order'].sudo().search_read(
-                [('name', '=', no_ref)], fields=['x_nopol', 'x_waktu_mulai', 'x_is_wash'])
-            so = request.env['account.analytic.account'].sudo().search_read(
-                [('name', 'like', no_ref)], fields=['project_ids'])
+            sale = request.env['sale.order'].sudo().search_read([
+                ('name', '=', no_ref),
+                ('company_id', '=', int(company_id))
+            ], fields=['x_nopol', 'x_waktu_mulai', 'x_is_wash'])
 
-            tasks = request.env['project.task'].sudo().search_read(
-                [('project_id', '=', so[0]['project_ids'][0])], fields=['name', 'x_status', 'x_state', 'x_duration'])
+            so = request.env['account.analytic.account'].sudo().search_read([
+                ('name', 'like', no_ref),
+                ('company_id', '=', int(company_id))
+            ], fields=['project_ids'])
 
-            saran = request.env['temporary.analisa'].sudo().search_read(
-                [('x_ref_so', '=', sale[0]['id'])])
+            tasks = request.env['project.task'].sudo().search_read([
+                ('project_id', '=', so[0]['project_ids'][0]),
+                ('company_id', '=', int(company_id))
+            ], fields=['name', 'x_status', 'x_state', 'x_duration'])
+
+            saran = request.env['temporary.analisa'].sudo().search_read([
+                ('x_ref_so', '=', sale[0]['id']),
+                ('company_id', '=', int(company_id))
+            ])
 
             return valid_response(status=200, data={
                 'count': len(tasks),
@@ -306,22 +346,27 @@ class BoardsAPIBentar(http.Controller):
 
     @http.route('/simontir/accept', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def accept(self):
+    def accept(self, company_id):
         try:
             rq = request.jsonrequest
-            task = request.env['project.task'].sudo().search(
-                [('id', '=', rq['id'])])
+            task = request.env['project.task'].sudo().search([
+                ('id', '=', rq['id']),
+                ('company_id', '=', int(company_id))
+            ])
 
             task.write({
                 "x_status": "accept"
             })
 
-            hr = request.env['hr.employee'].sudo().search(
-                [('user_id', '=', task[0]['user_id'][0]['id'])])
+            hr = request.env['hr.employee'].sudo().search([
+                ('user_id', '=', task[0]['user_id'][0]['id']),
+                ('company_id', '=', int(company_id))
+            ])
 
             cek = request.env['account.analytic.line'].sudo().search([
                 ('name', '=', task[0].name.split(':')[1]),
-                ('task_id', '=', rq['id'])
+                ('task_id', '=', rq['id']),
+                ('company_id', '=', int(company_id))
             ])
 
             if len(cek) == 0:
@@ -343,22 +388,27 @@ class BoardsAPIBentar(http.Controller):
 
     @http.route('/simontir/reject', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def reject(self):
+    def reject(self, company_id):
         try:
             rq = request.jsonrequest
-            task = request.env['project.task'].sudo().search(
-                [('id', '=', rq['id'])])
+            task = request.env['project.task'].sudo().search([
+                ('id', '=', rq['id']),
+                ('company_id', '=', int(company_id))
+            ])
 
             task.write({
                 "x_status": "reject"
             })
 
-            hr = request.env['hr.employee'].sudo().search(
-                [('user_id', '=', rq['user_id'])])
+            hr = request.env['hr.employee'].sudo().search([
+                ('user_id', '=', rq['user_id']),
+                ('company_id', '=', int(company_id))
+            ])
 
             cek = request.env['account.analytic.line'].sudo().search([
                 ('name', '=', task[0].name.split(':')[1]),
-                ('task_id', '=', rq['id'])
+                ('task_id', '=', rq['id']),
+                ('company_id', '=', int(company_id))
             ])
 
             if len(cek) > 0:
@@ -370,27 +420,33 @@ class BoardsAPIBentar(http.Controller):
 
     @http.route('/simontir/finish_final', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def finish_final(self, invoice=None):
+    def finish_final(self, invoice=None, company_id=None):
         try:
             rq = request.jsonrequest
             invoiced = invoice if invoice != None else rq['invoice']
-            print(invoiced)
-            print('-'*100)
 
-            data = request.env['sale.order'].sudo().search(
-                [('name', '=', invoiced)])
+            data = request.env['sale.order'].sudo().search([
+                ('name', '=', invoiced),
+                ('company_id', '=', int(company_id))
+            ])
 
-            so = request.env['account.analytic.account'].sudo().search_read(
-                [('name', 'like', invoiced)], fields=['project_ids'])
+            so = request.env['account.analytic.account'].sudo().search_read([
+                ('name', 'like', invoiced),
+                ('company_id', '=', int(company_id))
+            ], fields=['project_ids'])
 
             tasks = request.env['project.task'].sudo().search(
                 [('project_id', '=', so[0]['project_ids'][0])])
 
-            vehicle = request.env['fleet.vehicle'].sudo().search(
-                [('license_plate', '=', data[0].x_nopol)])[0].id
+            vehicle = request.env['fleet.vehicle'].sudo().search([
+                ('license_plate', '=', data[0].x_nopol),
+                ('company_id', '=', int(company_id))
+            ])[0].id
 
-            service_type = request.env['fleet.service.type'].sudo().search(
-                [('name', '=', 'Service Log')])
+            service_type = request.env['fleet.service.type'].sudo().search([
+                ('name', '=', 'Service Log'),
+                ('company_id', '=', int(company_id))
+            ])
 
             if len(service_type) == 0:
                 service_type = request.env['fleet.service.type'].sudo().create({
@@ -412,8 +468,11 @@ class BoardsAPIBentar(http.Controller):
 
             log = request.env['fleet.vehicle.log.services'].sudo().create(
                 payload)
-            cost_ids = request.env['fleet.vehicle.cost'].sudo().search(
-                [('cost_subtype_id', '=', log[0].cost_subtype_id[0].id), ('vehicle_id', '=', vehicle)], order="id desc")
+            cost_ids = request.env['fleet.vehicle.cost'].sudo().search([
+                ('cost_subtype_id', '=', log[0].cost_subtype_id[0].id), 
+                ('vehicle_id', '=', vehicle),
+                ('company_id', '=', int(company_id))
+            ], order="id desc")
 
             for task in tasks:
                 name_history = task.name.split(':')[1]
@@ -434,8 +493,11 @@ class BoardsAPIBentar(http.Controller):
 
             if 'user_cuci' in rq:
                 if rq['user_cuci'] != "":
-                    task_cuci = request.env['project.task'].sudo().search(
-                        [('project_id', '=', so[0]['project_ids'][0]), ('description', 'like', '%CUCI MOTOR GRATIS')])
+                    task_cuci = request.env['project.task'].sudo().search([
+                        ('project_id', '=', so[0]['project_ids'][0]), 
+                        ('description', 'like', '%CUCI MOTOR GRATIS'),
+                        ('company_id', '=', int(company_id))
+                    ])
 
                     task_cuci.write({
                         'user_id': rq['user_cuci']
@@ -456,13 +518,18 @@ class BoardsAPIBentar(http.Controller):
 
     @http.route('/simontir/lock_so', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def lock_so(self):
+    def lock_so(self, company_id):
         try:
             rq = request.jsonrequest
-            data = request.env['sale.order'].sudo().search(
-                [('name', '=', rq['invoice'])])
+            data = request.env['sale.order'].sudo().search([
+                ('name', '=', rq['invoice']),
+                ('company_id', '=', int(company_id))
+            ])
 
-            request.env['temporary.analisa'].sudo().search([('id', '=', rq['id_saran'])]).write({
+            request.env['temporary.analisa'].sudo().search([
+                ('id', '=', rq['id_saran']),
+                ('company_id', '=', int(company_id))
+            ]).write({
                 'x_saran': rq['saran']
             })
 
@@ -476,7 +543,6 @@ class BoardsAPIBentar(http.Controller):
                 })
 
                 if data[0]['x_antrian_service'] == 'Light Repair':
-                    print('masuk'*100)
                     self.finish_final(rq['invoice'])
 
             return valid_response(status=200, data={
@@ -488,11 +554,13 @@ class BoardsAPIBentar(http.Controller):
 
     @http.route('/simontir/unlock_so', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def unlock_so(self):
+    def unlock_so(self, company_id):
         try:
             rq = request.jsonrequest
-            data = request.env['sale.order'].sudo().search(
-                [('name', '=', rq['invoice'])])
+            data = request.env['sale.order'].sudo().search([
+                ('name', '=', rq['invoice']),
+                ('company_id', '=', int(company_id))
+            ])
 
             if len(data) > 0:
                 data.action_unlock()
@@ -513,21 +581,27 @@ class BoardsAPIBentar(http.Controller):
         month = datetime.date.today().month
         year = datetime.date.today().year
 
-        employee = request.env['hr.employee'].sudo().search(
-            [('user_id', '=', id)])
+        employee = request.env['hr.employee'].sudo().search([
+            ('user_id', '=', id),
+        ])
 
-        attendance = request.env['hr.attendance'].sudo().search([('employee_id', '=', employee[0]['id']), (
-            'check_in', '>=', str((datetime.datetime.now()).date())), ('check_in', '<', str((datetime.datetime.now() + datetime.timedelta(days=1)).date()))])
+        attendance = request.env['hr.attendance'].sudo().search([
+            ('employee_id', '=', employee[0]['id']), 
+            ('check_in', '>=', str((datetime.datetime.now()).date())), 
+            ('check_in', '<', str((datetime.datetime.now() + datetime.timedelta(days=1)).date()))
+        ])
 
         return attendance
 
     @http.route('/simontir/task/finish', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def finishTask(self):
+    def finishTask(self, company_id):
         try:
             rq = request.jsonrequest
-            data = request.env['project.task'].sudo().search(
-                [('id', '=', rq['id'])])
+            data = request.env['project.task'].sudo().search([
+                ('id', '=', rq['id']),
+                ('company_id', '=', int(company_id))
+            ])
 
             task = data[0]['name'].split('sparepart')
             attendance = self.get_attendance(rq['user_id'])[0]
@@ -539,8 +613,10 @@ class BoardsAPIBentar(http.Controller):
                 else:
                     name = task[0].split(':')[1]
 
-                product = request.env['product.template'].sudo().search(
-                    [('name', '=', name)])
+                product = request.env['product.template'].sudo().search([
+                    ('name', '=', name),
+                    ('company_id', '=', int(company_id))
+                ])
 
                 if len(task) == 2:
                     attendance.write({
@@ -575,11 +651,13 @@ class BoardsAPIBentar(http.Controller):
 
     @http.route('/simontir/task/unfinish', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def unfinishTask(self):
+    def unfinishTask(self, company_id):
         try:
             rq = request.jsonrequest
-            data = request.env['project.task'].sudo().search(
-                [('id', '=', rq['id'])])
+            data = request.env['project.task'].sudo().search([
+                ('id', '=', rq['id']),
+                ('company_id', '=', int(company_id))
+            ])
 
             task = data[0]['name'].split('sparepart')
             attendance = self.get_attendance(rq['user_id'])[0]
@@ -591,8 +669,10 @@ class BoardsAPIBentar(http.Controller):
                 else:
                     name = task[0].split(':')[1]
 
-                product = request.env['product.template'].sudo().search(
-                    [('name', '=', name)])
+                product = request.env['product.template'].sudo().search([
+                    ('name', '=', name),
+                    ('company_id', '=', int(company_id))
+                ])
 
                 if len(task) == 2:
                     attendance.write({
@@ -628,12 +708,14 @@ class BoardsAPIBentar(http.Controller):
 
     @http.route('/simontir/get_cuci/<user_id>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def get_cuci(self, user_id):
+    def get_cuci(self, user_id, company_id):
         try:
             res = request.env['project.task'].sudo().search([
                 ('name', 'like', '%CUCI MOTOR GRATIS'),
                 ('timesheet_ids', '=', False),
-                ('user_id', '=', int(user_id))])
+                ('user_id', '=', int(user_id)),
+                ('company_id', '=', int(company_id))
+            ])
 
             data = [{
                 "projectId": d.project_id.id,
@@ -654,13 +736,15 @@ class BoardsAPIBentar(http.Controller):
 
     @http.route('/simontir/cekNoMesin', type='json', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def cekNoMesin(self, *args, **kwargs):
+    def cekNoMesin(self, company_id, *args, **kwargs):
         try:
             req = request.jsonrequest
 
             if len(req) > 1:
-                cek = request.env['fleet.vehicle'].sudo().search(
-                    [('vin_sn', '=', req['nomesin'])])
+                cek = request.env['fleet.vehicle'].sudo().search([
+                    ('vin_sn', '=', req['nomesin']),
+                    ('company_id', '=', int(company_id))
+                ])
 
                 if len(cek) > 0:
                     if cek[0].license_plate != req['nopol']:

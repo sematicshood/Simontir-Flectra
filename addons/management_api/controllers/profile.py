@@ -11,7 +11,7 @@ from itertools import groupby
 class ProfileAPI(http.Controller):
     @http.route('/simontir/profile/owner/revenue', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def ownerRevenue(self):
+    def ownerRevenue(self, company_id):
 
         revenue = []
 
@@ -20,10 +20,12 @@ class ProfileAPI(http.Controller):
             count = 0
             if x != 12:
                 domain = [('date_order', '>=', '{}-{}-1'.format(
-                    year, x)), ('date_order', '<', '{}-{}-1'.format(year, x + 1))]
+                    year, x)), ('date_order', '<', '{}-{}-1'.format(year, x + 1)),
+                    ('company_id', '=', int(company_id))]
             else:
                 domain = [('date_order', '>=', '{}-{}-1'.format(
-                    year, x)), ('date_order', '<', '{}-{}-1'.format(year + 1, 1))]
+                    year, x)), ('date_order', '<', '{}-{}-1'.format(year + 1, 1)),
+                    ('company_id', '=', int(company_id))]
 
             rev = request.env['sale.order'].sudo().search_read(
                 domain, fields=['amount_total'])
@@ -46,7 +48,7 @@ class ProfileAPI(http.Controller):
 
     @http.route('/simontir/profile/owner/sales', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def ownerSales(self, month=None, year=None):
+    def ownerSales(self, month=None, year=None, company_id=None):
 
         sales = None
 
@@ -57,10 +59,12 @@ class ProfileAPI(http.Controller):
 
             if month != 12:
                 domain = [('date_order', '>=', '{}-{}-1'.format(
-                    year, month)), ('date_order', '<', '{}-{}-1'.format(year, month + 1))]
+                    year, month)), ('date_order', '<', '{}-{}-1'.format(year, month + 1)),
+                    ('company_id', '=', int(company_id))]
             else:
                 domain = [('date_order', '>=', '{}-{}-1'.format(
-                    year, month)), ('date_order', '<', '{}-{}-1'.format(year + 1, 1))]
+                    year, month)), ('date_order', '<', '{}-{}-1'.format(year + 1, 1)),
+                    ('company_id', '=', int(company_id))]
 
             sals = request.env['sale.order'].sudo().search_read(
                 domain, fields=['amount_total'])
@@ -80,7 +84,7 @@ class ProfileAPI(http.Controller):
 
     @http.route('/simontir/profile/owner/product-revenue', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def productRevenue(self, month=None, year=None):
+    def productRevenue(self, month=None, year=None, company_id=None):
 
         service = []
         product = []
@@ -89,8 +93,8 @@ class ProfileAPI(http.Controller):
             count = 0
             month = int(month)
             year = int(year)
-            domain_service = [('is_service', '=', True)]
-            domain_product = [('is_service', '=', False)]
+            domain_service = [('is_service', '=', True), ('company_id', '=', int(company_id))]
+            domain_product = [('is_service', '=', False), ('company_id', '=', int(company_id))]
 
             if month != 12:
                 domain_from = ('create_date', '>=', '{}-{}-1'.format(
@@ -139,7 +143,7 @@ class ProfileAPI(http.Controller):
 
     @http.route('/simontir/profile/owner/new-return-customer', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def newReturnCustomer(self, month=None, year=None):
+    def newReturnCustomer(self, month=None, year=None, company_id=None):
 
         returnCustomer = 0
         newCustomer = 0
@@ -151,10 +155,12 @@ class ProfileAPI(http.Controller):
 
             if month != 12:
                 domain = [('date_order', '>=', '{}-{}-1'.format(
-                    year, month)), ('date_order', '<', '{}-{}-1'.format(year, month + 1))]
+                    year, month)), ('date_order', '<', '{}-{}-1'.format(year, month + 1)),
+                    ('company_id', '=', int(company_id))]
             else:
                 domain = [('date_order', '>=', '{}-{}-1'.format(
-                    year, month)), ('date_order', '<', '{}-{}-1'.format(year + 1, 1))]
+                    year, month)), ('date_order', '<', '{}-{}-1'.format(year + 1, 1)),
+                    ('company_id', '=', int(company_id))]
 
             sales = request.env['sale.order'].sudo(
             ).read_group(domain, ['partner_id', 'amount_total'], ['partner_id'], lazy=False)
@@ -176,7 +182,7 @@ class ProfileAPI(http.Controller):
 
     @http.route('/simontir/profile/owner/rasio', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def rasio(self, month=None, year=None):
+    def rasio(self, month=None, year=None, company_id=None):
         unit_this_month = 0
         unit_previous_month = 0
         service_this_month = 0
@@ -194,17 +200,21 @@ class ProfileAPI(http.Controller):
 
             if month != 12:
                 domain = [('create_date', '>=', '{}-{}-1'.format(
-                    year, month)), ('create_date', '<', '{}-{}-1'.format(year, month + 1))]
+                    year, month)), ('create_date', '<', '{}-{}-1'.format(year, month + 1)),
+                    ('company_id', '=', int(company_id))]
             else:
                 domain = [('create_date', '>=', '{}-{}-1'.format(
-                    year, month)), ('create_date', '<', '{}-{}-1'.format(year + 1, 1))]
+                    year, month)), ('create_date', '<', '{}-{}-1'.format(year + 1, 1)),
+                    ('company_id', '=', int(company_id))]
 
             if month != 1:
                 prev_domain = [('create_date', '>=', '{}-{}-1'.format(
-                    year, month - 1)), ('create_date', '<', '{}-{}-1'.format(year, month))]
+                    year, month - 1)), ('create_date', '<', '{}-{}-1'.format(year, month)),
+                    ('company_id', '=', int(company_id))]
             else:
                 prev_domain = [('create_date', '>=', '{}-{}-1'.format(
-                    year, month)), ('create_date', '<', '{}-{}-1'.format(year - 1, 12))]
+                    year, month)), ('create_date', '<', '{}-{}-1'.format(year - 1, 12)),
+                    ('company_id', '=', int(company_id))]
 
             sales = request.env['sale.order.line'].sudo(
             ).search_read(domain, fields=['price_total', 'is_service'])
@@ -223,10 +233,15 @@ class ProfileAPI(http.Controller):
                 if sal['is_service']:
                     service_previous_month += sal['price_total']
 
-            mekanik = request.env['hr.job'].sudo().search_read(
-                [('name', '=', 'Mekanik')], fields=['id'])
-            staff_mekanik = request.env['hr.employee'].sudo(
-            ).search([('job_id', '=', mekanik[0]['id'])])
+            mekanik = request.env['hr.job'].sudo().search_read([
+                ('name', '=', 'Mekanik'),
+                ('company_id', '=', int(company_id))
+            ], fields=['id'])
+
+            staff_mekanik = request.env['hr.employee'].sudo().search([
+                ('job_id', '=', mekanik[0]['id']),
+                ('company_id', '=', int(company_id))
+            ])
 
             user_id = []
 
@@ -286,7 +301,7 @@ class ProfileAPI(http.Controller):
 
     @http.route('/simontir/profile/owner/staff-mekanik', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def staffMekanik(self, month=None, year=None):
+    def staffMekanik(self, month=None, year=None, company_id=None):
         staff_users = []
         mekanik_users = []
         head_users = []
@@ -305,22 +320,38 @@ class ProfileAPI(http.Controller):
                 domain = [('create_date', '>=', '{}-{}-1'.format(
                     year, month)), ('create_date', '<', '{}-{}-1'.format(year + 1, 1))]
 
-            mekanik = request.env['hr.job'].sudo().search_read(
-                [('name', '=', 'Mekanik')], fields=['id'])
-            staff = request.env['hr.job'].sudo().search_read(
-                [('name', '=', 'Staff')], fields=['id'])
+            mekanik = request.env['hr.job'].sudo().search_read([
+                ('name', '=', 'Mekanik'),
+                ('company_id', '=', int(company_id))
+            ], fields=['id'])
+
+            staff = request.env['hr.job'].sudo().search_read([
+                ('name', '=', 'Staff'),
+                ('company_id', '=', int(company_id))
+            ], fields=['id'])
 
             jobs_select = request.env['hr.job'].sudo().search_read(
-                ['|', ('name', '=', 'Kepala Mekanik'), ('name', '=', 'Kepala Bengkel')], fields=['id'])
+                ['|', ('name', '=', 'Kepala Mekanik'), ('name', '=', 'Kepala Bengkel'), ('company_id', '=', int(company_id))], fields=['id'])
 
             jobs = [job['id'] for job in jobs_select]
 
             staff_user = request.env['hr.employee'].sudo(
-            ).search([('job_id', '=', staff[0]['id'])])
+            ).search([
+                ('job_id', '=', staff[0]['id']),
+                ('company_id', '=', int(company_id))
+            ])
+
             mekanik_user = request.env['hr.employee'].sudo(
-            ).search([('job_id', '=', mekanik[0]['id'])])
+            ).search([
+                ('job_id', '=', mekanik[0]['id']),
+                ('company_id', '=', int(company_id))
+            ])
+
             head_user = request.env['hr.employee'].sudo(
-            ).search([('job_id', 'in', jobs)])
+            ).search([
+                ('job_id', 'in', jobs),
+                ('company_id', '=', int(company_id))
+            ])
 
             domain_service = domain.copy()
 
@@ -402,7 +433,7 @@ class ProfileAPI(http.Controller):
 
     @http.route('/simontir/profile/owner/service', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def service(self, month=None, year=None):
+    def service(self, month=None, year=None, company_id=None):
         booking_service_total_this_month = 0
         booking_service_total_prev_month = 0
 
@@ -413,17 +444,21 @@ class ProfileAPI(http.Controller):
 
             if month != 12:
                 domain = [('create_date', '>=', '{}-{}-1'.format(
-                    year, month)), ('create_date', '<', '{}-{}-1'.format(year, month + 1))]
+                    year, month)), ('create_date', '<', '{}-{}-1'.format(year, month + 1)),
+                    ('company_id', '=', int(company_id))]
             else:
                 domain = [('create_date', '>=', '{}-{}-1'.format(
-                    year, month)), ('create_date', '<', '{}-{}-1'.format(year + 1, 1))]
+                    year, month)), ('create_date', '<', '{}-{}-1'.format(year + 1, 1)),
+                    ('company_id', '=', int(company_id))]
 
             if month != 1:
                 prev_domain = [('create_date', '>=', '{}-{}-1'.format(
-                    year, month - 1)), ('create_date', '<', '{}-{}-1'.format(year, month))]
+                    year, month - 1)), ('create_date', '<', '{}-{}-1'.format(year, month)),
+                    ('company_id', '=', int(company_id))]
             else:
                 prev_domain = [('create_date', '>=', '{}-{}-1'.format(
-                    year, month)), ('create_date', '<', '{}-{}-1'.format(year - 1, 12))]
+                    year, month)), ('create_date', '<', '{}-{}-1'.format(year - 1, 12)),
+                    ('company_id', '=', int(company_id))]
 
             domain.append(('x_antrian_service', '=', 'Booking Service'))
             prev_domain.append(('x_antrian_service', '=', 'Booking Service'))

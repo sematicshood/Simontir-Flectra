@@ -8,10 +8,13 @@ import traceback
 from datetime import datetime, timedelta
 
 class LaporanHarian(http.Controller):
-    def getIdProduct(self, category):
+    def getIdProduct(self, category, company_id):
         product         =   request.env['product.product'].sudo()
 
-        return [p.id for p in product.search([('categ_id', 'ilike', category)])]
+        return [p.id for p in product.search([
+            ('categ_id', 'ilike', category),
+            ('company_id', '=', int(company_id))
+        ])]
 
     @http.route('/simontir/laporan_harian', methods=['GET', 'OPTIONS'], cors="*", auth="none", type="http", csrf=False)
     def getLaporanHarian(self, date = None):
@@ -21,18 +24,22 @@ class LaporanHarian(http.Controller):
             template        =   request.env['product.template'].sudo()
             category        =   request.env['product.category'].sudo()
 
-            product_service =   [p.id for p in product.search([('type', '=', 'service')])]
-            oli_kpb         =   self.getIdProduct("oli kpb")
-            hgp             =   self.getIdProduct("hgp")
-            oli             =   self.getIdProduct("oli")
-            busi            =   self.getIdProduct("busi")
+            product_service =   [p.id for p in product.search([
+                ('type', '=', 'service')],
+                ('company_id', '=', int(company_id))
+            )]
+
+            oli_kpb         =   self.getIdProduct("oli kpb", company_id)
+            hgp             =   self.getIdProduct("hgp", company_id)
+            oli             =   self.getIdProduct("oli", company_id)
+            busi            =   self.getIdProduct("busi", company_id)
 
             account         =   request.env['account.invoice.line'].sudo()
 
             da    = datetime.strptime(date, '%Y-%m-%d')
             d     = da + timedelta(days=1)
         
-            domain          =   [('create_date', '>=', date), ('create_date', '<', d.strftime('%Y-%m-%d'))]
+            domain          =   [('create_date', '>=', date), ('create_date', '<', d.strftime('%Y-%m-%d')), ('company_id', '=', int(company_id))]
             fields          =   ['price_total', 'product_id']
 
             satu    = 0 

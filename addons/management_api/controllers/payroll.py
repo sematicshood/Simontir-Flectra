@@ -29,7 +29,7 @@ class Payroll(http.Controller):
 
     @http.route('/simontir/payroll', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def getMekanik(self, day = 1, month = None, year = None, day_until = 1, month_until = None, year_until = None, type = None):
+    def getMekanik(self, day = 1, month = None, year = None, day_until = 1, month_until = None, year_until = None, type = None, company_id=None):
         month = int(month)
         year = int(year)
         day = int(day)
@@ -41,16 +41,26 @@ class Payroll(http.Controller):
 
         if type == 'harian':
             domain = [('check_in', '>=', '{}-{}-{}'.format(
-                    year, month, day)), ('check_in', '<', str(datetime(year, month, day) + timedelta(days=1)))]
+                    year, month, day)), ('check_in', '<', str(datetime(year, month, day) + timedelta(days=1))),
+                    ('company_id', '=', int(company_id))]
 
         if type == 'bulanan':
-            domain = [('check_in', '>=', str(datetime(year, month, day))), ('check_in', '<', str(datetime(year, month, day) + relativedelta(months=1)))]
+            domain = [('check_in', '>=', str(datetime(year, month, day))), ('check_in', '<', str(datetime(year, month, day) + relativedelta(months=1))),
+            ('company_id', '=', int(company_id))]
 
         if type == 'range':
-            domain = [('check_in', '>=', str(datetime(year, month, day))), ('check_in', '<', str(datetime(year_until, month_until, day_until)))]
+            domain = [('check_in', '>=', str(datetime(year, month, day))), ('check_in', '<', str(datetime(year_until, month_until, day_until))),
+            ('company_id', '=', int(company_id))]
 
-        mekanik = request.env['hr.job'].sudo().search_read([('name', '=', 'Mekanik')], fields=['id'])
-        users_mekanik = request.env['hr.employee'].sudo().search([('job_id', '=', mekanik[0]['id'])])
+        mekanik = request.env['hr.job'].sudo().search_read([
+            ('name', '=', 'Mekanik'),
+            ('company_id', '=', int(company_id))
+        ], fields=['id'])
+
+        users_mekanik = request.env['hr.employee'].sudo().search([
+            ('job_id', '=', mekanik[0]['id']),
+            ('company_id', '=', int(company_id))
+        ])
 
         data = []
 

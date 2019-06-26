@@ -12,9 +12,9 @@ from dateutil.relativedelta import relativedelta
 class CashCount(http.Controller):
 
     @http.route('/simontir/cash_count', methods=["GET", "OPTIONS"], cors="*", csrf=False, auth="none", type="http")
-    def getCashCount(self, date=None):
+    def getCashCount(self, date=None, company_id=None):
         try:
-            domain = []
+            domain = [('company_id', '=', int(company_id))]
 
             if date != None:
                 domain.append(('date', '=', date))
@@ -29,14 +29,14 @@ class CashCount(http.Controller):
             print(traceback.format_exc())
 
     @http.route('/simontir/cash_count/get_total_saldo', methods=["GET", "OPTIONS"], cors="*", csrf=False, auth="none", type="http")
-    def getTotalSaldo(self, date=None):
+    def getTotalSaldo(self, date=None, company_id=None):
         try:
             da = datetime.strptime(date, '%Y-%m-%d')
             d = da + timedelta(days=1)
             ma = datetime.strptime("{}-{}-{}".format(da.year, da.month, 1), '%Y-%m-%d')
             m = ma + relativedelta(month=da.month+1)
 
-            domain = ['&', '&', ('date', '>=', date), ('date', '<', d.strftime("%Y-%m-%d")), '&', '&', ('date', '>=', ma), ('date', '<', m), ("state", "not in", ["draft", "cancel"]), '|', ("type", "=", "out_invoice"), ("type", "=", "out_refund")]
+            domain = ['&', '&', ('date', '>=', date), ('date', '<', d.strftime("%Y-%m-%d")), '&', '&', ('date', '>=', ma), ('date', '<', m), ("state", "not in", ["draft", "cancel"]), '|', ("type", "=", "out_invoice"), ("type", "=", "out_refund"), ('company_id', '=', int(company_id))]
 
             data = request.env['account.invoice'].sudo().search_read(
                 domain, fields=['amount_total'])
@@ -54,12 +54,14 @@ class CashCount(http.Controller):
             print(traceback.format_exc())
 
     @http.route('/simontir/cash_count', methods=["POST", "OPTIONS"], cors="*", csrf=False, auth="none", type="json")
-    def createCashCount(self):
+    def createCashCount(self, company_id):
         try:
             data = request.jsonrequest
             cash = request.env['cash.count'].sudo()
 
-            cek = cash.search([('date', '=', data['date'])])
+            cek = cash.search([
+                ('date', '=', data['date']), ('company_id', '=', int(company_id))
+            ])
 
             if len(cek) > 0:
                 cek.write(data)

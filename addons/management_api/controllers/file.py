@@ -14,9 +14,9 @@ class FileAPIBentar(http.Controller, Google):
         return super().__init__()
 
     @http.route('/simontir/file/kontakUpload', type="http", methods=["GET", "OPTIONS"], auth="none", cors="*", csrf=False)
-    def kontakUpload(self, **params):
+    def kontakUpload(self, company_id, **params):
         try:
-            domain = []
+            domain = [('company_id', '=', int(company_id))]
             fields = ['name', 'phone', 'email']
             data   = []
         
@@ -42,7 +42,10 @@ class FileAPIBentar(http.Controller, Google):
             kontak = request.env['res.partner'].sudo().search_read(domain=domain, fields=fields)
 
             for k in kontak:
-                license = request.env['fleet.vehicle'].sudo().search_read([('driver_id','=',k['id'])], fields=["license_plate"])
+                license = request.env['fleet.vehicle'].sudo().search_read([
+                    ('driver_id','=',k['id']),
+                    ('company_id', '=', int(company_id))
+                ], fields=["license_plate"])
 
                 if len(license) > 0:
                     data.append({
@@ -99,9 +102,9 @@ class FileAPIBentar(http.Controller, Google):
             print(traceback.format_exc())
 
     @http.route('/simontir/file/waBlaster', type="http", methods=["GET", "OPTIONS"], auth="none", cors="*", csrf=False)
-    def waBlaster(self, **params):
+    def waBlaster(self, company_id, **params):
         try:
-            domain = []
+            domain = [('company_id', '=', int(company_id))]
             fields = ['name', 'partner_id', 'x_nopol']
             data   = []
 
@@ -196,11 +199,17 @@ class FileAPIBentar(http.Controller, Google):
 
 
     @http.route('/simontir/kendaraan/getType', type="http", methods=["GET", "OPTIONS"], auth="none", cors="*", csrf=False)
-    def getTypeKendaraan(self, **params):
+    def getTypeKendaraan(self, company_id, **params):
         try:
-            brand   =   request.env['fleet.vehicle.model.brand'].sudo().search([('name','ilike','Honda')])
+            brand   =   request.env['fleet.vehicle.model.brand'].sudo().search([
+                ('name','ilike','Honda'),
+                ('company_id', '=', int(company_id))
+            ])
 
-            type_motor =[d.display_name for d in request.env['fleet.vehicle.model'].sudo().search([('brand_id','=',brand[0].id)])]
+            type_motor =[d.display_name for d in request.env['fleet.vehicle.model'].sudo().search([
+                ('brand_id','=',brand[0].id),
+                ('company_id', '=', int(company_id))
+            ])]
 
             return valid_response(status=200, data={
                 'count': len(type_motor),
