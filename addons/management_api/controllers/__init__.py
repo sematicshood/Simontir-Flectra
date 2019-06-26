@@ -15,3 +15,4 @@ from . import profile_service_advisor
 from . import profile_mekanik
 from . import unit_entri
 from . import payroll
+from . import assign_menu
