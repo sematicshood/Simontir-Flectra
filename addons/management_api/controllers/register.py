@@ -128,7 +128,7 @@ class RegisterAPIBentar(http.Controller):
     #     ],
     # "colors":[]
     # }
-    def onLoad(self, company_id):
+    def onLoad(self, company_id=None):
         try:
             #cek SO dengan state quotation
             cek = self.cekSO()
@@ -140,7 +140,6 @@ class RegisterAPIBentar(http.Controller):
 
             brand   =   request.env['fleet.vehicle.model.brand'].sudo().search([
                 ('name','ilike','Honda'),
-                ('company_id', '=', int(company_id))
             ]);
                 
             data = [{
@@ -151,7 +150,6 @@ class RegisterAPIBentar(http.Controller):
                     "name": d.display_name
                 }for d in request.env['fleet.vehicle.model'].sudo().search([
                     ('brand_id','=',brand[0].id)],
-                    ('company_id', '=', int(company_id))
                 )],
             }for data in cek[0]]
 
@@ -170,7 +168,6 @@ class RegisterAPIBentar(http.Controller):
     def cekSO(self):
         cek = request.env['sale.order'].sudo().search([
             ('state', '=', 'draft'),
-            ('company_id', '=', int(company_id))
             ])
         return cek
 
@@ -647,7 +644,7 @@ class RegisterAPIBentar(http.Controller):
 
     @http.route('/simontir/print-so/<path:so>', type='http', auth='none', methods=['GET'], csrf=False, cors="*")
     # @authentication
-    def printSO(self, so, company_id):
+    def printSO(self, so, company_id=None):
         try:
             data = [{
                 "id":d.id,
@@ -679,7 +676,6 @@ class RegisterAPIBentar(http.Controller):
                     "type": p.type
                 }for p in request.env['res.partner'].sudo().search([
                     ('parent_id', '=', d.partner_id.id),
-                    ('company_id', '=', int(company_id))
                 ], order="id desc", limit=1)],
                 "motor": [{
                     "id":m.id,
@@ -694,26 +690,21 @@ class RegisterAPIBentar(http.Controller):
                     "tahun": m.model_year,
                     "km": request.env['fleet.vehicle.odometer'].sudo().search([
                         ('vehicle_id', '=', m.id),
-                        ('company_id', '=', int(company_id))
                     ], order="id desc", limit=1).value 
                 }for m in request.env['fleet.vehicle'].sudo().search([
                     ('driver_id', '=', d.partner_id.id),
-                    ('company_id', '=', int(company_id))
                 ])],
                 "keluhan_konsumen": [{
                     "id": k.id,
                     "nama": k.x_keluhan
                 }for k in request.env['temporary.keluhan'].sudo().search([
                     ('x_ref_so', '=', d.id),
-                    ('company_id', '=', int(company_id))
                 ])],
                 "analisa_service":request.env['temporary.analisa'].sudo().search([
                     ('x_ref_so', '=', d.id),
-                    ('company_id', '=', int(company_id))
                 ]).x_analisa,
                 "saran_mekanik":request.env['temporary.analisa'].sudo().search([
                     ('x_ref_so', '=', d.id),
-                    ('company_id', '=', int(company_id))
                 ]).x_saran,
                 "sale_order_line":[{
                     "id":s.product_id.id,
