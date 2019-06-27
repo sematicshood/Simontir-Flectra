@@ -29,6 +29,7 @@ class BoardsAPIBentar(http.Controller):
                 "name": s.name,
                 "cuci": s.x_is_wash,
                 "mekanik": s.mekanik_id.name,
+                "gross_amount": s.gross_amount,
                 "order_line": [{
                     "name": o.name,
                     "type": o.product_id[0].product_tmpl_id[0].type
