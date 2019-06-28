@@ -3,7 +3,7 @@ import flectra
 from flectra.http import request
 from . rest_api import authentication
 from . rest_exception import *
-import datetime
+from datetime import datetime, timedelta
 import traceback
 
 
@@ -15,6 +15,7 @@ class BoardsAPIBentar(http.Controller):
             so = request.env['sale.order'].sudo().search([
                 ('invoice_status', '!=', 'invoiced'),
                 ('state', '!=', 'cancel'),
+                ('state', '!=', 'done'),
                 ('company_id', '=', int(company_id))
             ], order="id desc")
 
@@ -45,8 +46,10 @@ class BoardsAPIBentar(http.Controller):
 
     @http.route('/simontir/getso_mekanik/<user_id>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def getso_mekanik(self, user_id, company_id):
+    def getso_mekanik(self, user_id, company_id, date):
         try:
+            date = date.split('-')
+
             partnerId = request.env['res.users'].sudo().search([
                 ('id', '=', int(user_id)),
                 ('company_id', '=', int(company_id))
@@ -54,7 +57,9 @@ class BoardsAPIBentar(http.Controller):
 
             so = request.env['sale.order'].sudo().search([
                 ('state', '=', 'sent'),
-                ('company_id', '=', int(company_id))
+                ('company_id', '=', int(company_id)),
+                ('date_order', '>=', '{}-{}-{}'.format(date[0], date[1], date[2])), 
+                ('date_order', '<', str(datetime(int(date[0]), int(date[1]), int(date[2])) + timedelta(days=1)))
             ], order="id asc")
 
             owns = request.env['sale.order'].sudo().search([
@@ -104,9 +109,15 @@ class BoardsAPIBentar(http.Controller):
 
     @http.route('/simontir/getso_finalcheck', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
-    def getso_finalcheck(self, company_id):
+    def getso_finalcheck(self, company_id, date):
+        date = date.split('-')
+
         so = request.env['sale.order'].sudo().search([
-            ('state', '=', 'done'), ('invoice_status', '=', 'no'), ('company_id', '=', int(company_id))
+            ('state', '=', 'done'), 
+            ('invoice_status', '=', 'no'), 
+            ('company_id', '=', int(company_id)),
+            ('date_order', '>=', '{}-{}-{}'.format(date[0], date[1], date[2])), 
+            ('date_order', '<', str(datetime(int(date[0]), int(date[1]), int(date[2])) + timedelta(days=1)))
         ], order="id asc")
 
         data = [{

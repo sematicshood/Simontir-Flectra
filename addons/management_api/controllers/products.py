@@ -14,7 +14,7 @@ class ProductsAPIBentar(http.Controller):
         try:
             res = []
 
-            search = [('company_id', '=', int(company_id))]
+            search = []
 
             fields = ['name', 'barcode', 'qty_available',
                       'list_price', 'type', 'sales_count', 'product_tmpl_id', 'minimal_km']

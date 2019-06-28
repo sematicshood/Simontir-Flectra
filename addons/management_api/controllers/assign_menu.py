@@ -12,9 +12,7 @@ class ProfileAPI(http.Controller):
     @http.route('/simontir/job', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
     def getJob(self, company_id=None):
-        hr = request.env['hr.job'].sudo().search_read([
-            ('company_id', '=', int(company_id))
-        ], fields=['name'])
+        hr = request.env['hr.job'].sudo().search_read([], fields=['name'])
 
         return valid_response(status=200, data={
             'results': hr
