@@ -16,27 +16,24 @@ def migrate_company_branch(cr, registry):
                                  'branch_ids': [(6, 0, [user_id.company_id.branch_id.id])]})
            cr.commit()
 
-
 class Company(models.Model):
     _name = "res.company"
     _inherit = ["res.company"]
 
-    branch_id = fields.Many2one('res.branch', 'Branch', ondelete="cascade")
+    branch_id = fields.Many2one('res.branch', 'Branch', ondelete="restrict")
 
     @api.model
     def create(self, vals):
-        res = super(Company, self).create(vals)
-        field_list = ['name', 'street', 'street2', 'zip', 'city', 'state_id',
-                      'country_id', 'email', 'phone', 'mobile', 'partner_id']
-        branch_vals = dict((f, vals[f]) for f in field_list if f in vals)
-        branch_vals.update({
-            'code': res.name,
-            'company_id': res.id
+        branch = self.env['res.branch'].create({
+            'name': vals['name'],
+            'code': vals['name'],
         })
-        branch = self.env['res.branch'].create(branch_vals)
-        res.write({'branch_id': branch.id})
-        res.partner_id.branch_id = branch.id
-        return res
+        vals['branch_id'] = branch.id
+        self.clear_caches()
+        company = super(Company, self).create(vals)
+        branch.write({'partner_id': company.partner_id.id,
+                      'company_id': company.id})
+        return company
 
 
 class ResBranch(models.Model):
@@ -68,6 +65,9 @@ class ResBranch(models.Model):
 
     @api.model
     def create(self, vals):
+        if not vals.get('partner_id', False):
+            partner_id = self.env['res.partner'].create({'name': vals['name']})
+            vals.update({'partner_id': partner_id.id})
         res = super(ResBranch, self).create(vals)
         vals.pop("name", None)
         vals.pop("code", None)
@@ -85,27 +85,13 @@ class ResBranch(models.Model):
         vals.pop("partner_id", None)
         ctx = self.env.context.copy()
         if 'branch' not in ctx:
-            for record in self:
-                record.partner_id.write(vals)
+            self.partner_id.write(vals)
         return res
 
 
 class Users(models.Model):
 
     _inherit = "res.users"
-
-    @api.multi
-    def read(self, fields=None, load='_classic_read'):
-        result = super(Users, self).read(fields, load=load)
-        self.with_context({'check_branch': True}).check_missing_branch()
-        return result
-
-    @api.multi
-    def check_missing_branch(self):
-        for user_id in self:
-            if self._context.get('check_branch', False) and user_id.company_id.branch_id and not user_id.default_branch_id:
-                user_id.default_branch_id = user_id.company_id.branch_id.id
-                user_id.branch_ids = [(4, user_id.company_id.branch_id.id)]
 
     @api.model
     def branch_default_get(self, user):
@@ -143,10 +129,9 @@ class Users(models.Model):
         string="Number of Companies", default=_branches_count)
 
     @api.onchange('company_id')
-    def _onchange_company_id(self):
-        if self.company_id.branch_id:
-            self.default_branch_id = self.company_id.branch_id.id
-            self.branch_ids = [(4, self.company_id.branch_id.id)]
+    def _onchange_address(self):
+        self.default_branch_id = self.company_id.branch_id.id
+        self.branch_ids = [(4, self.company_id.branch_id.id)]
 
     # To do : Check with all base module test cases
     # @api.multi
@@ -164,7 +149,6 @@ class Users(models.Model):
         branches_count = self._branches_count()
         for user in self:
             user.branches_count = branches_count
-
     @api.model
     def create(self, vals):
         res = super(Users, self).create(vals)
