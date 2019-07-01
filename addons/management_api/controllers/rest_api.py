@@ -78,17 +78,22 @@ class ControllerAPIBentar(http.Controller):
 
         user = request.env['res.users'].sudo().search_read([
             ('id','=',uid)
-        ], fields=['image', 'name', 'role', 'company_id'])
+        ], fields=['image', 'name', 'role', 'company_id', 'company_ids'])
 
         id_em = request.env['res.users'].sudo().search_read([
             ('id','=',uid)
         ])[0]['employee_ids'][0]
+
+        company = request.env['res.company'].sudo().search_read([
+            ('id', 'in', user[0]['company_ids'])
+        ], fields=['name'])
 
         hr    = request.env['hr.employee'].sudo().search_read([('id','=',id_em)],
                     fields=['job_id']
                 )
 
         user[0]['job']  =   hr[0]['job_id'][1]
+        user[0]['companies'] = company
 
         # Successful response:
         if uid is not False:
