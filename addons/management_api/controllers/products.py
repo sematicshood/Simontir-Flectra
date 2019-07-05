@@ -41,8 +41,8 @@ class ProductsAPIBentar(http.Controller):
 
             if vehicle != None:
                 products = request.env['fleet.vehicle.model'].sudo().search([
-                    ('id', '=', vehicle),
-                    ('company_id', '=', int(company_id))
+                    ('id', '=', vehicle)
+                    #,('company_id', '=', int(company_id))
                 ])[0]['x_product_ids']
 
                 arr = []
