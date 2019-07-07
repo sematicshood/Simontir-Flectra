@@ -315,7 +315,7 @@ class BoardsAPIBentar(http.Controller):
         except Exception as identifier:
             print(str(identifier))
 
-    @http.route('/simontir/get_task/<path:no_ref>', type='json', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
+    @http.route('/simontir/get_task/<path:no_ref>', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False, cors="*")
     # @authentication
     def get_task(self, no_ref, company_id):
         try:
