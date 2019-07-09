@@ -28,7 +28,7 @@ class UsersAPIBentar(http.Controller):
             })
 
     @http.route('/simontir/users/getUsersCuci', type="http", auth="none", method=['GET', 'OPTIONS'], csrf=False, cors="*")
-    def getUsersCuci(self):
+    def getUsersCuci(self, company_id):
         users = request.env['res.users'].sudo().search_read([('role','=','Cuci')], fields=['name'])
 
         return valid_response(status=200, data={

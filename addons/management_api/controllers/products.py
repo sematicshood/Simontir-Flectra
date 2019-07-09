@@ -41,8 +41,7 @@ class ProductsAPIBentar(http.Controller):
 
             if vehicle != None:
                 products = request.env['fleet.vehicle.model'].sudo().search([
-                    ('id', '=', vehicle),
-                    ('company_id', '=', int(company_id))
+                    ('id', '=', vehicle)
                 ])[0]['x_product_ids']
 
                 arr = []
@@ -80,8 +79,7 @@ class ProductsAPIBentar(http.Controller):
         res = []
 
         res = request.env['fleet.vehicle'].sudo().search_read([
-            ('license_plate', 'ilike', nopol),
-            # ('company_id', '=', int(company_id))
+            ('license_plate', 'ilike', nopol)
         ], fields=['license_plate'], limit=10)
 
         return valid_response(status=200, data={
