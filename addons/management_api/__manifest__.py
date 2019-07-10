@@ -10,8 +10,8 @@
         Long description of module's purpose
     """,
 
-    'author': "My Company",
-    'website': "http://www.yourcompany.com",
+    'author': "Sematics",
+    'website': "http://sematic.id",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/flectra/flectra/blob/master/flectra/addons/base/module/module_data.xml
