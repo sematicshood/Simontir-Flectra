@@ -1,11 +1,11 @@
 <flectra>
     <data>
-        <record id="product_template_custom_field_saleorder_form_view" model="ir.ui.view">
-            <field name="name">sale.view_order_form</field>
+        <record id="view_sale_order_custom" model="ir.ui.view">
+            <field name="name">sale.order.custom.form.inherited</field>
             <field name="model">sale_order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
-            <field name="type">form</field>
             <field name="arch" type="xml">
+                    <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="x_nopol"/>
             </field>
         </record>

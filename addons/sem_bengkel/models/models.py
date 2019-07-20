@@ -2,9 +2,11 @@
 
 from flectra import models, fields, api
 
-# class sem_bengkel(models.Model):
-#     _name = 'sem_bengkel.sem_bengkel'
+ class sem_bengkel(models.Model):
+     _name = 'sem_bengkel.sem_bengkel'
+     _inherit = 'sale.order'
 
+     #custom_field =field.Char(string='Custom Field')
 #     name = fields.Char()
 #     value = fields.Integer()
 #     value2 = fields.Float(compute="_value_pc", store=True)
