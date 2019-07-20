@@ -3,8 +3,8 @@
 from flectra import models, fields, api
 
  class sem_bengkel(models.Model):
+     _inherit = 'sale'
      _name = 'sem_bengkel.sem_bengkel'
-     _inherit = 'sale.order'
 
      #custom_field =field.Char(string='Custom Field')
 #     name = fields.Char()
