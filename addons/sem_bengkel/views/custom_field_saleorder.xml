@@ -1,0 +1,17 @@
+<flectra>
+    <data>
+        <record id="product_template_custom_field_saleorder_form_view" model="ir.ui.view">
+            <field name="name">sale.view_order_form.inherit</field>
+            <field name="model">sale_order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook/page[@name='info_kendaraan']/group" position="inside">
+                    <group name="group_more">
+                        <field name="x_nopol"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</flectra>
