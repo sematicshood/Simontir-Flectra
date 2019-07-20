@@ -6,7 +6,7 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <xpath expr="/form/sheet/notebook/page[@name='info_kendaraan']/group" position="inside">
+                <xpath expr="/form/sheet/notebook/page[@name='Detil_Kendaraan']/group" position="inside">
                     <group name="group_more">
                         <field name="x_nopol"/>
                     </group>
