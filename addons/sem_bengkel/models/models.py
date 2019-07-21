@@ -2,7 +2,7 @@
 
 from flectra import models, fields, api
 
- class sem_bengkel(models.Model):
+class sem_bengkel(models.Model):
      _inherit = 'sale.order'
      _name = 'sem_bengkel.sem_bengkel'
 
