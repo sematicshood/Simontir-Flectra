@@ -1,0 +1,23 @@
+<flectra>
+<record id="view_sale_order_custom" model="ir.ui.view">
+    <field name="name">sale.order.custom.form.inherited</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//field[@name='partner_id']" position="after">
+            <field name="x_antrian_service"/>
+            <field name="x_warna"/>
+            <field name="x_kpb"/>
+            <field name="x_is_reject"/>
+            <field name="x_is_wash"/>
+        </xpath>
+        <xpath expr="//field[@name='payment_term_id']" position="after">
+            <field name="x_service"/>
+            <field name="x_ganti_oli"/>
+            <field name="x_ganti_part"/>
+            <field name="x_claim"/>
+            <field name="x_job_return"/>
+        </xpath>
+    </field>
+</record>
+</flectra>
