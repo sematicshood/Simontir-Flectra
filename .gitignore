@@ -38,7 +38,7 @@ setup/win32/static/postgresql*.exe
 /man/
 /share/
 /src/
-
+/venv/
 #flectra conf
 flectra.conf
 flectra-bin
