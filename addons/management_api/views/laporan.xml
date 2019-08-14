@@ -1,0 +1,41 @@
+<flectra>
+    <data>
+        <!-- explicit list view definition -->
+
+<!--        <record model="ir.ui.view" id="management_api.list_account_wablaster">-->
+<!--            <field name="name">List Account Wa Blaster</field>-->
+<!--            <field name="model">wablaster.account</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <tree>-->
+<!--                    <field name="username"/>-->
+<!--                    <field name="email"/>-->
+<!--                    <field name="phone_number"/>-->
+<!--                    <field name="api_key"/>-->
+<!--                </tree>-->
+<!--            </field>-->
+<!--        </record>-->
+
+        <record model="ir.ui.view" id="management_api.form_laporan_bengkel">
+            <field name="name">Laporan Harian Bengkel</field>
+            <field name="model">laporanBengkel</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <label>Test laporan</label>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <!-- actions opening views on models -->
+
+        <record model="ir.actions.act_window" id="management_api.action_window_laporan_bengkel">
+            <field name="name">Laporan Bengkel</field>
+            <field name="res_model">laporanBengkel</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Laporan Harian" id="management_api.lap_harian" parent="management_api.menu_3" action="management_api.action_window_laporan_harian"/>
+    </data>
+</flectra>

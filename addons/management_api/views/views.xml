@@ -44,7 +44,7 @@
     
     <menuitem name="Management API" id="management_api.menu_1" parent="management_api.menu_root"/>
     <menuitem name="Vehicle" id="management_api.menu_2" parent="management_api.menu_root"/>
-
+    <menuitem name="Laporan" id="management_api.menu_3" parent="management_api.menu_root"/>
     <menuitem name="Credentials" id="management_api.credentials" parent="management_api.menu_1" action="management_api.action_window"/>
    
   </data>

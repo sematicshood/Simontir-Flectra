@@ -16,11 +16,12 @@
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/flectra/flectra/blob/master/flectra/addons/base/module/module_data.xml
     # for the full list
-    'category': 'Uncategorized',
+    'category': 'Industri',
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'sale', 'fleet', 'product', 'project', 'base_automation', 'account', 'crm', 'purchase'],
+    'depends': ['base', 'sale', 'fleet', 'product', 'project', 'base_automation', 'account', 'crm', 'purchase',
+                'mail','web'],
 
     # always loaded
     'data': [
@@ -33,5 +34,6 @@
         'views/wa_sender_form.xml',
         'views/setting_account_wablaster.xml',
         'views/trigger_wa_sender.xml',
+        'views/laporan.xml',
     ]
 }

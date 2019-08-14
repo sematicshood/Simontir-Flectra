@@ -29,7 +29,7 @@
         <!-- actions opening views on models -->
         
         <record model="ir.actions.act_window" id="crm.action_window_wablaster">
-            <field name="name">Wa Semder</field>
+            <field name="name">Wa Sender</field>
             <field name="res_model">wablaster</field>
             <field name="view_mode">tree,form</field>
         </record>
