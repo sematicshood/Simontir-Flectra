@@ -6,7 +6,7 @@
             <field name="subject">Dot Matrix Template for Invoice</field>
             <field name="body_html"><![CDATA[
 ${'BENGKEL'.rjust(5)} ${object.company_id.display_name.rjust(5)}
-${object.company_id.street.ljus(5)} ${object.company_id.street2.rjust(5)}
+${object.company_id.street.ljust(5)} ${object.company_id.street2.rjust(5)}
 ${'Jl. Krangkungan / Anggajaya II No. 17'.rjust(5)}
 ${'Condongcatur, Depok, Sleman, Yogyakarta'.rjust(5)}
 ${''.rjust(100, '_')}            
