@@ -6,9 +6,9 @@
             <field name="subject">Dot Matrix Template for Invoice</field>
             <field name="body_html"><![CDATA[
 ${object.company_id.display_name}
-${object.company_id.street.ljust(60)} ${'Invoice:'.rjust(10)} ${object.number.ljust(15)}
-${object.company_id.street2.ljust(60)} ${'Tanggal:'.rjust(10)} ${object.date_invoice.ljust(15)}
-${object.company_id.phone.ljust(60)} ${'Mknk/Ksr:'.rjust(10)} ${object.user_id.name.ljust(15)}
+${object.company_id.street.ljust(60)} ${'Invoice:'.rjust(12)} ${object.number.ljust(15)}
+${object.company_id.street2.ljust(60)} ${'Tanggal:'.rjust(12)} ${object.date_invoice.ljust(15)}
+${object.company_id.phone.ljust(60)} ${'Mknk/Ksr:'.rjust(12)} ${object.user_id.name.ljust(15)}
 ${''.rjust(130, '_')}
 ${'Nama:'.rjust(7)} ${object.partner_id.name.ljust(40)} ${'Nopol:'.rjust(10)} ${object.partner_id.name.ljust(20)}${'Thn/Warna:'.rjust(10)} ${object.partner_id.name.ljust(10)}
 ${'Alamat:'.rjust(7)} ${object.partner_id.street.ljust(40)} ${'No Rangka:'.rjust(10)} ${object.partner_id.name.ljust(20)}${'Type:'.rjust(10)} ${object.partner_id.name.ljust(10)}
