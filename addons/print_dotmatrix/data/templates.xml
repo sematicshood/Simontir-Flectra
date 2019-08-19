@@ -18,11 +18,11 @@ ${'Kode'.ljust(15)}${'Product'.ljust(40)} ${'Qty'.rjust(6)} ${'UoM'.rjust(7)} ${
 ${''.rjust(130, '-')}
 % for l in object.invoice_line_ids:
 
-${l.product_id.barcode.ljust(15)}${l.product_id.name[:28].ljust(40)} ${"{:4,.0f}".format(l.quantity).rjust(6)} ${l.uom_id.name.rjust(7)} ${"{:4,.0f}".format(l.price_unit).rjust(13)}${"{:2,.0f}".format(l.discount).rjust(5)} ${"{:4,.0f}".format(l.price_total).rjust(14)}
+${l.product_id.barcode.ljust(15)}${l.product_id.name[:28].ljust(40)} ${(l.quantity).rjust(6)} ${l.uom_id.name.rjust(7)} ${(l.price_unit).rjust(13)}${(l.discount).rjust(5)} ${(l.price_total).rjust(14)}
 % endfor
 
 ${''.rjust(130, '=')}
-${'Total :'.rjust(90)} ${"{:20,.0f}".format(object.amount_untaxed).rjust(14)}
+${'Total :'.rjust(90)} ${(object.amount_untaxed).rjust(14)}
 ${'Garansi :'.rjust(5)}
 ${'- 500 Km / 1 Minggu untuk Service Reguler '.rjust(5)}
 ${'- 1000 Km / 1 Bulan untuk Bongkar Mesin Reguler '.rjust(5)}
