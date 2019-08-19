@@ -10,14 +10,14 @@ ${object.company_id.street.ljust(60)} ${'Invoice:'.rjust(12)} ${object.number.lj
 ${object.company_id.street2.ljust(60)} ${'Tanggal:'.rjust(12)} ${object.date_invoice.ljust(15)}
 ${object.company_id.phone.ljust(60)} ${'Mknk/Ksr:'.rjust(12)} ${object.user_id.name.ljust(15)}
 ${''.rjust(130, '_')}
-${'Nama:'.rjust(7)} ${object.partner_id.name.ljust(40)} ${'Nopol:'.rjust(10)} ${object.partner_id.name.ljust(20)}${'Thn/Warna:'.rjust(10)} ${object.partner_id.name.ljust(10)}
-${'Alamat:'.rjust(7)} ${object.partner_id.street.ljust(40)} ${'No Rangka:'.rjust(10)} ${object.partner_id.name.ljust(20)}${'Type:'.rjust(10)} ${object.partner_id.name.ljust(10)}
-${'Telp:'.rjust(7)} ${object.partner_id.mobile.ljust(40)} ${'No Mesin:'.rjust(10)} ${object.partner_id.name.ljust(20)}
+${'Nama:'.rjust(7)} ${object.partner_id.name.ljust(40)} ${'Nopol:'.rjust(10)} ${' '.ljust(20)} ${'Thn/Warna:'.rjust(10)} ${' '.ljust(10)}
+${'Alamat:'.rjust(7)} ${object.partner_id.street.ljust(40)} ${'No Rangka:'.rjust(10)} ${' '.ljust(20)} ${'Type:'.rjust(10)} ${' '.ljust(10)}
+${'Telp:'.rjust(7)} ${object.partner_id.mobile.ljust(40)} ${'No Mesin:'.rjust(10)} ${' '.ljust(20)}
 ${''.rjust(130, '_')}
 ${'Kode'.ljust(15)}${'Product'.ljust(40)} ${'Qty'.rjust(6)} ${'UoM'.rjust(7)} ${'Harga'.rjust(13)} ${'Disc'.rjust(5)} ${'Sub Total'.rjust(14)}
 ${''.rjust(130, '-')}
 % for l in object.invoice_line_ids:
-${l.product_id.name[:28].ljust(28)} ${"{:4,.0f}".format(l.quantity).rjust(7)} ${l.uom_id.name.rjust(7)} ${"{:4,.0f}".format(l.price_unit).rjust(13)} ${"{:4,.0f}".format(l.price_total).rjust(14)}
+${l.product_id.barcode.ljust(15)}${l.product_id.name[:28].ljust(40)} ${"{:4,.0f}".format(l.quantity).rjust(6)} ${l.uom_id.name.rjust(7)} ${"{:4,.0f}".format(l.price_unit).rjust(13)}${l.discount.rjust(5)} ${"{:4,.0f}".format(l.price_total).rjust(14)}
 % endfor
 ${''.rjust(130, '=')}
 ${'Total :'.rjust(90)} ${"{:20,.0f}".format(object.amount_untaxed).rjust(20)}
