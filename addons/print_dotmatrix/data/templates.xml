@@ -5,25 +5,28 @@
             <field name="model_id" ref="account.model_account_invoice"></field>
             <field name="subject">Dot Matrix Template for Invoice</field>
             <field name="body_html"><![CDATA[
-${'BENGKEL'.rjust(5)}${object.company_id.display_name}
-${object.company_id.street.ljust(60)}
-${object.company_id.street2.ljust(60)}
-${object.company_id.phone.ljust(60)}
+${'BENGKEL '.rjust(8)}${object.company_id.display_name}
+${object.company_id.street.ljust(60)} ${'Invoice:'.rjust(10)} ${object.number.ljust(15)}
+${object.company_id.street2.ljust(60)} ${'Tanggal:'.rjust(10)} ${object.date_invoice.ljust(15)}
+${object.company_id.phone.ljust(60)} ${'Mknk/Ksr:'.rjust(10)} ${object.user_id.name.ljust(15)}
 ${''.rjust(130, '_')}          
 ${'INVOICE'.rjust(5)} ${object.number}
 ${''.rjust(130, '_')}
 ${'Nama:'.rjust(20)} ${object.partner_id.display_name.ljust(20)} ${'Tanggal:'.rjust(20)} ${object.date_invoice}
 ${''.rjust(130, '_')}
-${'Product'.ljust(30)} ${'Qty'.rjust(6)} ${'UoM'.rjust(7)} ${'Price Unit'.rjust(13)} ${'Sub Total'.rjust(14)}
-${''.rjust(130, '_')}
+${'Kode'.ljust(15)}${'Product'.ljust(40)} ${'Qty'.rjust(6)} ${'UoM'.rjust(7)} ${'Harga'.rjust(13)} ${'Disc'.rjust(5)} ${'Sub Total'.rjust(14)}
 % for l in object.invoice_line_ids:
 ${l.product_id.name[:28].ljust(28)} ${"{:4,.0f}".format(l.quantity).rjust(7)} ${l.uom_id.name.rjust(7)} ${"{:4,.0f}".format(l.price_unit).rjust(13)} ${"{:4,.0f}".format(l.price_total).rjust(14)}
 % endfor
-${''.rjust(130, '_')}
-${'Total Before Tax:'.rjust(59)} ${"{:20,.0f}".format(object.amount_untaxed).rjust(20)}
-${'Tax:'.rjust(59)} ${"{:20,.0f}".format(object.amount_tax).rjust(20)}
-${'Balance:'.rjust(59)} ${"{:20,.0f}".format(object.amount_total).rjust(20)}
-${'Balance:'.rjust(59)} ${"{:20,.0f}".format(object.residual).rjust(20)}
+${''.rjust(130, '=')}
+${'Total :'.rjust(90)} ${"{:20,.0f}".format(object.amount_untaxed).rjust(20)}
+${'Garansi :'.rjust(5)}
+${'- 500 Km / 1 Minggu untuk Service Reguler '.rjust(5)}
+${'- 1000 Km / 1 Bulan untuk Bongkar Mesin Reguler '.rjust(5)}
+${'- 1000 Km / 1 Bulan untuk Service CBR 250 dan PCX 150*'.rjust(5)}
+${'- 1500 Km / 45 Hari untuk Bongkar Mesin CBR 250 dan PCX 150* '.rjust(5)}
+${'SERVICE RUTIN DI AHASS MOTOR TERAWAT KANTONG HEMAT'.rjust(5)}
+${'* Khusus type CBR 250, PCX 150'.rjust(5)}
 ]]>            </field>
         </record>
     </data>
