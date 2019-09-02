@@ -6,28 +6,30 @@
             <field name="subject">Dot Matrix Template for Invoice</field>
             <field name="body_html"><![CDATA[
 ${object.company_id.display_name}
-${object.company_id.street.ljust(60)} ${'Invoice:'.rjust(12)} ${object.number.ljust(15)}
-${object.company_id.street2.ljust(60)} ${'Tanggal:'.rjust(12)} ${object.date_invoice.ljust(15)}
-${object.company_id.phone.ljust(60)} ${'Mknk/Ksr:'.rjust(12)} ${object.user_id.name.ljust(15)}
-${''.rjust(100, '_')}
+${object.company_id.street.ljust(40)} ${'Invoice:'.rjust(12)} ${object.number.ljust(15)}
+${object.company_id.street2.ljust(40)} ${'Tanggal:'.rjust(12)} ${object.date_invoice.ljust(15)}
+${object.company_id.phone.ljust(40)} ${'Mknk/Ksr:'.rjust(12)} ${object.user_id.name.ljust(15)}
+${''.rjust(95, '_')}
 ${'Nama:'.rjust(7)} ${object.partner_id.name.ljust(40)} ${'Nopol:'.rjust(10)} ${' '.ljust(20)} ${'Thn/Warna:'.rjust(10)} ${' '.ljust(10)}
 ${'Alamat:'.rjust(7)} ${object.partner_id.street.ljust(40)} ${'No Rangka:'.rjust(10)} ${' '.ljust(20)} ${'Type:'.rjust(10)} ${' '.ljust(10)}
 ${'Telp:'.rjust(7)} ${object.partner_id.mobile.ljust(40)} ${'No Mesin:'.rjust(10)} ${' '.ljust(20)}
-${''.rjust(100, '_')}
+${''.rjust(95, '_')}
 ${'Kode'.ljust(13)}${'Product'.ljust(30)} ${'Qty'.rjust(6)} ${'UoM'.rjust(7)} ${'Harga'.rjust(13)} ${'Disc'.rjust(5)} ${'Sub Total'.rjust(14)}
-${''.rjust(100, '-')}
+${''.rjust(95, '-')}
 % for l in object.invoice_line_ids:
-${l.product_id.barcode.ljust(13)}${l.product_id.name[:28].ljust(30)} ${"{:4,.0f}".format(l.quantity).rjust(6)} ${l.uom_id.name.rjust(7)} ${"{:4,.0f}".format(l.price_unit).rjust(13)}${"{:4,.0f}".format(l.price_total).rjust(14)}
+${l.product_id.barcode.ljust(13)}${l.product_id.name[:28].ljust(30)} ${"{:4,.0f}".format(l.quantity).rjust(6)} ${l.uom_id.name.rjust(7)} ${"{:4,.0f}".format(l.price_unit).rjust(13)} ${l.discount.rjust(7)} ${"{:4,.0f}".format(l.price_total).rjust(14)}
 % endfor
-${''.rjust(100, '=')}
+${''.rjust(95, '=')}
+${'Total :'.rjust(60)} ${"{:20,.0f}".format(object.gross_amount).rjust(20)}
+${'Total :'.rjust(60)} ${"{:20,.0f}".format(object.discount).rjust(20)}
 ${'Total :'.rjust(60)} ${"{:20,.0f}".format(object.amount_untaxed).rjust(20)}
 ${'Garansi :'.rjust(5)}
-${'- 500 Km / 1 Minggu untuk Service Reguler '.rjust(5)}
-${'- 1000 Km / 1 Bulan untuk Bongkar Mesin Reguler '.rjust(5)}
-${'- 1000 Km / 1 Bulan untuk Service CBR 250 dan PCX 150*'.rjust(5)}
-${'- 1500 Km / 45 Hari untuk Bongkar Mesin CBR 250 dan PCX 150* '.rjust(5)}
-${'SERVICE RUTIN DI AHASS MOTOR TERAWAT KANTONG HEMAT'.rjust(5)}
-${'* Khusus type CBR 250, PCX 150'.rjust(5)}
+${'- 500 Km / 1 Minggu untuk Service Reguler '.rjust(50)}
+${'- 1000 Km / 1 Bulan untuk Bongkar Mesin Reguler '.rjust(50)}
+${'- 1000 Km / 1 Bulan untuk Service CBR 250 dan PCX 150*'.rjust(50)}
+${'- 1500 Km / 45 Hari untuk Bongkar Mesin CBR 250 dan PCX 150* '.rjust(50)}
+${'SERVICE RUTIN DI AHASS MOTOR TERAWAT KANTONG HEMAT'.rjust(50)}
+${'* Khusus type CBR 250, PCX 150'.rjust(50)}
 ]]>            </field>
         </record>
     </data>
