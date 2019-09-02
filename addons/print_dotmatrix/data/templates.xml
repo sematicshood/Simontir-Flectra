@@ -21,7 +21,6 @@ ${l.product_id.barcode.ljust(13)}${l.product_id.name[:28].ljust(30)} ${"{:4,.0f}
 % endfor
 ${''.rjust(95, '=')}
 ${'Total :'.rjust(60)} ${"{:20,.0f}".format(object.gross_amount).rjust(20)}
-${'Total :'.rjust(60)} ${"{:20,.0f}".format(object.discount).rjust(20)}
 ${'Total :'.rjust(60)} ${"{:20,.0f}".format(object.amount_untaxed).rjust(20)}
 ${'Garansi :'.rjust(5)}
 ${'- 500 Km / 1 Minggu untuk Service Reguler '.rjust(50)}
