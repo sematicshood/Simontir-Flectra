@@ -10,9 +10,9 @@ ${object.company_id.street.ljust(40)} ${'Invoice:'.rjust(12)} ${object.number.lj
 ${object.company_id.street2.ljust(40)} ${'Tanggal:'.rjust(12)} ${object.date_invoice.ljust(15)}
 ${object.company_id.phone.ljust(40)} ${'Mknk/Ksr:'.rjust(12)} ${object.user_id.name.ljust(8)}
 ${''.rjust(95, '_')}
-${'Nama:'.rjust(7)} ${object.partner_id.name.ljust(40)} ${'Nopol:'.rjust(10)} ${' '.ljust(20)} ${'Thn/Warna:'.rjust(10)} ${' '.ljust(10)}
-${'Alamat:'.rjust(7)} ${object.partner_id.street.ljust(40)} ${'No Rangka:'.rjust(10)} ${' '.ljust(20)} ${'Type:'.rjust(10)} ${' '.ljust(10)}
-${'Telp:'.rjust(7)} ${object.partner_id.mobile.ljust(40)} ${'No Mesin:'.rjust(10)} ${' '.ljust(20)}
+${'Nama:'.rjust(7)} ${object.partner_id.name.ljust(35)} ${'Nopol:'.rjust(10)} ${' '.ljust(20)} ${'Tahun:'.rjust(7)} ${' '.ljust(5)}
+${'Alamat:'.rjust(7)} ${object.partner_id.street.ljust(35)} ${'No Rangka:'.rjust(10)} ${' '.ljust(20)} ${'Type:'.rjust(7)} ${' '.ljust(8)}
+${'Telp:'.rjust(7)} ${object.partner_id.mobile.ljust(35)} ${'No Mesin:'.rjust(10)} ${' '.ljust(20)} ${'Warna:'.rjust(7)} ${' '.ljust(8)}
 ${''.rjust(95, '_')}
 ${'Kode'.ljust(15)}${'Product'.ljust(30)} ${'Qty'.rjust(6)} ${'UoM'.rjust(7)} ${'Harga'.rjust(13)} ${'Disc'.rjust(5)} ${'Sub Total'.rjust(14)}
 ${''.rjust(95, '-')}
