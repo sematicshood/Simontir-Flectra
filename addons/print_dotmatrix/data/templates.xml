@@ -20,13 +20,13 @@ ${''.rjust(95, '-')}
 ${l.product_id.barcode.ljust(15)}${l.product_id.name[:28].ljust(30)} ${"{:4,.0f}".format(l.quantity).rjust(6)} ${"{:4,.0f}".format(l.price_unit).rjust(13)} ${' '.rjust(4)}  ${"{:4,.0f}".format(l.price_total).rjust(14)}
 % endfor
 ${''.rjust(95, '=')}
-${'Sub Total :'.rjust(70)} ${"{:20,.0f}".format(object.gross_amount).rjust(15)}
-${'Total :'.rjust(70)} ${"{:20,.0f}".format(object.amount_untaxed).rjust(15)}
+${'Sub Total :'.rjust(80)} ${"{:20,.0f}".format(object.gross_amount).rjust(15)}
+${'Total :'.rjust(80)} ${"{:20,.0f}".format(object.amount_untaxed).rjust(15)}
 ${'Garansi :'.ljust(10)}
 ${'- 500 Km / 1 Minggu untuk Service Reguler '.ljust(50)}
 ${'- 1000 Km / 1 Bulan untuk Bongkar Mesin Reguler '.ljust(50)}
 ${'SERVICE RUTIN DI AHASS MOTOR TERAWAT KANTONG HEMAT'.ljust(50)}
-]]>            </field>
+]]></field>
         </record>
     </data>
 </flectra>
