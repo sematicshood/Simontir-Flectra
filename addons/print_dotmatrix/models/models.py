@@ -28,3 +28,10 @@ class invoice(models.Model):
         res = super(invoice, self).action_invoice_open()
         self.generate_printer_data()
         return res
+    @api.model
+    def get_sale_order_reference(self):
+        for rec in self:
+            res = rec.env['sale.order'].search([('name', '=', rec.origin)])
+            rec.so_reference = res
+
+        so_reference = fields.Many2one('sale.order', compute='get_sale_order_reference')
