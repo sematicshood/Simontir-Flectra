@@ -14,21 +14,18 @@ ${'Nama:'.rjust(7)} ${object.partner_id.name.ljust(35)} ${'Nopol:'.rjust(10)} ${
 ${'Alamat:'.rjust(7)} ${object.partner_id.street.ljust(35)} ${'No Rangka:'.rjust(10)} ${' '.ljust(20)} ${'Type:'.rjust(7)} ${' '.ljust(8)}
 ${'Telp:'.rjust(7)} ${object.partner_id.mobile.ljust(35)} ${'No Mesin:'.rjust(10)} ${' '.ljust(20)} ${'Warna:'.rjust(7)} ${' '.ljust(8)}
 ${''.rjust(95, '_')}
-${'Kode'.ljust(15)}${'Product'.ljust(30)} ${'Qty'.rjust(6)} ${'UoM'.rjust(7)} ${'Harga'.rjust(13)} ${'Disc'.rjust(5)} ${'Sub Total'.rjust(14)}
+${'Kode'.ljust(15)}${'Product'.ljust(30)} ${'Qty'.rjust(6)} ${'Harga'.rjust(13)} ${'Disc'.rjust(5)} ${'Sub Total'.rjust(14)}
 ${''.rjust(95, '-')}
 % for l in object.invoice_line_ids:
-${l.product_id.barcode.ljust(15)}${l.product_id.name[:28].ljust(30)} ${"{:4,.0f}".format(l.quantity).rjust(6)} ${l.uom_id.name.rjust(7)} ${"{:4,.0f}".format(l.price_unit).rjust(13)} ${' '.rjust(4)}  ${"{:4,.0f}".format(l.price_total).rjust(14)}
+${l.product_id.barcode.ljust(15)}${l.product_id.name[:28].ljust(30)} ${"{:4,.0f}".format(l.quantity).rjust(6)} ${"{:4,.0f}".format(l.price_unit).rjust(13)} ${' '.rjust(4)}  ${"{:4,.0f}".format(l.price_total).rjust(14)}
 % endfor
 ${''.rjust(95, '=')}
-${'Sub Total :'.rjust(60)} ${"{:20,.0f}".format(object.gross_amount).rjust(15)}
-${'Total :'.rjust(60)} ${"{:20,.0f}".format(object.amount_untaxed).rjust(15)}
+${'Sub Total :'.rjust(70)} ${"{:20,.0f}".format(object.gross_amount).rjust(15)}
+${'Total :'.rjust(70)} ${"{:20,.0f}".format(object.amount_untaxed).rjust(15)}
 ${'Garansi :'.ljust(10)}
 ${'- 500 Km / 1 Minggu untuk Service Reguler '.ljust(50)}
 ${'- 1000 Km / 1 Bulan untuk Bongkar Mesin Reguler '.ljust(50)}
-${'- 1000 Km / 1 Bulan untuk Service CBR 250 dan PCX 150*'.ljust(50)}
-${'- 1500 Km / 45 Hari untuk Bongkar Mesin CBR 250 dan PCX 150* '.ljust(50)}
 ${'SERVICE RUTIN DI AHASS MOTOR TERAWAT KANTONG HEMAT'.ljust(50)}
-${'* Khusus type CBR 250, PCX 150'.ljust(50)}
 ]]>            </field>
         </record>
     </data>
