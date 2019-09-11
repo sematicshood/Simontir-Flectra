@@ -5,7 +5,7 @@
             <field name="model_id" ref="account.model_account_invoice"></field>
             <field name="subject">Dot Matrix Template for Invoice</field>
             <field name="body_html"><![CDATA[
-<h2>${object.company_id.display_name}</h2>
+${object.company_id.display_name}
 ${object.company_id.street.ljust(40)} ${'Invoice:'.rjust(12)} ${object.number.ljust(15)}
 ${object.company_id.street2.ljust(40)} ${'Tanggal:'.rjust(12)} ${object.date_invoice.ljust(15)}
 ${object.company_id.phone.ljust(40)} ${'Mknk/Ksr:'.rjust(12)} ${object.mekanik.ljust(8) ${object.user_id.name.ljust(8)}
