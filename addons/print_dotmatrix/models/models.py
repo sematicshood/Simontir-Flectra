@@ -26,7 +26,7 @@ class invoice(models.Model):
         self.mekanik = so.mekanik_id.name
         self.km_berikutnya = so.vehicle.odometer
         self.saran_mekanik = so.x_saran_mekanik
-        self.type_motor = so.vehicle.model_id
+        self.type_motor = so.vehicle.model_id.name
         self.printer_data = data
 
     @api.multi
