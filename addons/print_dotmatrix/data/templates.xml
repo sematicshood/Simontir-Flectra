@@ -8,7 +8,7 @@
 ${object.company_id.display_name}
 ${object.company_id.street.ljust(40)} ${'Invoice:'.rjust(12)} ${object.number.ljust(15)}
 ${object.company_id.street2.ljust(40)} ${'Tanggal:'.rjust(12)} ${object.date_invoice.ljust(15)}
-${object.company_id.phone.ljust(40)} ${'Mknk/Ksr:'.rjust(12)} ${object.mekanik.ljust(8) ${object.user_id.name.ljust(8)}
+${object.company_id.phone.ljust(40)} ${'Mknk/Ksr:'.rjust(12)} ${object.mekanik.ljust(8)} ${object.user_id.name.ljust(8)}
 ${''.rjust(90, '_')}
 ${'Nama:'.rjust(7)} ${object.partner_id.name.ljust(35)} ${'Nopol:'.rjust(10)} ${object.nopol.ljust(20) if object.nopol else ''.ljust(20)} ${'Tahun:'.rjust(7)} ${' '.ljust(5)}
 ${'Alamat:'.rjust(7)} ${object.partner_id.street.ljust(35) if object.partner_id.street else ' '.rjust(35)} ${'Type :'.rjust(10)} ${object.type_motor.ljust(20)} ${'Type:'.rjust(7)} ${' '.ljust(8)}
