@@ -8,7 +8,7 @@
 ${object.company_id.display_name}
 ${object.company_id.street.ljust(40)} ${'Invoice:'.rjust(12)} ${object.number.ljust(15)}
 ${object.company_id.street2.ljust(40)} ${'Tanggal:'.rjust(12)} ${object.date_invoice.ljust(15)}
-${object.company_id.phone.ljust(40)} ${'Mknk/Ksr:'.rjust(12)} ${object.user_id.name.ljust(8)}
+${object.company_id.phone.ljust(40)} ${'Mknk/Ksr:'.rjust(12)}${object.mekanik.ljust(8) if object.mekanik else ' '.ljust(8)} ${object.user_id.name.ljust(8)}
 ${''.rjust(90, '_')}
 ${'Nama:'.rjust(7)} ${object.partner_id.name.ljust(35)} ${'Nopol:'.rjust(10)} ${'Tahun:'.rjust(7)} ${' '.ljust(5)}
 ${'Alamat:'.rjust(7)} ${object.partner_id.street.ljust(35) if object.partner_id.street else ' '.rjust(35)} ${'Type :'.rjust(10)}
@@ -16,17 +16,15 @@ ${'Telp:'.rjust(7)} ${object.partner_id.mobile.ljust(35) if object.partner_id.mo
 ${''.rjust(90, '_')}
 ${'Kode'.ljust(15)}${'Product'.ljust(30)} ${'Qty'.rjust(6)}${'Harga'.rjust(13)} ${'Disc'.rjust(5)} ${'Sub Total'.rjust(14)}
 ${''.rjust(90, '-')}
-Sparepart
 % for l in object.invoice_line_ids:
 ${l.product_id.barcode.ljust(15) if l.product_id.barcode else ''.ljust(15)} ${l.name.ljust(30)}${"{:4,.0f}".format(l.quantity).rjust(6)} ${"{:4,.0f}".format(l.price_unit).rjust(13)}${l.discount if l.discount else '0'.rjust(4)}${"{:4,.0f}".format(l.price_total).rjust(14)}
 % endfor
-Service
 ${''.rjust(90, '=')}
 ${'Sub Total :'.rjust(60)} ${"{:20,.0f}".format(object.gross_amount).rjust(15)}
 ${'Discount :'.rjust(60)} ${"{:20,.0f}".format(object.discount).rjust(15) if object.discount else '0'.rjust(15)}
 ${'Total :'.rjust(60)} ${"{:20,.0f}".format(object.amount_total).rjust(15) if object.amount_total else '0'.rjust(15)}
 ${'Saran Mekanik :'.ljust(20)}
-
+${object.saran_mekanik.ljust(80) if object.saran_mekanik else ' '.ljust(80)}
 ${'Garansi :'.ljust(10)}
 ${'- 500 Km / 1 Minggu untuk Service Reguler '.ljust(50)}
 ${'- 1000 Km / 1 Bulan untuk Bongkar Mesin Reguler '.ljust(50)}
