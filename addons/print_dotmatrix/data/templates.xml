@@ -10,14 +10,14 @@ ${object.company_id.street.ljust(40)} ${'Invoice:'.rjust(12)} ${object.number.lj
 ${object.company_id.street2.ljust(40)} ${'Tanggal:'.rjust(12)} ${object.date_invoice.ljust(15)}
 ${object.company_id.phone.ljust(40)} ${'Mknk/Ksr:'.rjust(12)}${object.mekanik.ljust(8) if object.mekanik else ' '.ljust(8)} ${object.user_id.name.ljust(8)}
 ${''.rjust(90, '_')}
-${'Nama:'.rjust(7)} ${object.partner_id.name.ljust(35)} ${'Nopol:'.rjust(10)} ${'Tahun:'.rjust(7)} ${' '.ljust(5)}
-${'Alamat:'.rjust(7)} ${object.partner_id.street.ljust(35) if object.partner_id.street else ' '.rjust(35)} ${'Type :'.rjust(10)}
-${'Telp:'.rjust(7)} ${object.partner_id.mobile.ljust(35) if object.partner_id.mobile else ' '.rjust(35)} ${'Km Berikut'.rjust(10)}
+${'Nama:'.rjust(7)} ${object.partner_id.name.ljust(35)} ${'Nopol:'.rjust(10)} ${object.nopol.ljust(20) if object.nopol else ' '.ljust(20)} ${'Tahun:'.rjust(7)} ${' '.ljust(5)}
+${'Alamat:'.rjust(7)} ${object.partner_id.street.ljust(35) if object.partner_id.street else ' '.rjust(35)} ${'Type :'.rjust(10)}${object.type_motor.ljust(20) if object.type_motor else ' '.ljust(20)} ${'Type:'.rjust(7)} ${' '.ljust(8)}
+${'Telp:'.rjust(7)} ${object.partner_id.mobile.ljust(35) if object.partner_id.mobile else ' '.rjust(35)} ${'Km Berikut'.rjust(10)}${object.km_berikutnya.ljust(20) if object.km_berikutnya else ' '.ljust(20)} ${''.rjust(7)} ${' '.ljust(8)}
 ${''.rjust(90, '_')}
 ${'Kode'.ljust(15)}${'Product'.ljust(30)} ${'Qty'.rjust(6)}${'Harga'.rjust(13)} ${'Disc'.rjust(5)} ${'Sub Total'.rjust(14)}
 ${''.rjust(90, '-')}
 % for l in object.invoice_line_ids:
-${l.product_id.barcode.ljust(15) if l.product_id.barcode else ''.ljust(15)} ${l.name.ljust(30)}${"{:4,.0f}".format(l.quantity).rjust(6)} ${"{:4,.0f}".format(l.price_unit).rjust(13)}${l.discount if l.discount else '0'.rjust(4)}${"{:4,.0f}".format(l.price_total).rjust(14)}
+${l.product_id.barcode.ljust(15) if l.product_id.barcode else ''.ljust(15)} ${l.name[:30].ljust(30)}${"{:4,.0f}".format(l.quantity).rjust(6)} ${"{:4,.0f}".format(l.price_unit).rjust(13)}${l.discount if l.discount else '0'.rjust(4)}${"{:4,.0f}".format(l.price_total).rjust(14)}
 % endfor
 ${''.rjust(90, '=')}
 ${'Sub Total :'.rjust(60)} ${"{:20,.0f}".format(object.gross_amount).rjust(15)}
