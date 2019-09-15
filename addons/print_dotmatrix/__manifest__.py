@@ -28,6 +28,7 @@
         'views/invoice.xml',
         'views/web_assets.xml',
         'data/templates.xml',
+        'views/saleorder.xml',
     ],
 
     'qweb': [

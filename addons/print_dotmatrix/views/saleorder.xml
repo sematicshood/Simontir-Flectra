@@ -1,0 +1,20 @@
+<flectra>
+    <data>
+        <record id="view_dotmatrix_saleorder" model="ir.ui.view">
+            <field name="name">view_dotmatrix_saleorder</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Detail Motor">
+                        <field name="jenis_motor"/>
+                        <field name="no_rangka"/>
+                        <field name="no_mesin"/>
+                        <field name="km_masuk"/>
+                        <field name="tahun_motor"/>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+    </data>
+</flectra>
