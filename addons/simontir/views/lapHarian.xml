@@ -1,0 +1,39 @@
+<flectra>
+    <data>
+        <!-- explicit list view definition -->
+
+        <record model="ir.ui.view" id="simontir.list_lapHarian">
+            <field name="name">Daftar Laporan Harian</field>
+            <field name="model">simontir.lapHarian</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="tglLap"/>
+                    <field name="omsetJasa"/>
+                </tree>
+            </field>
+        </record>
+        <!-- explicit Form definition -->
+        <record model="ir.ui.view" id="simontir.form_lapHarian">
+            <field name="name">Form Closing Harian</field>
+            <field name="model">simontir.lapHarian</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <label for="tglLap" string="Tanggal Laporan"/>
+                        <field name="tglLap"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <!-- actions opening views on models -->
+
+        <record model="ir.actions.act_window" id="simontir.action_window_lapHarian">
+            <field name="name">Daftar Laporan Harian</field>
+            <field name="res_model">simontir.lapHarian</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem name="Laporan Harian" id="simontir.lapHarian" parent="simontir.menu_2" action="simontir.action_window_lapHarian"/>
+    </data>
+</flectra>

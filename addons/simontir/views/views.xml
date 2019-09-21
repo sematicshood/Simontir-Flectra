@@ -1,0 +1,63 @@
+<flectra>
+  <data>
+    <!-- explicit list view definition -->
+
+    <record model="ir.ui.view" id="simontir.list">
+      <field name="name">Simontir List</field>
+      <field name="model">simontir.simontir</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="nama"/>
+          <field name="test1"/>
+          <field name="test2"/>
+        </tree>
+      </field>
+    </record>
+
+
+    <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="simontir.action_window">
+      <field name="name">Simontir Window</field>
+      <field name="res_model">simontir.simontir</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <!-- server action to the one above -->
+
+    <record model="ir.actions.server" id="simontir.action_server">
+      <field name="name">simontir server</field>
+      <field name="model_id" ref="model_simontir_simontir"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": self._nama,
+        }
+      </field>
+    </record>
+
+
+    <!-- Top menu item -->
+
+    <menuitem name="simontir" id="simontir.menu_root"/>
+
+    <!-- menu categories -->
+
+    <menuitem name="Master Data" id="simontir.menu_1" parent="simontir.menu_root"/>
+    <menuitem name="Laporan" id="simontir.menu_2" parent="simontir.menu_root"/>
+
+    <!-- actions -->
+
+    <menuitem name="Brand" id="simontir.menu_1_brand" parent="simontir.menu_1"
+              action="simontir.action_window"/>
+    <menuitem name="Warna" id="simontir.menu_1_warna" parent="simontir.menu_1"
+              action="simontir.action_window"/>
+    <menuitem name="Dashboard Harian" id="simontir_dashboard" parent="simontir.menu_2"
+              action="simontir.action_window"/>
+
+
+  </data>
+</flectra>
