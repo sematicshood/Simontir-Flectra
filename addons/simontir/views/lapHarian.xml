@@ -4,7 +4,7 @@
 
         <record model="ir.ui.view" id="simontir.list_lapHarian">
             <field name="name">Daftar Laporan Harian</field>
-            <field name="model">simontir.lapHarian</field>
+            <field name="model">simontir.lapharian</field>
             <field name="arch" type="xml">
                 <tree>
                     <field name="tglLap"/>
@@ -15,12 +15,27 @@
         <!-- explicit Form definition -->
         <record model="ir.ui.view" id="simontir.form_lapHarian">
             <field name="name">Form Closing Harian</field>
-            <field name="model">simontir.lapHarian</field>
+            <field name="model">simontir.lapharian</field>
             <field name="arch" type="xml">
                 <form>
                     <sheet>
-                        <label for="tglLap" string="Tanggal Laporan"/>
-                        <field name="tglLap"/>
+                        <group>
+                        <field name="tglLap" string="Tanggal Laporan"/>
+                        <field name="kasir"/>    
+                        </group>
+                        <group>
+                        <field name="selisih"/>    
+                        </group>
+                        <field name="catatan"/>
+                        <button string="Preview" icon="fa-print" type="object" name="generate_laporan_harian"/>
+                        <notebook position="inside">
+                            <page string="Preview">
+                                <button type="action" string="Dot Matrix" icon="fa-print" custom="print_dotmetrix"/>
+                                <pre>
+                                    <field name="printLap"/>
+                                </pre>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
@@ -31,9 +46,9 @@
 
         <record model="ir.actions.act_window" id="simontir.action_window_lapHarian">
             <field name="name">Daftar Laporan Harian</field>
-            <field name="res_model">simontir.lapHarian</field>
+            <field name="res_model">simontir.lapharian</field>
             <field name="view_mode">tree,form</field>
         </record>
-        <menuitem name="Laporan Harian" id="simontir.lapHarian" parent="simontir.menu_2" action="simontir.action_window_lapHarian"/>
+        <menuitem name="Laporan Harian" id="lapharian" parent="simontir.menu_2" action="simontir.action_window_lapHarian"/>
     </data>
 </flectra>

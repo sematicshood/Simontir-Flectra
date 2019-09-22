@@ -1,0 +1,17 @@
+<flectra>
+    <data noupdate="0">
+        <record id="template_print_laporan" model="mail.template">
+            <field name="name">Laporan Harian Bengkel</field>
+            <field name="model_id" ref="simontir.model_simontir_lapharian"></field>
+            <field name="subject">Laporan Harian</field>
+            <field name="body_html"><![CDATA[
+${object.tglLap} ${object.kasir}
+${object.omsetJasa}
+${'Garansi :'.ljust(10)}
+${'- 500 Km / 1 Minggu untuk Service Reguler '.ljust(50)}
+${'- 1000 Km / 1 Bulan untuk Bongkar Mesin Reguler '.ljust(50)}
+${'SERVICE RUTIN DI AHASS MOTOR TERAWAT KANTONG HEMAT'.ljust(50)}
+]]></field>
+        </record>
+    </data>
+</flectra>
