@@ -42,8 +42,8 @@ class lapHarian(models.Model):
           da    = datetime.strptime(self.tglLap, '%Y-%m-%d')
           d     = da + timedelta(days=1)
 
-          saleorder         =   request.env['sale.order'].sudo()
-          domain          =   [('confirmation_date', '>=', tglLap), ('confirmation_date', '<', d.strftime('%Y-%m-%d'))]
+          saleorder       =   request.env['sale.order'].sudo()
+          domain          =   [('confirmation_date', '>=', self.tglLap), ('confirmation_date', '<', d.strftime('%Y-%m-%d'))]
           fields          =   ['amount_total']
           #saleorderline        = self.env['sale.order.line'].sudo().search([
           #                     ('date_order', '=', self.tglLap)])

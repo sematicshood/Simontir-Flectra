@@ -7,7 +7,7 @@
             <field name="body_html"><![CDATA[
 
 ${'Tanggal Lap :'.ljust(13)} ${object.tglLap} ${'Admin :'.ljust(13)} ${object.kasir}
-${'Omset Jasa :'.ljust(13)} ${object.omsetJasa.ljust(12)}
+${'Omset Jasa :'.ljust(13)} ${object.omsetJasa.ljust(12) if object.omsetJasa else '0'.ljust(12)}
 ${'Garansi :'.ljust(10)}
 ${'- 500 Km / 1 Minggu untuk Service Reguler '.ljust(50)}
 ${'- 1000 Km / 1 Bulan untuk Bongkar Mesin Reguler '.ljust(50)}
