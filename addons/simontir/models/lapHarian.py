@@ -24,6 +24,7 @@ class lapHarian(models.Model):
      totalCash = fields.Float()
      totalEdc = fields.Float()
      catatan = fields.Text()
+     company = fields.Many2one('res.company', string='Perusahaan')
 
      @api.multi
      def generate_laporan_harian(self):
@@ -32,7 +33,19 @@ class lapHarian(models.Model):
             [('name', '=', 'Laporan Harian Bengkel')])
           data = tpl.render_template(
             tpl.body_html, 'simontir.lapharian', self.id, post_process=False)
-          #data omset penjualan
-          so = self.env['sale.order'].sudo().search([
-               ('date_order', '=', self.tglLap)])
+          #data omset penjualan = amount_total,state=done,confirmation_date
+          #parameter x_kpb,
+          saleorder            = self.env['sale.order'].sudo().search([
+                               ('confirmation_date', '=', self.tglLap)])
+          #saleorderline        = self.env['sale.order.line'].sudo().search([
+          #                     ('date_order', '=', self.tglLap)])
+          #Transaksi keuangan
+          #account_line         =   self.env['account.invoice.line'].sudo()
+          #account              =   self.env['account.invoice'].sudo()
+          
+          tot_omset = 0
+          for so in saleorder:
+               tot_omset = so['amount_total'] + tot_omset
+
+          self.omsetJasa = tot_omset
           self.printLap = data
