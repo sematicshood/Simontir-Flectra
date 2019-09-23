@@ -1,5 +1,7 @@
 from flectra import models, fields, api
 import datetime
+import traceback
+from datetime import datetime, timedelta
 
 class lapHarian(models.Model):
      _name = 'simontir.lapharian'
@@ -35,8 +37,14 @@ class lapHarian(models.Model):
             tpl.body_html, 'simontir.lapharian', self.id, post_process=False)
           #data omset penjualan = amount_total,state=done,confirmation_date
           #parameter x_kpb,
-          saleorder            = self.env['sale.order'].sudo().search([
-                               ('confirmation_date', '=', self.tglLap)])
+          #saleorder            = self.env['sale.order'].sudo().search([
+          #                     ('confirmation_date', '=', self.tglLap)])
+          da    = datetime.strptime(self.tglLap, '%Y-%m-%d')
+          d     = da + timedelta(days=1)
+
+          saleorder         =   request.env['sale.order'].sudo()
+          domain          =   [('confirmation_date', '>=', tglLap), ('confirmation_date', '<', d.strftime('%Y-%m-%d'))]
+          fields          =   ['amount_total']
           #saleorderline        = self.env['sale.order.line'].sudo().search([
           #                     ('date_order', '=', self.tglLap)])
           #Transaksi keuangan
@@ -44,8 +52,9 @@ class lapHarian(models.Model):
           #account              =   self.env['account.invoice'].sudo()
           
           tot_omset = 0
-          for so in saleorder:
-               tot_omset = so['amount_total'] + tot_omset
+          so   = saleorder.search_read(domain, fields=fields)
+          for sol in so:
+               tot_omset += sol['amount_total']
 
           self.omsetJasa = tot_omset
           self.printLap = data

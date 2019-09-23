@@ -5,8 +5,9 @@
             <field name="model_id" ref="simontir.model_simontir_lapharian"></field>
             <field name="subject">Laporan Harian</field>
             <field name="body_html"><![CDATA[
-${object.tglLap} ${object.kasir}
-${object.omsetJasa}
+
+${'Tanggal Lap :'.ljust(13)} ${object.tglLap} ${'Admin :'.ljust(13)} ${object.kasir}
+${'Omset Jasa :'.ljust(13)} ${object.omsetJasa.ljust(12)}
 ${'Garansi :'.ljust(10)}
 ${'- 500 Km / 1 Minggu untuk Service Reguler '.ljust(50)}
 ${'- 1000 Km / 1 Bulan untuk Bongkar Mesin Reguler '.ljust(50)}
