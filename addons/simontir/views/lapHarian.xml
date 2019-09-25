@@ -2,7 +2,7 @@
     <data>
         <!-- explicit list view definition -->
 
-        <record model="ir.ui.view" id="simontir.list_lapHarian">
+        <record model="ir.ui.view" id="simontir.list_lapharian">
             <field name="name">Daftar Laporan Harian</field>
             <field name="model">simontir.lapharian</field>
             <field name="arch" type="xml">
@@ -13,7 +13,7 @@
             </field>
         </record>
         <!-- explicit Form definition -->
-        <record model="ir.ui.view" id="simontir.form_lapHarian">
+        <record model="ir.ui.view" id="simontir.form_lapharian">
             <field name="name">Form Closing Harian</field>
             <field name="model">simontir.lapharian</field>
             <field name="arch" type="xml">
@@ -21,13 +21,13 @@
                     <sheet>
                         <group>
                         <field name="tglLap" string="Tanggal Laporan"/>
-                        <field name="kasir"/>    
+                        <field name="kasir"/>
                         </group>
                         <group>
                         <field name="selisih"/>    
                         </group>
                         <field name="catatan"/>
-                        <button string="Preview" icon="fa-print" type="object" name="generate_laporan_harian"/>
+                        <button string="Preview" icon="fa-print" type="object" name="generateLaporanHarian"/>
                         <notebook position="inside">
                             <page string="Preview">
                                 <button type="action" string="Dot Matrix" icon="fa-print" custom="print_dotmetrix"/>

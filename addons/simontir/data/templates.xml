@@ -2,16 +2,32 @@
     <data noupdate="0">
         <record id="template_print_laporan" model="mail.template">
             <field name="name">Laporan Harian Bengkel</field>
-            <field name="model_id" ref="simontir.model_simontir_lapharian"></field>
+            <field name="model_id" ref="simontir.model_simontir_lapharian"/>
             <field name="subject">Laporan Harian</field>
             <field name="body_html"><![CDATA[
-
-${'Tanggal Lap :'.ljust(13)} ${object.tglLap} ${'Admin :'.ljust(13)} ${object.kasir}
-${'Omset Jasa :'.ljust(13)} ${object.omsetJasa.ljust(12) if object.omsetJasa else '0'.ljust(12)}
-${'Garansi :'.ljust(10)}
-${'- 500 Km / 1 Minggu untuk Service Reguler '.ljust(50)}
-${'- 1000 Km / 1 Bulan untuk Bongkar Mesin Reguler '.ljust(50)}
-${'SERVICE RUTIN DI AHASS MOTOR TERAWAT KANTONG HEMAT'.ljust(50)}
+${'Tanggal Lap :'.ljust(13)} ${object.tglLap} ${'Admin :'.ljust(13)} ${object.kasir.name.ljust(8)}
+${''.rjust(80, '_')}
+${'I. Laporan Pendapatan Bengkel'.ljust(30)}
+${'Pendapatan Jasa Bengkel:'.ljust(25)} ${'09090'.ljust(13)}
+${'Total Jasa + Oli KPB   :'.ljust(25)} ${'09090'.ljust(13)}
+${'TOTAL PENJUALAN JASA   :'.ljust(25)} ${'09090'.ljust(13)}
+${''.rjust(80, '_')}
+${'II. Penjualan Suku Cadang - Service'.ljust(30)}
+${'Pendapatan Parts Bengkel:'.ljust(25)} ${'09090'.ljust(13)}
+${'Pendapatan Oli          :'.ljust(25)} ${'09090'.ljust(13)}
+${'Pendapatan Busi         :'.ljust(25)} ${'09090'.ljust(13)}
+${''.rjust(80, '_')}
+${'III. Penjualan Suku Cadang POS'.ljust(30)}
+${'Total Penjualan POS     :'.ljust(25)} ${'09090'.ljust(13)}
+${''.rjust(80, '_')}
+${'IV. Rincian Jasa Per Kategori :'.ljust(30)}
+${'ASS 1'.rjust(7)} ${''.rjust(4)} ${'ASS 2'.rjust(7)} ${''.rjust(4)}
+${'ASS 3'.rjust(7)} ${''.rjust(4)} ${'ASS 4'.rjust(7)} ${''.rjust(4)}
+${'HR'.rjust(7)} ${''.rjust(4)} ${'GOP'.rjust(7)} ${''.rjust(4)}
+${'QS'.rjust(7)} ${''.rjust(4)} ${'LR'.rjust(7)} ${''.rjust(4)}
+${''.rjust(80, '_')}
+${'Selisih :'.ljust(13)} ${object.selisih if object.selisih else '0'.rjust(13)}
+${'Catatan :'.ljust(13)} ${object.catatan.rjust(60) if object.catatan else '0'.rjust(60)}
 ]]></field>
         </record>
     </data>

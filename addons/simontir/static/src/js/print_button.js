@@ -1,4 +1,4 @@
-flectra.define('print_dotmatrix.print_button', function (require) {
+flectra.define('print_lapharian.print_button', function (require) {
     "user strict";
 
     var form_widget = require('web.FormRenderer');
