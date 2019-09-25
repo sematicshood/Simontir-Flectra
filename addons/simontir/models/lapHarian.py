@@ -46,10 +46,10 @@ class LapHarian(models.Model):
         inv = self.env['account.invoice.line'].sudo().search([('create_date', '>=', d1),
                                                               ('create_date', '<', d2)])
 
-        product = self.env['product.product'].sudo()
-        product_service = [p.id for p in product.search([
-            ('type', '=', 'service')]
-        )]
+        #product = self.env['product.product'].sudo()
+        #product_service = [p.id for p in product.search([
+        #    ('type', '=', 'service')]
+        #)]
 
         x_omsetjasa = 0
         x_omsetglobal = 0
@@ -59,20 +59,28 @@ class LapHarian(models.Model):
         ass_3 = 0
         ass_4 = 0
         for sol in so:
-            if sol['x_kpb'] == '1':
-                ass_1 += 1
-                if sol['x_kpb'] == '2':
-                    ass_2 += 1
-                if sol['x_kpb'] == '3':
-                    ass_3 += 1
-            else:
-                ass_4 += 1
+             if sol['x_kpb'] == '1':
+                 ass_1 += 1
+                 if sol['x_kpb'] == '2':
+                     ass_2 += 1
+                 if sol['x_kpb'] == '3':
+                     ass_3 += 1
+             else:
+                 ass_4 += 1
 
-            x_omsetglobal += sol['amount_total']
+        # x_omsetglobal += sol['amount_total']
             # print(x_omset)
             # print(sol['name'])
+
         for invl in inv:
-            if invl['product_id'] in product_service:
+            # print(invl.name)
+            nosonya = invl.origin
+            sonya = self.env['sale.order'].sudo().search([
+                ('name', '=', nosonya)])
+
+            id_product = invl.product_id
+            typeprod = id_product.type
+            if typeprod == 'service':
                 x_omsetjasa += invl['price_total']
             else:
                 x_omsetpart += invl['price_total']
@@ -86,7 +94,10 @@ class LapHarian(models.Model):
         self.omsetPos = float(1000000)
         self.omsetTotalJasa = float(self.omsetJasa) + float(self.omsetKpbOli)
         self.omsetTotalPart = self.omsetPartBusi + self.omsetPartOli + self.omsetPart
-
+        self.totalAss1 = ass_1
+        self.totalAss2 = ass_2
+        self.totalAss3 = ass_3
+        self.totalAss4 = ass_4
         # self.printLap = ' '
         tpl = self.env['mail.template'].search(
             [('name', '=', 'Laporan Harian Bengkel')])
