@@ -13,7 +13,7 @@ ${'Total Jasa + Oli KPB   :'.ljust(25)} ${'09090'.ljust(13)}
 ${'TOTAL PENJUALAN JASA   :'.ljust(25)} ${'09090'.ljust(13)}
 ${''.rjust(80, '_')}
 ${'II. Penjualan Suku Cadang - Service'.ljust(30)}
-${'Pendapatan Parts Bengkel:'.ljust(25)} $"{:4,.0f}".format(object.omsetPart).rjust(13) if object.omsetPart else '0'}
+${'Pendapatan Parts Bengkel:'.ljust(25)} ${"{:4,.0f}".format(object.omsetPart).rjust(13) if object.omsetPart else '0'}
 ${'Pendapatan Oli          :'.ljust(25)} ${'09090'.ljust(13)}
 ${'Pendapatan Busi         :'.ljust(25)} ${'09090'.ljust(13)}
 ${''.rjust(80, '_')}
