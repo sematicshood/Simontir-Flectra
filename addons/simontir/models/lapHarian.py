@@ -66,6 +66,7 @@ class LapHarian(models.Model):
         ass_2 = 0
         ass_3 = 0
         ass_4 = 0
+        x_totalGo = 0
         for sol in so:
               if sol['x_kpb'] == '1':
                  ass_1 += 1
@@ -75,7 +76,8 @@ class LapHarian(models.Model):
                     ass_3 += 1
                  if sol['x_kpb'] == '4':
                     ass_4 += 1
-
+              else:
+                 x_totalGo += 1
         # x_omsetglobal += sol['amount_total']
             # print(x_omset)
             # print(sol['name'])
@@ -120,6 +122,7 @@ class LapHarian(models.Model):
         self.totalAss2 = ass_2
         self.totalAss3 = ass_3
         self.totalAss4 = ass_4
+        self.totalGo = x_totalGo
         # self.printLap = ' '
         tpl = self.env['mail.template'].search(
             [('name', '=', 'Laporan Harian Bengkel')])
