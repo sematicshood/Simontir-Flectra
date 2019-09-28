@@ -7,20 +7,20 @@
             <field name="body_html"><![CDATA[
 ${'Tanggal Lap :'.ljust(13)} ${object.tglLap} ${'Admin :'.ljust(13)} ${object.kasir.name.ljust(8)}
 ${''.rjust(80, '_')}
-${'I. Laporan Pendapatan Bengkel'.ljust(30)}
-${'Pendapatan Jasa Bengkel:'.ljust(25)} ${"{:4,.0f}".format(object.omsetJasa).rjust(13) if object.omsetJasa else '0'}
-${'Total Jasa + Oli KPB   :'.ljust(25)} ${'09090'.ljust(13)}
-${'TOTAL PENJUALAN JASA   :'.ljust(25)} ${'09090'.ljust(13)}
+${'I. Laporan Pendapatan Bengkel'.ljust(30)} ${'|'}
+${'Pendapatan Jasa Bengkel:'.ljust(25)} ${"{:4,.0f}".format(object.omsetJasa).rjust(13) if object.omsetJasa else '0'} ${'|'}
+${'Total Jasa + Oli KPB   :'.ljust(25)} ${'09090'.ljust(13)} ${'|'}
+${'TOTAL PENJUALAN JASA   :'.ljust(25)} ${'09090'.ljust(13)} ${'|'}
 ${''.rjust(80, '_')}
-${'II. Penjualan Suku Cadang - Service'.ljust(30)}
-${'Pendapatan Parts Bengkel:'.ljust(25)} ${"{:4,.0f}".format(object.omsetPart).rjust(13) if object.omsetPart else '0'}
-${'Pendapatan Oli          :'.ljust(25)} ${'09090'.ljust(13)}
-${'Pendapatan Busi         :'.ljust(25)} ${'09090'.ljust(13)}
+${'II. Penjualan Suku Cadang - Service'.ljust(30)} ${'|'}
+${'Pendapatan Parts Bengkel:'.ljust(25)} ${"{:4,.0f}".format(object.omsetPart).rjust(13) if object.omsetPart else '0'} ${'|'}
+${'Pendapatan Oli          :'.ljust(25)} ${'09090'.ljust(13)} ${'|'}
+${'Pendapatan Busi         :'.ljust(25)} ${'09090'.ljust(13)} ${'|'}
 ${''.rjust(80, '_')}
-${'III. Penjualan Suku Cadang POS'.ljust(30)}
-${'Total Penjualan POS     :'.ljust(25)} ${'09090'.ljust(13)}
+${'III. Penjualan Suku Cadang POS'.ljust(30)} ${'|'}
+${'Total Penjualan POS     :'.ljust(25)} ${'09090'.ljust(13)} ${'|'}
 ${''.rjust(80, '_')}
-${'IV. Rincian Jasa Per Kategori :'.ljust(30)}
+${'IV. Rincian Jasa Per Kategori :'.ljust(30)} ${'|'}
 ${'ASS 1'.rjust(7)} ${object.totalAss1 if object.totalAss1 else '0'} ${'ASS 2'.rjust(7)} ${object.totalAss2 if object.totalAss2 else '0'}
 ${'ASS 3'.rjust(7)} ${object.totalAss3 if object.totalAss3 else '0'} ${'ASS 4'.rjust(7)} ${object.totalAss4 if object.totalAss4 else '0'}
 ${'HR'.rjust(7)} ${''.rjust(4)} ${'GOP'.rjust(7)} ${''.rjust(4)}
