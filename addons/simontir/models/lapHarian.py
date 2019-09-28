@@ -92,7 +92,7 @@ class LapHarian(models.Model):
             invno = invl.invoice_id
             fakturnya = self.env['account.invoice'].sudo().search([
                 ('number', '=', invno.number)])
-            statusinv = fakturnya.state
+            statusinv = invno.state
             id_product = invl.product_id
             typeprod = id_product.type
             categprod = id_product.categ_id
