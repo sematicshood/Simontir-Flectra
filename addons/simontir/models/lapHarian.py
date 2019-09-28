@@ -89,8 +89,9 @@ class LapHarian(models.Model):
             sonya = self.env['sale.order'].sudo().search([
                 ('name', '=', nosonya)])
             issokpb = sonya.x_kpb
+            invno = invl.invoice_id
             fakturnya = self.env['account.invoice'].sudo().search([
-                ('id', '=', invl.invoice_id)])
+                ('number', '=', invno.number)])
             statusinv = fakturnya.state
             id_product = invl.product_id
             typeprod = id_product.type
